@@ -1,1 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --navbar-height: 60px;
+  --bg-color: #f8fdf0;
+  --text-color: #1f2937;
+  --accent-color: #6b7280;
+  --hover-bg: #e5e7eb;
+  --border-color: #d1d5db;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: #f3f4f6;
+  color: var(--text-color);
+}
+
+main {
+  padding-top: var(--navbar-height);
+  min-height: calc(100vh - var(--navbar-height));
+}

@@ -1,0 +1,29 @@
+<div class="page-center">
+  <div class="login-container">
+    <div class="logo">
+      <span class="logo-icon">🧠</span>
+      <span class="logo-text">PsiConnect</span>
+    </div>
+
+    <h1>Login</h1>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <input type="email" placeholder="Email" formControlName="email" />
+      <input type="password" placeholder="Senha" formControlName="senha" />
+
+      <div class="tipo-usuario">
+        <label [class.active]="tipoUsuario==='paciente'">
+          <input type="radio" name="tipo" (change)="setTipoUsuario('paciente')" hidden>
+          Paciente
+        </label>
+        <label [class.active]="tipoUsuario==='psicologo'">
+          <input type="radio" name="tipo" (change)="setTipoUsuario('psicologo')" hidden>
+          Psicólogo
+        </label>
+      </div>
+
+      <button type="submit" [disabled]="loading">Entrar</button>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="page-center">
+  <div class="form-container">
+    <h1>Cadastro de Psicólogo</h1>
+
+    <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+      <input type="text" placeholder="Nome" formControlName="nome" />
+      <input type="email" placeholder="Email" formControlName="email" />
+      <input type="password" placeholder="senha_hash" formControlName="senha_hash" />
+      <input type="text" placeholder="CRP" formControlName="crp" />
+      <input type="number" placeholder="Valor da Consulta" formControlName="valor_consulta" />
+
+      <button type="submit" [disabled]="loading">Cadastrar</button>
+      <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+  </div>
+</div>

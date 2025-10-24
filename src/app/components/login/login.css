@@ -1,0 +1,78 @@
+.page-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: 1rem;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffffcc;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.logo-icon { font-size: 2rem; }
+.logo-text { font-weight: 700; font-size: 1.5rem; color:#1f2937; }
+
+h1 { margin-bottom: 1rem; font-size: 1.8rem; color: #1f2937; }
+
+form { display: flex; flex-direction: column; gap: 1rem; }
+
+input {
+  padding: 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+}
+
+input:focus { border-color: #10b981; }
+
+.tipo-usuario {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tipo-usuario label {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  transition: 0.2s;
+  user-select: none;
+}
+
+.tipo-usuario label.active {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+button {
+  padding: 0.9rem;
+  border-radius: 8px;
+  border: none;
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover { background: #047857; }
+button:disabled { background: #a7f3d0; cursor: not-allowed; }
+
+.error { color: #dc2626; font-size: 0.85rem; }

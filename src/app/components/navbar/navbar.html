@@ -1,0 +1,29 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <a routerLink="/" class="brand">
+      <span class="brand-icon">🧠</span>
+      <span class="brand-text">PsiConnect</span>
+    </a>
+
+    <button class="hamburger" (click)="toggleMenu()">☰</button>
+
+    <div class="navbar-links" [class.open]="menuOpen">
+      <a routerLink="/lista-psicologos" routerLinkActive="active">
+        <span class="link-icon">👥</span>
+        Psicólogos
+      </a>
+      <a routerLink="/login" routerLinkActive="active">
+        <span class="link-icon">🔐</span>
+        Entrar
+      </a>
+      <a routerLink="/cadastro-paciente" routerLinkActive="active">
+        <span class="link-icon">🧑‍⚕️</span>
+        Paciente
+      </a>
+      <a routerLink="/cadastro-psicologo" routerLinkActive="active">
+        <span class="link-icon">👨‍⚕️</span>
+        Psicólogo
+      </a>
+    </div>
+  </div>
+</nav>
