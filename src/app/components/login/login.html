@@ -10,7 +10,6 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <input type="email" placeholder="Email" formControlName="email" />
       <input type="password" placeholder="Senha" formControlName="senha" />
-
       <div class="tipo-usuario">
         <label [class.active]="tipoUsuario==='paciente'">
           <input type="radio" name="tipo" (change)="setTipoUsuario('paciente')" hidden>

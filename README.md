@@ -1,60 +1,29 @@
-# SistemaPsicologia
+campos do banco 
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.1.
 
-## Development server
+-- Tabela de Psicólogos
+CREATE TABLE psicologos (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome text NOT NULL,
+    email text UNIQUE NOT NULL,
+    senha_hash text NOT NULL,
+    crp text UNIQUE NOT NULL,
+    foto_url text,
+    areas_atuacao text[],
+    abordagem_terapeutica text,
+    resumo text,
+    valor_consulta numeric(10,2) NOT NULL,
+    redes_sociais jsonb,
+    whatsapp text,
+    horarios_disponiveis jsonb, -- ex: [{"dia":"segunda","inicio":"09:00","fim":"17:00"}]
+    criado_em timestamptz DEFAULT now()
+);
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-# PisConnect
+-- Tabela de Pacientes
+CREATE TABLE pacientes (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome text NOT NULL,
+    email text UNIQUE NOT NULL,
+    senha_hash text NOT NULL,
+    criado_em timestamptz DEFAULT now()
+);
