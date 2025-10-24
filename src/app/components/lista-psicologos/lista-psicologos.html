@@ -1,21 +1,20 @@
-<div *ngIf="loading">Carregando psicólogos...</div>
-<div *ngIf="error">{{ error }}</div>
-
-<div class="grid-container" *ngIf="!loading && psicologos.length > 0">
-  <div class="psicologo-card" *ngFor="let p of psicologos">
-    <img 
-      [src]="p.foto_url || 'https://previews.123rf.com/images/apoev/apoev2107/apoev210700026/171405647-default-avatar-photo-placeholder-gray-profile-picture-icon-business-woman-illustration.jpg'" 
-      alt="{{ p.nome }}" 
-    />
-    <h3>{{ p.nome }}</h3>
-    <p>CRP: {{ p.crp }}</p>
-    <p>Áreas: {{ p.areas_atuacao?.join(', ') }}</p>
-    <p>Valor da consulta: R$ {{ p.valor_consulta | number:'1.2-2' }}</p>
-    <p>Resumo: {{ p.resumo }}</p>
-    <p *ngIf="p.whatsapp">WhatsApp: {{ p.whatsapp }}</p>
+<div *ngIf="psicologos$ | async as psicologos">
+  <div *ngIf="psicologos.length === 0">
+    Nenhum psicólogo cadastrado.
   </div>
-</div>
 
-<div *ngIf="!loading && psicologos.length === 0">
-  Nenhum psicólogo cadastrado.
+  <div class="grid-container" *ngIf="psicologos.length > 0">
+    <div class="psicologo-card" *ngFor="let p of psicologos">
+      <img 
+        [src]="p.foto_url || 'https://previews.123rf.com/images/apoev/apoev2107/apoev210700026/171405647-default-avatar-photo-placeholder-gray-profile-picture-icon-business-woman-illustration.jpg'" 
+        alt="{{ p.nome }}" 
+      />
+      <h3>{{ p.nome }}</h3>
+      <p>CRP: {{ p.crp }}</p>
+      <p>Áreas: {{ p.areas_atuacao?.join(', ') }}</p>
+      <p>Valor da consulta: R$ {{ p.valor_consulta | number:'1.2-2' }}</p>
+      <p>Resumo: {{ p.resumo }}</p>
+      <p *ngIf="p.whatsapp">WhatsApp: {{ p.whatsapp }}</p>
+    </div>
+  </div>
 </div>

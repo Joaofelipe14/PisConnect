@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SupabaseService } from '../../services/supabase';
+import { from, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-lista-psicologos',
@@ -10,27 +11,11 @@ import { SupabaseService } from '../../services/supabase';
   styleUrls: ['./lista-psicologos.css'],
 })
 export class ListaPsicologos implements OnInit {
-  psicologos: any[] = [];
-  loading = true;
-  error = '';
+  psicologos$!: Observable<any[]>;
 
   constructor(private supabaseService: SupabaseService) {}
 
   ngOnInit() {
-    this.carregarPsicologos();
-  }
-
-  async carregarPsicologos() {
-    this.loading = true;
-    this.error = '';
-    try {
-      this.psicologos = await this.supabaseService.buscarPsicologos();
-      console.log(this.psicologos);
-    } catch (err: any) {
-      this.error = 'Erro ao carregar psicólogos';
-      console.error(err);
-    } finally {
-      this.loading = false;
-    }
+    this.psicologos$ = from(this.supabaseService.buscarPsicologos());
   }
 }
