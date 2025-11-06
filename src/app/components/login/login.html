@@ -1,27 +1,52 @@
 <div class="page-center">
   <div class="login-container">
-    <div class="logo">
-      <span class="logo-icon">🧠</span>
-      <span class="logo-text">PsiConnect</span>
+    <div class="logo-container">
+      <div class="logo-circle">
+        <span class="psi-symbol">Ψ</span>
+      </div>
+      <h1 class="app-name">PsiOn</h1>
     </div>
 
-    <h1>Login</h1>
+    <h2 class="login-title">Entrar</h2>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <input type="email" placeholder="Email" formControlName="email" />
-      <input type="password" placeholder="Senha" formControlName="senha" />
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email"
+          placeholder="Email" 
+          formControlName="email"
+          [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input 
+          type="password" 
+          id="senha"
+          placeholder="Senha" 
+          formControlName="senha"
+          [class.error]="loginForm.get('senha')?.invalid && loginForm.get('senha')?.touched"
+        />
+      </div>
+
       <div class="tipo-usuario">
-        <label [class.active]="tipoUsuario==='paciente'">
-          <input type="radio" name="tipo" (change)="setTipoUsuario('paciente')" hidden>
-          Paciente
+        <label [class.active]="tipoUsuario==='paciente'" class="tipo-option">
+          <input type="radio" name="tipo" (change)="setTipoUsuario('paciente')" [checked]="tipoUsuario==='paciente'" hidden>
+          <span>Paciente</span>
         </label>
-        <label [class.active]="tipoUsuario==='psicologo'">
-          <input type="radio" name="tipo" (change)="setTipoUsuario('psicologo')" hidden>
-          Psicólogo
+        <label [class.active]="tipoUsuario==='psicologo'" class="tipo-option">
+          <input type="radio" name="tipo" (change)="setTipoUsuario('psicologo')" [checked]="tipoUsuario==='psicologo'" hidden>
+          <span>Psicólogo</span>
         </label>
       </div>
 
-      <button type="submit" [disabled]="loading">Entrar</button>
+      <button type="submit" [disabled]="loading || !loginForm.valid" class="submit-btn">
+        {{ loading ? 'Entrando...' : 'Entrar' }}
+      </button>
+      
       <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
     </form>
   </div>

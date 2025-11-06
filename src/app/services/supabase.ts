@@ -25,4 +25,15 @@ export class SupabaseService {
     return data;
   }
 
+  async buscarPsicologoPorId(id: string) {
+    const { data, error } = await this.supabase
+      .from('psicologos')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    return data;
+  }
+
 }

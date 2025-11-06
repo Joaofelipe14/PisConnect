@@ -23,7 +23,11 @@ export class CadastroPsicologoComponent {
       email: ['', [Validators.required, Validators.email]],
       senha_hash: ['', [Validators.required, Validators.minLength(6)]],
       crp: ['', Validators.required],
-      valor_consulta: ['', Validators.required],
+      areas_atuacao: ['', Validators.required],
+      abordagem_terapeutica: ['', Validators.required],
+      resumo: ['', Validators.required],
+      valor_consulta: ['', [Validators.required, Validators.min(0)]],
+      whatsapp: ['', Validators.required],
     });
   }
 
@@ -34,12 +38,20 @@ export class CadastroPsicologoComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    const data: any = { ...this.cadastroForm.value, criado_em: new Date() };
+    const formValue = this.cadastroForm.value;
+    const data: any = {
+      ...formValue,
+      areas_atuacao: formValue.areas_atuacao ? formValue.areas_atuacao.split(',').map((a: string) => a.trim()) : [],
+      criado_em: new Date()
+    };
 
     this.auth.cadastro('psicologo', data).subscribe({
       next: () => {
         this.successMessage = 'Psicólogo cadastrado com sucesso!';
         this.cadastroForm.reset();
+        setTimeout(() => {
+          this.router.navigate(['/lista-psicologos']);
+        }, 2000);
       },
       error: (error) => {
         console.error(error);

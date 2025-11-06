@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.html',
-  imports:[CommonModule],
+  imports:[CommonModule, RouterModule],
   styleUrls: ['./navbar.css']
 })
 export class NavbarComponent implements OnInit {
@@ -36,6 +36,13 @@ export class NavbarComponent implements OnInit {
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
+
+  closeMenuOnMobile() {
+    if (window.innerWidth <= 768) {
+      this.menuOpen = false;
+    }
+  }
+
   logout() {
     this.authService.logout();
   }

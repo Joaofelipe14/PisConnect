@@ -1,20 +1,77 @@
-<div *ngIf="psicologos$ | async as psicologos">
-  <div *ngIf="psicologos.length === 0">
-    Nenhum psicólogo cadastrado.
+<div class="lista-container">
+  <div class="header-controls">
+    <div class="search-container">
+      <div class="search-box">
+        <span class="search-icon">Q</span>
+        <input 
+          type="text" 
+          placeholder="Buscar..." 
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          class="search-input"
+        />
+      </div>
+    </div>
+
+    <div class="view-toggle">
+      <button 
+        class="view-btn" 
+        [class.active]="viewMode === 'card'"
+        (click)="setViewMode('card')"
+        aria-label="Visualização em cards"
+        title="Cards"
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="11" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="2" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="11" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </button>
+      <button 
+        class="view-btn" 
+        [class.active]="viewMode === 'list'"
+        (click)="setViewMode('list')"
+        aria-label="Visualização em lista"
+        title="Lista"
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="16" height="2.5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="2" y="8.75" width="16" height="2.5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="2" y="14.5" width="16" height="2.5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
-  <div class="grid-container" *ngIf="psicologos.length > 0">
-    <div class="psicologo-card" *ngFor="let p of psicologos">
-      <img 
-        [src]="p.foto_url || 'https://previews.123rf.com/images/apoev/apoev2107/apoev210700026/171405647-default-avatar-photo-placeholder-gray-profile-picture-icon-business-woman-illustration.jpg'" 
-        alt="{{ p.nome }}" 
-      />
-      <h3>{{ p.nome }}</h3>
-      <p>CRP: {{ p.crp }}</p>
-      <p>Áreas: {{ p.areas_atuacao?.join(', ') }}</p>
-      <p>Valor da consulta: R$ {{ p.valor_consulta | number:'1.2-2' }}</p>
-      <p>Resumo: {{ p.resumo }}</p>
-      <p *ngIf="p.whatsapp">WhatsApp: {{ p.whatsapp }}</p>
+  <div *ngIf="psicologosFiltrados$ | async as psicologos" class="content-container">
+    <div *ngIf="psicologos.length === 0" class="empty-state">
+      <p>Nenhum psicólogo encontrado.</p>
+    </div>
+
+    <!-- Modo Card -->
+    <div class="psicologos-list" [class.card-view]="viewMode === 'card'" [class.list-view]="viewMode === 'list'" *ngIf="psicologos.length > 0">
+      <div class="psicologo-card" *ngFor="let p of psicologos" [class.card-mode]="viewMode === 'card'" [class.list-mode]="viewMode === 'list'">
+        <div class="card-content" (click)="verDetalhes(p.id)" style="cursor: pointer;">
+          <img 
+            [src]="getAvatarUrl(p)" 
+            alt="{{ p.nome }}" 
+            class="profile-image"
+          />
+          <div class="card-info">
+            <h3 class="psicologo-name">{{ p.nome }}</h3>
+            <p class="psicologo-specialty">{{ getPrimeiraArea(p.areas_atuacao) || p.abordagem_terapeutica || 'Psicologia' }}</p>
+            <p class="psicologo-price">R$ {{ p.valor_consulta | number:'1.0-0' }}</p>
+          </div>
+        </div>
+        <button 
+          class="whatsapp-btn" 
+          (click)="abrirWhatsApp(p.whatsapp); $event.stopPropagation()"
+          [disabled]="!p.whatsapp"
+        >
+          Falar no WhatsApp
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -1,15 +1,113 @@
 <div class="page-center">
   <div class="form-container">
-    <h1>Cadastro de Psicólogo</h1>
+    <h1>Cadastro de psicólogo</h1>
 
     <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
-      <input type="text" placeholder="Nome" formControlName="nome" />
-      <input type="email" placeholder="Email" formControlName="email" />
-      <input type="password" placeholder="senha_hash" formControlName="senha_hash" />
-      <input type="text" placeholder="CRP" formControlName="crp" />
-      <input type="number" placeholder="Valor da Consulta" formControlName="valor_consulta" />
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input 
+          type="text" 
+          id="nome"
+          placeholder="Nome" 
+          formControlName="nome" 
+          [class.error]="cadastroForm.get('nome')?.invalid && cadastroForm.get('nome')?.touched"
+        />
+      </div>
 
-      <button type="submit" [disabled]="loading">Cadastrar</button>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email"
+          placeholder="Email" 
+          formControlName="email" 
+          [class.error]="cadastroForm.get('email')?.invalid && cadastroForm.get('email')?.touched"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input 
+          type="password" 
+          id="senha"
+          placeholder="Senha" 
+          formControlName="senha_hash" 
+          [class.error]="cadastroForm.get('senha_hash')?.invalid && cadastroForm.get('senha_hash')?.touched"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="crp">CRP</label>
+        <input 
+          type="text" 
+          id="crp"
+          placeholder="CRP" 
+          formControlName="crp" 
+          [class.error]="cadastroForm.get('crp')?.invalid && cadastroForm.get('crp')?.touched"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="areas_atuacao">Área</label>
+        <input 
+          type="text" 
+          id="areas_atuacao"
+          placeholder="Área (separadas por vírgula)" 
+          formControlName="areas_atuacao" 
+          [class.error]="cadastroForm.get('areas_atuacao')?.invalid && cadastroForm.get('areas_atuacao')?.touched"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="abordagem_terapeutica">Abordagem</label>
+        <input 
+          type="text" 
+          id="abordagem_terapeutica"
+          placeholder="Abordagem" 
+          formControlName="abordagem_terapeutica" 
+          [class.error]="cadastroForm.get('abordagem_terapeutica')?.invalid && cadastroForm.get('abordagem_terapeutica')?.touched"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="resumo">Descrição</label>
+        <textarea 
+          id="resumo"
+          placeholder="Descrição" 
+          formControlName="resumo" 
+          rows="4"
+          [class.error]="cadastroForm.get('resumo')?.invalid && cadastroForm.get('resumo')?.touched"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="valor_consulta">Valor da sessão</label>
+        <input 
+          type="number" 
+          id="valor_consulta"
+          placeholder="Valor da sessão" 
+          formControlName="valor_consulta" 
+          min="0"
+          step="0.01"
+          [class.error]="cadastroForm.get('valor_consulta')?.invalid && cadastroForm.get('valor_consulta')?.touched"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="whatsapp">Endereço do WhatsApp</label>
+        <input 
+          type="text" 
+          id="whatsapp"
+          placeholder="Endereço do WhatsApp" 
+          formControlName="whatsapp" 
+          [class.error]="cadastroForm.get('whatsapp')?.invalid && cadastroForm.get('whatsapp')?.touched"
+        />
+      </div>
+
+      <button type="submit" [disabled]="loading || !cadastroForm.valid" class="submit-btn">
+        {{ loading ? 'Registrando...' : 'Registrar' }}
+      </button>
+      
       <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
       <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
     </form>

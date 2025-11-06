@@ -1,0 +1,48 @@
+<div class="detalhes-container">
+  <div *ngIf="loading" class="loading-state">
+    <p>Carregando...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-state">
+    <p>Psicólogo não encontrado.</p>
+    <button class="btn-voltar" (click)="voltar()">Voltar</button>
+  </div>
+
+  <div *ngIf="psicologo && !loading" class="detalhes-content">
+    <div class="profile-header">
+      <img 
+        [src]="getAvatarUrl()" 
+        alt="{{ psicologo.nome }}" 
+        class="profile-image-large"
+      />
+      <h1 class="psicologo-name-large">{{ psicologo.nome }}</h1>
+      <p class="psicologo-specialty-large">{{ getAbordagem() }}</p>
+      <p class="psicologo-crp" *ngIf="psicologo.crp">CRP: {{ psicologo.crp }}</p>
+    </div>
+
+    <div class="info-section" *ngIf="psicologo.areas_atuacao && psicologo.areas_atuacao.length > 0">
+      <h3 class="section-title">Áreas de Atuação</h3>
+      <div class="areas-list">
+        <span class="area-tag" *ngFor="let area of psicologo.areas_atuacao">{{ area }}</span>
+      </div>
+    </div>
+
+    <div class="profile-description" *ngIf="psicologo.resumo">
+      <h3 class="section-title">Sobre</h3>
+      <p>{{ psicologo.resumo }}</p>
+    </div>
+
+    <div class="price-section">
+      <p class="price-label">Valor da sessão</p>
+      <p class="price-value">R$ {{ psicologo.valor_consulta | number:'1.0-0' }}</p>
+    </div>
+
+    <button 
+      class="whatsapp-btn-large" 
+      (click)="abrirWhatsApp()"
+      [disabled]="!psicologo.whatsapp"
+    >
+      Falar no WhatsApp
+    </button>
+  </div>
+</div>
