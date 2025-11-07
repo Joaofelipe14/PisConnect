@@ -10,11 +10,11 @@ export const routes: Routes = [
    { path: '', component: WelcomeComponent, data: { title: 'SociPsi | Bem-vindo' } },
   { path: 'login', component: LoginComponent, data: { title: 'SociPsi | Login' } },
   { path: 'cadastro-psicologo', component: CadastroPsicologoComponent, data: { title: 'SociPsi | Cadastro Psicólogo' } },
-  { path: 'lista-psicologos', component: ListaPsicologos, data: { title: 'SociPsi | Lista de Psicólogos' } },
+  { path: 'psicologos', component: ListaPsicologos, data: { title: 'SociPsi | Psicólogos' } },
   { path: 'psicologo/:id', component: DetalhesPsicologoComponent, data: { title: 'SociPsi | Detalhes do Psicólogo' } },
     { path: 'sobre-nos', component: SobreNos, data: { title: 'SociPsi | Sobre nos' } },
 
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: '/psicologos' },
 
   // { path: 'cadastro-paciente', component: CadastroPaciente},
   // { path: 'meus-dados', component: MeusDados, canActivate: [AuthGuard] }

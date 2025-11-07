@@ -13,7 +13,7 @@ export class WelcomeComponent {
   constructor(private router: Router) {}
 
   goToPaciente() {
-    this.router.navigate(['/lista-psicologos']);
+    this.router.navigate(['/psicologos']);
   }
 
   goToPsicologo() {

@@ -27,6 +27,7 @@ export class DetalhesPsicologoComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    window.scroll(0,0)
     this.loading = true;
     this.cdr.detectChanges();
 
@@ -64,7 +65,7 @@ export class DetalhesPsicologoComponent implements OnInit {
   }
 
   voltar() {
-    this.router.navigate(['/lista-psicologos']);
+    this.router.navigate(['/psicologos']);
   }
 
   getAbordagem(): string {
