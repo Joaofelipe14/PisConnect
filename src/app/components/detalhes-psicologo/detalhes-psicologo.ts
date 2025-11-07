@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase';
-import { from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-detalhes-psicologo',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FontAwesomeModule],
   templateUrl: './detalhes-psicologo.html',
   styleUrls: ['./detalhes-psicologo.css'],
 })
@@ -16,36 +16,48 @@ export class DetalhesPsicologoComponent implements OnInit {
   psicologo: any = null;
   loading = true;
   error = false;
+  faWhatsapp = faWhatsapp; // ⚠️ deve ser propriedade da classe
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private supabaseService: SupabaseService
-  ) {}
+    private supabaseService: SupabaseService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) { }
 
   ngOnInit() {
-    this.route.params.pipe(
-      switchMap(params => {
-        const id = params['id'];
-        return from(this.supabaseService.buscarPsicologoPorId(id));
-      })
-    ).subscribe({
-      next: (psicologo) => {
-        this.psicologo = psicologo;
-        this.loading = false;
-      },
-      error: () => {
-        this.error = true;
-        this.loading = false;
-      }
+    this.loading = true;
+    this.cdr.detectChanges();
+
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+
+      this.supabaseService.buscarPsicologoPorId(id)
+        .then(psicologo => {
+          this.ngZone.run(() => {
+            this.psicologo = psicologo || null;
+            this.loading = false;
+            if (!psicologo) this.error = true;
+            this.cdr.detectChanges();
+          });
+        })
+        .catch(err => {
+          this.ngZone.run(() => {
+            console.error('Erro ao buscar psicólogo:', err);
+            this.error = true;
+            this.loading = false;
+            this.cdr.detectChanges();
+          });
+        });
     });
   }
 
   abrirWhatsApp() {
     if (this.psicologo?.whatsapp) {
       const whatsapp = this.psicologo.whatsapp;
-      const url = whatsapp.startsWith('http') 
-        ? whatsapp 
+      const url = whatsapp.startsWith('http')
+        ? whatsapp
         : `https://wa.me/${whatsapp.replace(/\D/g, '')}`;
       window.open(url, '_blank');
     }
@@ -56,10 +68,10 @@ export class DetalhesPsicologoComponent implements OnInit {
   }
 
   getAbordagem(): string {
-    return this.psicologo?.abordagem_terapeutica || 
-           (this.psicologo?.areas_atuacao && this.psicologo.areas_atuacao.length > 0 
-             ? this.psicologo.areas_atuacao[0] 
-             : 'Psicologia');
+    return this.psicologo?.abordagem_terapeutica ||
+      (this.psicologo?.areas_atuacao && this.psicologo.areas_atuacao.length > 0
+        ? this.psicologo.areas_atuacao[0]
+        : 'Psicologia');
   }
 
   getAvatarUrl(): string {
@@ -70,4 +82,3 @@ export class DetalhesPsicologoComponent implements OnInit {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(nome)}&background=14b8a6&color=fff&size=200`;
   }
 }
-

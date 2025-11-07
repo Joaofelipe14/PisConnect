@@ -3,10 +3,20 @@
   background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
   padding: 2rem 1.5rem;
   padding-top: calc(var(--navbar-height, 60px) + 2rem);
-  max-width: 750px;
+  max-width: 900px;
+  width: 100%;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
+}
+
+.detalhes-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+  padding: 2rem 1rem;
 }
 
 .detalhes-container::before {
@@ -80,12 +90,41 @@
 }
 
 .detalhes-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2.25rem;
+  display: block;
   position: relative;
   z-index: 1;
   animation: fadeInUp 0.6s ease-out;
+}
+
+.profile-main-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.profile-sidebar {
+  position: sticky;
+  top: calc(var(--navbar-height, 60px) + 2rem);
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(20, 184, 166, 0.1);
+}
+
+.profile-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
 @keyframes fadeInUp {
@@ -93,37 +132,16 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.profile-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-  text-align: center;
-  padding-bottom: 2.5rem;
-  border-bottom: 2px solid var(--border-color, #e5e7eb);
-  position: relative;
-}
-
-.profile-header::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-color, #14b8a6), transparent);
-}
-
 .profile-image-large {
-  width: 180px;
-  height: 180px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
@@ -137,6 +155,7 @@
     opacity: 0;
     transform: scale(0.8);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -150,7 +169,7 @@
 
 .psicologo-name-large {
   margin: 0;
-  font-size: 2.25rem;
+  font-size: 1.875rem;
   font-weight: 700;
   color: var(--text-color, #1f2937);
   letter-spacing: -0.5px;
@@ -162,7 +181,7 @@
 
 .psicologo-specialty-large {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   color: var(--text-secondary, #6b7280);
   font-weight: 500;
 }
@@ -182,13 +201,19 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  animation: fadeIn 0.6s ease-out 0.2s both;
+  padding: 2.5rem;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(20, 184, 166, 0.1);
+  animation: fadeIn 0.6s ease-out 0.3s both;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -231,10 +256,12 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  padding: 2rem 0;
-  border-top: 2px solid var(--border-color, #e5e7eb);
-  border-bottom: 2px solid var(--border-color, #e5e7eb);
-  animation: fadeIn 0.6s ease-out 0.3s both;
+  padding: 2.5rem;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(20, 184, 166, 0.1);
+  animation: fadeIn 0.6s ease-out 0.2s both;
 }
 
 .profile-description p {
@@ -250,14 +277,15 @@
   flex-direction: column;
   gap: 0.75rem;
   align-items: center;
-  padding: 2rem;
+  padding: 1.75rem;
   background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
   border-radius: 16px;
   border: 2px solid rgba(20, 184, 166, 0.15);
   box-shadow: 0 4px 16px rgba(20, 184, 166, 0.1);
-  animation: fadeIn 0.6s ease-out 0.4s both;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 .price-section::before {
@@ -282,7 +310,7 @@
 
 .price-value {
   margin: 0;
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
   -webkit-background-clip: text;
@@ -293,12 +321,12 @@
 
 .whatsapp-btn-large {
   width: 100%;
-  padding: 1.375rem 2rem;
+  padding: 1.25rem 2rem;
   background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
   color: #ffffff;
   border: none;
   border-radius: 12px;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -306,7 +334,7 @@
   box-shadow: 0 4px 16px rgba(20, 184, 166, 0.3);
   position: relative;
   overflow: hidden;
-  animation: fadeIn 0.6s ease-out 0.5s both;
+  margin-top: 0.5rem;
 }
 
 .whatsapp-btn-large::before {
@@ -345,10 +373,30 @@
   box-shadow: none;
 }
 
+@media (max-width: 992px) {
+  .profile-main-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .profile-sidebar {
+    position: relative;
+    top: 0;
+  }
+
+  .profile-card {
+    padding: 2rem 1.5rem;
+  }
+}
+
 @media (max-width: 480px) {
   .detalhes-container {
     padding: 1.5rem 1rem;
     padding-top: calc(var(--navbar-height, 60px) + 1.5rem);
+  }
+
+  .profile-card {
+    padding: 1.5rem 1rem;
   }
 
   .profile-image-large {
@@ -357,11 +405,11 @@
   }
 
   .psicologo-name-large {
-    font-size: 1.875rem;
+    font-size: 1.75rem;
   }
 
   .psicologo-specialty-large {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .price-value {
@@ -373,7 +421,16 @@
   }
 
   .whatsapp-btn-large {
-    padding: 1.25rem 1.75rem;
-    font-size: 1.05rem;
+    padding: 1.125rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .profile-description,
+  .info-section {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
   }
 }

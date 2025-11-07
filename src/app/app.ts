@@ -1,12 +1,14 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar';
 import { CommonModule } from '@angular/common';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
+import { Footer } from './footer/footer';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, CommonModule],
+  imports: [RouterOutlet, NavbarComponent, CommonModule, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -14,11 +16,26 @@ export class App {
   protected readonly title = signal('sistema-psicologia');
   showNavbar = true;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title) {
+    // Mostrar/ocultar Navbar
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.showNavbar = event.url !== '/';
       });
+
+    // Atualizar title automaticamente
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => {
+          let route = this.activatedRoute.root;
+          while (route.firstChild) {
+            route = route.firstChild;
+          }
+          return route.snapshot.data['title'] || '';
+        })
+      )
+      .subscribe(title => this.titleService.setTitle(title));
   }
 }

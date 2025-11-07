@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { SupabaseService } from '../../services/supabase';
 import { from, Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 @Component({
   selector: 'app-lista-psicologos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './lista-psicologos.html',
   styleUrls: ['./lista-psicologos.css'],
 })
@@ -17,8 +18,8 @@ export class ListaPsicologos implements OnInit {
   psicologos$!: Observable<any[]>;
   psicologosFiltrados$!: Observable<any[]>;
   searchTerm = '';
-  private searchSubject = new BehaviorSubject<string>('');
   viewMode: 'card' | 'list' = 'card';
+  faWhatsapp = faWhatsapp;
 
   constructor(
     private supabaseService: SupabaseService,
@@ -36,12 +37,12 @@ export class ListaPsicologos implements OnInit {
 
   ngOnInit() {
     this.psicologos$ = from(this.supabaseService.buscarPsicologos());
-    
+
     this.psicologosFiltrados$ = this.psicologos$.pipe(
       map(psicologos => {
         const term = this.searchTerm.toLowerCase();
         if (!term) return psicologos;
-        return psicologos.filter(p => 
+        return psicologos.filter(p =>
           p.nome?.toLowerCase().includes(term) ||
           p.abordagem_terapeutica?.toLowerCase().includes(term) ||
           p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term))
@@ -55,7 +56,7 @@ export class ListaPsicologos implements OnInit {
       map(psicologos => {
         const term = this.searchTerm.toLowerCase();
         if (!term) return psicologos;
-        return psicologos.filter(p => 
+        return psicologos.filter(p =>
           p.nome?.toLowerCase().includes(term) ||
           p.abordagem_terapeutica?.toLowerCase().includes(term) ||
           p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term))

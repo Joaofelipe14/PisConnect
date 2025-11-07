@@ -4,13 +4,16 @@ import { CadastroPsicologoComponent } from './components/cadastro-psicologo/cada
 import { ListaPsicologos } from './components/lista-psicologos/lista-psicologos';
 import { WelcomeComponent } from './components/welcome/welcome';
 import { DetalhesPsicologoComponent } from './components/detalhes-psicologo/detalhes-psicologo';
+import { SobreNos } from './sobre-nos/sobre-nos';
 
 export const routes: Routes = [
-  { path: '', component: WelcomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'cadastro-psicologo', component: CadastroPsicologoComponent },
-  { path: 'lista-psicologos', component: ListaPsicologos },
-  { path: 'psicologo/:id', component: DetalhesPsicologoComponent },
+   { path: '', component: WelcomeComponent, data: { title: 'SociPsi | Bem-vindo' } },
+  { path: 'login', component: LoginComponent, data: { title: 'SociPsi | Login' } },
+  { path: 'cadastro-psicologo', component: CadastroPsicologoComponent, data: { title: 'SociPsi | Cadastro Psicólogo' } },
+  { path: 'lista-psicologos', component: ListaPsicologos, data: { title: 'SociPsi | Lista de Psicólogos' } },
+  { path: 'psicologo/:id', component: DetalhesPsicologoComponent, data: { title: 'SociPsi | Detalhes do Psicólogo' } },
+    { path: 'sobre-nos', component: SobreNos, data: { title: 'SociPsi | Sobre nos' } },
+
   { path: '**', redirectTo: '' },
 
   // { path: 'cadastro-paciente', component: CadastroPaciente},

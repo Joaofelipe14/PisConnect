@@ -21,12 +21,11 @@ export class CadastroPsicologoComponent {
     this.cadastroForm = this.fb.group({
       nome: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      senha_hash: ['', [Validators.required, Validators.minLength(6)]],
+      senha: ['', [Validators.required, Validators.minLength(6)]],
       crp: ['', Validators.required],
       areas_atuacao: ['', Validators.required],
       abordagem_terapeutica: ['', Validators.required],
       resumo: ['', Validators.required],
-      valor_consulta: ['', [Validators.required, Validators.min(0)]],
       whatsapp: ['', Validators.required],
     });
   }

@@ -6,7 +6,7 @@
 }
 
 .header-controls {
-  max-width: 650px;
+  max-width: 1200px;
   margin: 0 auto 2rem;
   display: flex;
   gap: 1rem;
@@ -125,7 +125,7 @@
 }
 
 .content-container {
-  max-width: 650px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
