@@ -45,7 +45,9 @@ export class ListaPsicologos implements OnInit {
         return psicologos.filter(p =>
           p.nome?.toLowerCase().includes(term) ||
           p.abordagem_terapeutica?.toLowerCase().includes(term) ||
-          p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term))
+          p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
+          p.formacao?.toLowerCase().includes(term) ||
+          p.publico_alvo?.toLowerCase().includes(term)
         );
       })
     );
@@ -59,7 +61,9 @@ export class ListaPsicologos implements OnInit {
         return psicologos.filter(p =>
           p.nome?.toLowerCase().includes(term) ||
           p.abordagem_terapeutica?.toLowerCase().includes(term) ||
-          p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term))
+          p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
+          p.formacao?.toLowerCase().includes(term) ||
+          p.publico_alvo?.toLowerCase().includes(term)
         );
       })
     );

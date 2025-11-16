@@ -45,13 +45,29 @@
             <h3 class="psicologo-name">{{ p.nome }}</h3>
             <p class="psicologo-specialty">{{ getPrimeiraArea(p.areas_atuacao) || p.abordagem_terapeutica ||
               'Psicologia' }}</p>
+            
+            <div class="card-extra-info" *ngIf="p.formacao || p.publico_alvo">
+              <div class="extra-info-item" *ngIf="p.formacao">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 14L6 11V18L12 21L18 18V11L12 14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12 3L3 8L12 13L21 8L12 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="extra-info-text">{{ p.formacao }}</span>
+              </div>
+              <div class="extra-info-item" *ngIf="p.publico_alvo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="extra-info-badge">{{ p.publico_alvo }}</span>
+              </div>
+            </div>
+            
             <p class="psicologo-price">R$ {{ (p.valor_consulta ?? 30) | number:'1.0-0' }}</p>
           </div>
         </div>
         <button class="whatsapp-btn" (click)="abrirWhatsApp(p.whatsapp); $event.stopPropagation()"
           [disabled]="!p.whatsapp">
-          <fa-icon [icon]="faWhatsapp"></fa-icon>
-
           Falar no WhatsApp
         </button>
       </div>

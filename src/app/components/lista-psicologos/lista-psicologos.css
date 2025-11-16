@@ -168,7 +168,7 @@
 /* Modo Card (Grid) */
 .psicologos-list.card-view {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
   gap: 1.5rem;
 }
 
@@ -260,9 +260,60 @@
   font-size: 0.95rem;
 }
 
+.psicologo-card.card-mode .card-extra-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 0.75rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.psicologo-card.card-mode .extra-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.psicologo-card.card-mode .extra-info-item svg {
+  color: var(--accent-color, #14b8a6);
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.psicologo-card.card-mode .extra-info-text {
+  color: var(--text-color, #374151);
+  font-weight: 500;
+  text-align: center;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.psicologo-card.card-mode .extra-info-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25);
+  margin: 0 auto;
+}
+
 .psicologo-card.card-mode .psicologo-price {
   font-size: 1.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   text-align: center;
 }
 
@@ -366,6 +417,50 @@
   flex: 1;
   font-size: 0.9rem;
   min-width: 0;
+}
+
+.psicologo-card.list-mode .card-extra-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.psicologo-card.list-mode .extra-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.psicologo-card.list-mode .extra-info-item svg {
+  color: var(--accent-color, #14b8a6);
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.psicologo-card.list-mode .extra-info-text {
+  color: var(--text-color, #374151);
+  font-weight: 500;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.psicologo-card.list-mode .extra-info-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25);
 }
 
 .psicologo-card.list-mode .psicologo-price {
