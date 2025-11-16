@@ -35,6 +35,16 @@
             <span class="area-tag" *ngFor="let area of psicologo.areas_atuacao">{{ area }}</span>
           </div>
         </div>
+
+        <div class="info-section" *ngIf="psicologo.formacao">
+          <h3 class="section-title">Formação</h3>
+          <p class="info-text">{{ psicologo.formacao }}</p>
+        </div>
+
+        <div class="info-section" *ngIf="psicologo.publico_alvo">
+          <h3 class="section-title">Público Alvo</h3>
+          <p class="info-text">{{ psicologo.publico_alvo }}</p>
+        </div>
       </div>
     </div>
   </div>

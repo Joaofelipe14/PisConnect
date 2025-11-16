@@ -252,6 +252,14 @@
   border-color: var(--accent-color, #14b8a6);
 }
 
+.info-text {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-color, #374151);
+  text-align: justify;
+}
+
 .profile-description {
   display: flex;
   flex-direction: column;
