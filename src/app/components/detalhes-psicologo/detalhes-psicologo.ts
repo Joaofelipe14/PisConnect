@@ -17,6 +17,7 @@ export class DetalhesPsicologoComponent implements OnInit {
   loading = true;
   error = false;
   faWhatsapp = faWhatsapp; // ⚠️ deve ser propriedade da classe
+  shareSuccess = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -81,5 +82,33 @@ export class DetalhesPsicologoComponent implements OnInit {
     }
     const nome = this.psicologo?.nome || 'Psicólogo';
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(nome)}&background=14b8a6&color=fff&size=200`;
+  }
+
+  compartilharPerfil() {
+    const url = window.location.href;
+    const nome = this.psicologo?.nome || 'Psicólogo';
+    const texto = `Conheça ${nome} no SociPsi - ${this.getAbordagem()}`;
+
+    // Tenta usar a Web Share API se disponível (mobile)
+    if (navigator.share) {
+      navigator.share({
+        title: `${nome} - SociPsi`,
+        text: texto,
+        url: url
+      }).catch(() => {
+        // Se o usuário cancelar, não faz nada
+      });
+    } else {
+      // Fallback: copia o link para a área de transferência
+      navigator.clipboard.writeText(url).then(() => {
+        this.shareSuccess = true;
+        setTimeout(() => {
+          this.shareSuccess = false;
+        }, 2000);
+      }).catch(() => {
+        // Fallback adicional: mostra o link em um prompt
+        prompt('Copie o link:', url);
+      });
+    }
   }
 }

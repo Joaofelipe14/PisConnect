@@ -173,6 +173,15 @@
   box-shadow: 0 12px 40px rgba(20, 184, 166, 0.2);
 }
 
+.name-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  position: relative;
+}
+
 .psicologo-name-large {
   margin: 0;
   font-size: 1.875rem;
@@ -184,6 +193,84 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1.2;
+  flex: 1;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: 2px solid rgba(20, 184, 166, 0.2);
+  border-radius: 50%;
+  color: var(--accent-color, #14b8a6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.share-btn:hover {
+  background: rgba(20, 184, 166, 0.1);
+  border-color: var(--accent-color, #14b8a6);
+  transform: scale(1.1);
+}
+
+.share-btn:active {
+  transform: scale(0.95);
+}
+
+.share-btn.success {
+  background: var(--accent-color, #14b8a6);
+  border-color: var(--accent-color, #14b8a6);
+  color: #ffffff;
+}
+
+.share-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.share-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-color, #14b8a6);
+  color: #ffffff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: tooltipFadeIn 0.3s ease-out;
+  z-index: 10;
+}
+
+.share-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--accent-color, #14b8a6);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .psicologo-specialty-large {
@@ -618,8 +705,22 @@
     height: 140px;
   }
 
+  .name-header {
+    gap: 0.5rem;
+  }
+
   .psicologo-name-large {
     font-size: 1.75rem;
+  }
+
+  .share-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .share-btn svg {
+    width: 12px;
+    height: 12px;
   }
 
   .psicologo-specialty-large {
