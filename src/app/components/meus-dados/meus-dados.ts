@@ -6,6 +6,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Loading } from '../../loading/loading';
 import { SupabaseService } from '../../services/supabase';
 import { ALL_ABORDAGENS, ALL_AREAS, ALL_PUBLICOS } from '../constants';
+import { S3StorageService } from '../../services/s3-storage.service';
 
 @Component({
   selector: 'app-meus-dados',
@@ -45,7 +46,7 @@ export class MeusDadosComponent implements OnInit {
     private auth: AuthService,
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
-    private supabaseService: SupabaseService
+    private s3service: S3StorageService
   ) { }
 
   allAreas = ALL_AREAS
@@ -333,8 +334,9 @@ export class MeusDadosComponent implements OnInit {
       };
       reader.readAsDataURL(file);
 
+      console.log(file)
       // Upload no Supabase
-      const fotoUrl = await this.supabaseService.uploadFotoPerfil(this.user.id, file);
+      const fotoUrl = await this.s3service.uploadFotoPerfil(this.user.id, file);
 
       // Salva a URL no form e na variável foto_url
       this.ngZone.run(() => {

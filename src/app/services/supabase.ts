@@ -36,7 +36,7 @@ export class SupabaseService {
     return data;
   }
 
-  async uploadFotoPerfil(usuarioId: string, file: File) {
+async uploadFotoPerfil(usuarioId: string, file: File) {
   const fileExt = file.name.split('.').pop();
   const fileName = `foto_${usuarioId}.${fileExt}`;
   const filePath = `${usuarioId}/${fileName}`;
