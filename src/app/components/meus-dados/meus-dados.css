@@ -1,0 +1,490 @@
+/* Estilo geral do formulário */
+.page-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: calc(var(--navbar-height, 60px) + 1.5rem);
+  min-height: 100vh;
+  background: #f0fdfa;
+  overflow-y: auto;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 1200px;
+  /* Aumentando a largura máxima para 1200px */
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.12);
+  animation: fadeIn .4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #0f766e;
+}
+
+/* Indicador de progresso */
+.progress-indicator {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 10px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: .9rem;
+  color: #6b7280;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  background: #fff;
+  transition: .2s;
+}
+
+.progress-step.active .step-circle {
+  border-color: #14b8a6;
+  background: #ccfbf1;
+  color: #047857;
+}
+
+.progress-step.completed .step-circle {
+  background: #14b8a6;
+  border-color: #14b8a6;
+  color: #fff;
+}
+
+.progress-line {
+  flex: 1;
+  height: 2px;
+  background: #e5e7eb;
+  transition: .2s;
+}
+
+.progress-line.completed {
+  background: #14b8a6;
+}
+
+/* Estilo dos campos de input */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.2rem;
+  gap: 4px;
+}
+
+.foto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease;
+}
+
+.foto-container:hover {
+  background-color: #f0f0f0;
+}
+
+.upload-label {
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.upload-label:hover {
+  background-color: #45a049;
+}
+
+.upload-button {
+  display: none;
+}
+
+/* Estilo do input de arquivo */
+.file-input-wrapper {
+
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.file-input-wrapper input[type="file"] {
+  display: none;
+  /* Escondendo o input original */
+}
+
+.file-input-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 200px;
+  height: 50px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border: 2px solid #14b8a6;
+  text-align: center;
+}
+
+.file-input-btn:hover {
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+}
+
+.file-input-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.2);
+}
+
+.file-input-btn i {
+  margin-right: 8px;
+}
+
+/* Estilo para a pré-visualização da imagem */
+.file-input-preview {
+  max-width: 125px;
+  max-height: 125px;
+}
+
+.file-input-preview img {
+  width: 100%;
+  height: auto;
+  /* object-fit: cover; */
+  border-radius: 50%;
+}
+
+/* Texto de carregamento */
+.file-input-loading {
+  margin-top: 10px;
+  color: #777;
+  font-size: 14px;
+  font-style: italic;
+}
+
+
+.loading-text {
+  margin-top: 10px;
+  color: #777;
+  font-size: 14px;
+  font-style: italic;
+}
+
+
+.form-group.full-width {
+  width: 100%;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: .4rem;
+  color: #0f766e;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: .9rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+  outline: none;
+  transition: .2s;
+}
+
+input.error,
+textarea.error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, .1);
+}
+
+input:focus,
+textarea:focus {
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, .12);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Chips (seleção de itens) */
+.selected-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: .7rem;
+}
+
+.chip {
+  background: #e0fdfa;
+  color: #0f766e;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: .85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #0f766e;
+}
+
+.chip-remove:hover {
+  color: #dc2626;
+}
+
+/* Dropdown para busca */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  margin-top: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.dropdown-item:hover {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+/* Botões */
+.submit-btn {
+  flex: 1;
+  padding: 1rem;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn:disabled {
+  background-color: #cccccc;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+}
+
+.btn-add-rede,
+.btn-remove-rede {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-add-rede {
+  margin-top: .7rem;
+  background: #14b8a6;
+  color: #fff;
+  padding: .7rem 1rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-remove-rede {
+  border: none;
+  background: #fee2e2;
+  color: #dc2626;
+  padding: .4rem .7rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Seções do formulário */
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.btn-secondary {
+  padding: 1rem;
+  background: #e5e7eb;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Mensagens de Sucesso e Erro */
+.success {
+  background: #f0fdf4;
+  color: #16a34a;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.error {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Seção com botões de alternar */
+.section-toggle {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.toggle-btn {
+  padding: 0.8rem 1.5rem;
+  background: #0f766e;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
+
+.toggle-btn:hover {
+  background: #14b8a6;
+}
+
+.section-toggle {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+
+
+.toggle-btn {
+  padding: 0.8rem 1.5rem;
+  background: #0f766e;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.toggle-btn:hover {
+  background: #14b8a6;
+}
+
+/* Apenas uma borda ou destaque leve */
+.toggle-btn.active {
+  background: #12ad9b;
+}
+
+
+.rede-social-item {
+  display: flex;
+  gap: 10px;
+}
+
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  ;
+  width: 100%;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  margin-top: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.dropdown-item:hover {
+  background: #ccfbf1;
+  color: #0f766e;
+}

@@ -36,4 +36,26 @@ export class SupabaseService {
     return data;
   }
 
+  async uploadFotoPerfil(usuarioId: string, file: File) {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `foto_${usuarioId}.${fileExt}`;
+  const filePath = `${usuarioId}/${fileName}`;
+
+  const { error: uploadError } = await this.supabase.storage
+    .from('perfil')
+    .upload(filePath, file, {
+      upsert: true,
+      contentType: file.type
+    });
+
+  if (uploadError) throw uploadError;
+
+  const { data: urlData } = this.supabase.storage
+    .from('perfil')
+    .getPublicUrl(filePath);
+
+  return urlData.publicUrl;
+}
+
+
 }

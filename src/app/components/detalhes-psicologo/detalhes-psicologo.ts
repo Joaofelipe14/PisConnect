@@ -30,7 +30,7 @@ export class DetalhesPsicologoComponent implements OnInit {
   ngOnInit() {
     window.scroll(0,0)
     this.loading = true;
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
 
     this.route.params.subscribe(params => {
       const id = params['id'];
@@ -41,7 +41,7 @@ export class DetalhesPsicologoComponent implements OnInit {
             this.psicologo = psicologo || null;
             this.loading = false;
             if (!psicologo) this.error = true;
-            this.cdr.detectChanges();
+            this.cdr.markForCheck();
           });
         })
         .catch(err => {
@@ -49,7 +49,7 @@ export class DetalhesPsicologoComponent implements OnInit {
             console.error('Erro ao buscar psicólogo:', err);
             this.error = true;
             this.loading = false;
-            this.cdr.detectChanges();
+            this.cdr.markForCheck();
           });
         });
     });

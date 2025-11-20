@@ -5,6 +5,7 @@ import { ListaPsicologos } from './components/lista-psicologos/lista-psicologos'
 import { WelcomeComponent } from './components/welcome/welcome';
 import { DetalhesPsicologoComponent } from './components/detalhes-psicologo/detalhes-psicologo';
 import { SobreNos } from './sobre-nos/sobre-nos';
+import { MeusDadosComponent } from './components/meus-dados/meus-dados';
 
 export const routes: Routes = [
    { path: '', component: WelcomeComponent, data: { title: 'SociPsi | Bem-vindo' } },
@@ -13,6 +14,8 @@ export const routes: Routes = [
   { path: 'psicologos', component: ListaPsicologos, data: { title: 'SociPsi | Psicólogos' } },
   { path: 'psicologo/:id', component: DetalhesPsicologoComponent, data: { title: 'SociPsi | Detalhes do Psicólogo' } },
     { path: 'sobre-nos', component: SobreNos, data: { title: 'SociPsi | Sobre nos' } },
+        { path: 'meus-dados', component: MeusDadosComponent, data: { title: 'SociPsi | Meus dados' } },
+
 
   { path: '**', redirectTo: '/psicologos' },
 

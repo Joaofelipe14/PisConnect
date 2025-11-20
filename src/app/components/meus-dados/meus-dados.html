@@ -1,1 +1,159 @@
-<p>meus-dados works!</p>
+<app-loading *ngIf="loading" [mensagem]="mensagemDeCarregamento"></app-loading>
+
+<div class="page-center">
+  <div class="form-container">
+    <h1>Meus Dados</h1>
+
+
+    <form [formGroup]="meusDadosForm">
+      <!-- Botões para alternar entre seções -->
+      <div class="section-toggle">
+        <button type="button" class="toggle-btn" [class.active]="showSection.dadosPessoais"
+          (click)="toggleSection('dadosPessoais')">Dados Pessoais</button>
+        <button type="button" class="toggle-btn" [class.active]="showSection.areasAbordagensPublicos"
+          (click)="toggleSection('areasAbordagensPublicos')">Áreas e Públicos</button>
+        <button type="button" class="toggle-btn" [class.active]="showSection.redesSociais"
+          (click)="toggleSection('redesSociais')">Redes Sociais</button>
+      </div>
+
+      <!-- Seção Dados Pessoais -->
+      <div class="form-group section" *ngIf="showSection.dadosPessoais">
+        <label>Nome *</label>
+        <input formControlName="nome" type="text" />
+        <!-- Upload de Foto -->
+        <div>
+          <label>Foto de Perfil</label>
+          <!-- Preview da foto -->
+          <div class="file-input-wrapper">
+            <input type="file" id="file-upload" class="file" accept="image/*" (change)="uploadFoto($event)"
+              aria-label="Upload de imagem" />
+
+            <label for="file-upload" class="file-input-btn">
+              <i class="fas fa-upload"></i> Escolher Imagem
+            </label>
+
+            <!-- Exibindo a pré-visualização da imagem -->
+            <div class="file-input-preview" *ngIf="fotoPreview">
+              <img [src]="fotoPreview" alt="Pré-visualização da imagem" />
+            </div>
+          </div>
+
+          <p class="foto-status" *ngIf="fotoUploadStatus">{{ fotoUploadStatus }}</p>
+        </div>
+
+        <label>E-mail *</label>
+        <input formControlName="email" type="email" />
+
+        <div class="row">
+          <div class="form-group">
+            <label>CRP *</label>
+            <input formControlName="crp" type="text" (input)="formatCRP($event)" />
+          </div>
+          <div class="form-group">
+            <label>WhatsApp *</label>
+            <input formControlName="whatsapp" type="text" (input)="formatWhatsApp($event)" />
+          </div>
+        </div>
+
+
+        <label>Resumo *</label>
+        <textarea formControlName="resumo"></textarea>
+
+
+      </div>
+
+
+      <div *ngIf="showSection.areasAbordagensPublicos" class="form-group section">
+        <label>Formação *</label>
+        <textarea formControlName="formacao"></textarea>
+
+        <div class="form-group full-width">
+          <label>Áreas de Atuação *</label>
+          <div class="autocomplete-wrapper">
+            <input type="text" placeholder="Buscar e selecionar áreas..." [(ngModel)]="searchAreas"
+              [ngModelOptions]="{standalone: true}" (focus)="showAreasDropdown = true"
+              (blur)="closeDropdownWithDelay('areas')" />
+            <div class="dropdown" *ngIf="showAreasDropdown && filteredAreas.length > 0">
+              <div *ngFor="let area of filteredAreas" class="dropdown-item" (click)="addItem('areas_atuacao', area)">
+                {{ area }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips">
+            <span *ngFor="let area of selectedAreas" class="chip">
+              {{ area }}
+              <button type="button" class="chip-remove" (click)="removeItem('areas_atuacao', area)">×</button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Abordagem Terapêutica *</label>
+          <div class="autocomplete-wrapper">
+            <input type="text" placeholder="Buscar e selecionar abordagens..." [(ngModel)]="searchAbordagens"
+              [ngModelOptions]="{standalone: true}" (focus)="showAbordagensDropdown = true"
+              (blur)="closeDropdownWithDelay('abordagens')" />
+            <div class="dropdown" *ngIf="showAbordagensDropdown && filteredAbordagens.length > 0">
+              <div *ngFor="let abordagem of filteredAbordagens" class="dropdown-item"
+                (click)="addItem('abordagem_terapeutica', abordagem)">
+                {{ abordagem }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips">
+            <span *ngFor="let abordagem of selectedAbordagens" class="chip">
+              {{ abordagem }}
+              <button type="button" class="chip-remove"
+                (click)="removeItem('abordagem_terapeutica', abordagem)">×</button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Público Alvo *</label>
+          <div class="autocomplete-wrapper">
+            <input type="text" placeholder="Buscar e selecionar público..." [(ngModel)]="searchPublicos"
+              [ngModelOptions]="{standalone: true}" (focus)="showPublicosDropdown = true"
+              (blur)="closeDropdownWithDelay('publicos')" />
+            <div class="dropdown" *ngIf="showPublicosDropdown && filteredPublicos.length > 0">
+              <div *ngFor="let publico of filteredPublicos" class="dropdown-item"
+                (click)="addItem('publico_alvo', publico)">
+                {{ publico }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips">
+            <span *ngFor="let publico of selectedPublicos" class="chip">
+              {{ publico }}
+              <button type="button" class="chip-remove" (click)="removeItem('publico_alvo', publico)">×</button>
+            </span>
+          </div>
+        </div>
+
+
+      </div>
+
+      <!-- Seção Redes Sociais -->
+      <div class="form-group full-width section" *ngIf="showSection.redesSociais">
+        <label>Redes Sociais (opcional)</label>
+        <div class="redes-sociais-container">
+          <div *ngFor="let rede of redesSociais.controls; let i = index" class="rede-social-item">
+            <input type="url" placeholder="https://instagram.com/seu-perfil" [formControl]="$any(rede)" />
+            <button type="button" class="btn-remove-rede" (click)="removeRede(i)">
+              <span>×</span>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="btn-add-rede" (click)="addRede()">+ Adicionar Rede Social</button>
+      </div>
+
+      <!-- Botão de Salvar -->
+      <button type="button" class="submit-btn" (click)="salvarAlteracoes()">
+        {{ loading ? 'Salvando...' : 'Salvar Alterações' }}
+      </button>
+
+      <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+  </div>
+</div>

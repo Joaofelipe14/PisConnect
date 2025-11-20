@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
@@ -14,12 +14,14 @@ export class LoginComponent {
   loginForm: FormGroup;
   loading = false;
   errorMessage = '';
-  tipoUsuario: 'paciente' | 'psicologo' = 'paciente';
+  tipoUsuario: 'paciente' | 'psicologo' = 'psicologo';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -28,25 +30,48 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    if (this.loginForm.valid) {
-      this.loading = true;
-      this.errorMessage = '';
+    if (!this.loginForm.valid) return;
 
-      const { email, senha } = this.loginForm.value;
+    this.loading = true;
+    this.errorMessage = '';
+
+    const { email, senha } = this.loginForm.value;
+
+    console.log('Iniciando login...', { tipo: this.tipoUsuario, email });
 
     this.authService.login(this.tipoUsuario, email, senha).subscribe({
-  next: () => {
-    this.router.navigate(['/meus-dados']);
-  },
-  error: (error) => {
-    this.errorMessage = 'Email ou senha inválidos. Verifique suas credenciais.';
-    console.error('Erro no login:', error);
-  },
-  complete: () => {
-    this.loading = false;
-  }
-});
-    }
+      next: (res) => {
+        console.log('Login SUCCESS:', res);
+        if (res.success) {
+          this.router.navigate(['/meus-dados']);
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.log('Login ERROR capturado:', err);
+        console.log('err.message:', err.message);
+        console.log('err.error:', err.error);
+        
+        // Força execução dentro da zona do Angular
+        this.ngZone.run(() => {
+          // Trata diferentes tipos de erro
+          if (err.error?.message) {
+            this.errorMessage = err.error.message;
+          } else if (err.message) {
+            this.errorMessage = err.message;
+          } else if (typeof err.error === 'string') {
+            this.errorMessage = err.error;
+          } else {
+            this.errorMessage = 'Email ou senha inválidos.';
+          }
+          
+          console.log('errorMessage definido como:', this.errorMessage);
+          this.loading = false;
+          this.cdr.markForCheck();
+          console.log('markForCheck chamado');
+        });
+      }
+    });
   }
 
   setTipoUsuario(tipo: 'paciente' | 'psicologo') {

@@ -1,5 +1,6 @@
 <nav class="navbar">
   <div class="navbar-container">
+
     <a routerLink="/" class="brand">
       <div class="brand-logo">
         <span class="psi-symbol">Ψ</span>
@@ -7,25 +8,46 @@
       <span class="brand-text">SociPsi</span>
     </a>
 
-    <button class="hamburger" (click)="toggleMenu()" [class.active]="menuOpen" aria-label="Menu">
+    <button class="hamburger" 
+            (click)="toggleMenu()" 
+            [class.active]="menuOpen" 
+            aria-label="Menu">
       <span></span>
       <span></span>
       <span></span>
     </button>
 
     <div class="navbar-links" [class.open]="menuOpen">
+
       <a routerLink="/psicologos" routerLinkActive="active" (click)="closeMenuOnMobile()">
         Psicólogos
       </a>
+
       <a routerLink="/sobre-nos" routerLinkActive="active" (click)="closeMenuOnMobile()">
         Sobre nós
       </a>
-      <a routerLink="/login" routerLinkActive="active" (click)="closeMenuOnMobile()">
-        Entrar
-      </a>
-      <a routerLink="/cadastro-psicologo" routerLinkActive="active" (click)="closeMenuOnMobile()">
-        Cadastrar
-      </a>
+
+      <!-- SE NÃO estiver autenticado -->
+      <ng-container *ngIf="!isAuthenticated; else autenticado">
+        <a routerLink="/login" routerLinkActive="active" (click)="closeMenuOnMobile()">
+          Entrar
+        </a>
+        <a routerLink="/cadastro-psicologo" routerLinkActive="active" (click)="closeMenuOnMobile()">
+          Cadastrar
+        </a>
+      </ng-container>
+
+      <!-- SE estiver autenticado -->
+      <ng-template #autenticado>
+        <a routerLink="/meus-dados" routerLinkActive="active" (click)="closeMenuOnMobile()">
+          Meus Dados
+        </a>
+
+        <a (click)="logout()" class="logout-link">
+          Sair
+        </a>
+      </ng-template>
+
     </div>
   </div>
 </nav>

@@ -1,72 +1,268 @@
 <div class="page-center">
   <div class="form-container">
-    <h1>Cadastro de psicólogo</h1>
+    <!-- Progress Indicator -->
+    <div class="progress-indicator">
+      <div class="progress-step" [class.active]="step >= 1" [class.completed]="step > 1">
+        <div class="step-circle">1</div>
+        <span class="step-label">Informações Básicas</span>
+      </div>
+      <div class="progress-line" [class.completed]="step > 1"></div>
+      <div class="progress-step" [class.active]="step >= 2" [class.completed]="step > 2">
+        <div class="step-circle">2</div>
+        <span class="step-label">Atuação</span>
+      </div>
+      <div class="progress-line" [class.completed]="step > 2"></div>
+      <div class="progress-step" [class.active]="step >= 3">
+        <div class="step-circle">3</div>
+        <span class="step-label">Segurança</span>
+      </div>
+    </div>
 
-    <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" placeholder="Nome" formControlName="nome"
-          [class.error]="cadastroForm.get('nome')?.invalid && cadastroForm.get('nome')?.touched" />
+    <form [formGroup]="cadastroForm">
+      <!-- STEP 1: Informações Básicas -->
+      <ng-container *ngIf="step === 1">
+        <div class="form-group">
+          <label for="nome">Nome Completo *</label>
+          <input
+            id="nome"
+            type="text"
+            placeholder="Seu nome completo"
+            formControlName="nome"
+            [class.error]="cadastroForm.get('nome')?.invalid && cadastroForm.get('nome')?.touched"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">E-mail *</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="seu@email.com"
+            formControlName="email"
+            [class.error]="cadastroForm.get('email')?.invalid && cadastroForm.get('email')?.touched"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="crp">CRP (Formato: 01/12345) *</label>
+          <input
+            id="crp"
+            type="text"
+            placeholder="01/12345"
+            formControlName="crp"
+            (input)="formatCRP($event)"
+            [class.error]="cadastroForm.get('crp')?.invalid && cadastroForm.get('crp')?.touched"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="whatsapp">WhatsApp (Formato: (99) 99999-9999) *</label>
+          <input
+            id="whatsapp"
+            type="text"
+            placeholder="(99) 99999-9999"
+            formControlName="whatsapp"
+            (input)="formatWhatsApp($event)"
+            [class.error]="cadastroForm.get('whatsapp')?.invalid && cadastroForm.get('whatsapp')?.touched"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="resumo">Resumo Profissional (mínimo 50 caracteres) *</label>
+          <textarea
+            id="resumo"
+            rows="4"
+            placeholder="Descreva brevemente sua experiência e especialidades..."
+            formControlName="resumo"
+            [class.error]="cadastroForm.get('resumo')?.invalid && cadastroForm.get('resumo')?.touched"
+          ></textarea>
+        </div>
+      </ng-container>
+
+      <!-- STEP 2: Atuação -->
+      <ng-container *ngIf="step === 2">
+        <div class="form-group full-width">
+          <label>Áreas de Atuação *</label>
+          <div class="autocomplete-wrapper">
+            <input
+              type="text"
+              placeholder="Buscar e selecionar áreas..."
+              [(ngModel)]="searchAreas"
+              [ngModelOptions]="{standalone: true}"
+              (focus)="showAreasDropdown = true"
+              (blur)="closeDropdownWithDelay('areas')"
+            />
+            <div class="dropdown" *ngIf="showAreasDropdown && filteredAreas.length > 0">
+              <div
+                *ngFor="let area of filteredAreas"
+                class="dropdown-item"
+                (click)="addItem('areas_atuacao', area)"
+              >
+                {{ area }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips">
+            <span
+              *ngFor="let area of selectedAreas"
+              class="chip"
+            >
+              {{ area }}
+              <button type="button" class="chip-remove" (click)="removeItem('areas_atuacao', area)">×</button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Abordagem Terapêutica *</label>
+          <div class="autocomplete-wrapper">
+            <input
+              type="text"
+              placeholder="Buscar e selecionar abordagens..."
+              [(ngModel)]="searchAbordagens"
+              [ngModelOptions]="{standalone: true}"
+              (focus)="showAbordagensDropdown = true"
+              (blur)="closeDropdownWithDelay('abordagens')"
+            />
+            <div class="dropdown" *ngIf="showAbordagensDropdown && filteredAbordagens.length > 0">
+              <div
+                *ngFor="let abordagem of filteredAbordagens"
+                class="dropdown-item"
+                (click)="addItem('abordagem_terapeutica', abordagem)"
+              >
+                {{ abordagem }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips">
+            <span
+              *ngFor="let abordagem of selectedAbordagens"
+              class="chip"
+            >
+              {{ abordagem }}
+              <button type="button" class="chip-remove" (click)="removeItem('abordagem_terapeutica', abordagem)">×</button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Público Alvo *</label>
+          <div class="autocomplete-wrapper">
+            <input
+              type="text"
+              placeholder="Buscar e selecionar público..."
+              [(ngModel)]="searchPublicos"
+              [ngModelOptions]="{standalone: true}"
+              (focus)="showPublicosDropdown = true"
+              (blur)="closeDropdownWithDelay('publicos')"
+            />
+            <div class="dropdown" *ngIf="showPublicosDropdown && filteredPublicos.length > 0">
+              <div
+                *ngFor="let publico of filteredPublicos"
+                class="dropdown-item"
+                (click)="addItem('publico_alvo', publico)"
+              >
+                {{ publico }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips">
+            <span
+              *ngFor="let publico of selectedPublicos"
+              class="chip"
+            >
+              {{ publico }}
+              <button type="button" class="chip-remove" (click)="removeItem('publico_alvo', publico)">×</button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="formacao">Formação Acadêmica (mínimo 20 caracteres) *</label>
+          <textarea
+            id="formacao"
+            rows="4"
+            placeholder="Graduação, pós-graduação, cursos e especializações..."
+            formControlName="formacao"
+            [class.error]="cadastroForm.get('formacao')?.invalid && cadastroForm.get('formacao')?.touched"
+          ></textarea>
+        </div>
+      </ng-container>
+
+      <!-- STEP 3: Segurança e Redes Sociais -->
+      <ng-container *ngIf="step === 3">
+        <div class="form-group">
+          <label for="senha">Senha (mínimo 6 caracteres) *</label>
+          <input
+            id="senha"
+            type="password"
+            placeholder="••••••••"
+            formControlName="senha"
+            [class.error]="cadastroForm.get('senha')?.invalid && cadastroForm.get('senha')?.touched"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="confirma_senha">Confirmar Senha *</label>
+          <input
+            id="confirma_senha"
+            type="password"
+            placeholder="••••••••"
+            formControlName="confirma_senha"
+            [class.error]="cadastroForm.get('confirma_senha')?.value !== cadastroForm.get('senha')?.value && cadastroForm.get('confirma_senha')?.touched"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label>Redes Sociais (opcional)</label>
+          <div class="redes-sociais-container">
+            <div *ngFor="let rede of redesSociais.controls; let i = index" class="rede-social-item">
+              <input
+                type="url"
+                placeholder="https://instagram.com/seu-perfil"
+                [formControl]="$any(rede)"
+              />
+              <button type="button" class="btn-remove-rede" (click)="removeRede(i)">
+                <span>×</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-rede" (click)="addRede()">
+            + Adicionar Rede Social
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Navigation Buttons -->
+      <div class="form-navigation">
+        <button
+          *ngIf="step > 1"
+          type="button"
+          class="btn-secondary"
+          (click)="prevStep()"
+        >
+          ← Voltar
+        </button>
+        <button
+          *ngIf="step < 3"
+          type="button"
+          class="submit-btn"
+          (click)="nextStep()"
+        >
+          Continuar →
+        </button>
+        <button
+          *ngIf="step === 3"
+          type="button"
+          class="submit-btn"
+          (click)="onSubmit()"
+          [disabled]="loading || !cadastroForm.valid"
+        >
+          {{ loading ? 'Salvando...' : 'Finalizar Cadastro' }}
+        </button>
       </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Email" formControlName="email"
-          [class.error]="cadastroForm.get('email')?.invalid && cadastroForm.get('email')?.touched" />
-      </div>
-
-      <div class="form-group">
-        <label for="crp">CRP</label>
-        <input type="text" id="crp" placeholder="CRP" formControlName="crp"
-          [class.error]="cadastroForm.get('crp')?.invalid && cadastroForm.get('crp')?.touched" />
-      </div>
-
-      <div class="form-group">
-        <label for="areas_atuacao">Área</label>
-        <input type="text" id="areas_atuacao" placeholder="Área (separadas por vírgula)" formControlName="areas_atuacao"
-          [class.error]="cadastroForm.get('areas_atuacao')?.invalid && cadastroForm.get('areas_atuacao')?.touched" />
-      </div>
-
-      <div class="form-group">
-        <label for="abordagem_terapeutica">Abordagem</label>
-        <input type="text" id="abordagem_terapeutica" placeholder="Abordagem" formControlName="abordagem_terapeutica"
-          [class.error]="cadastroForm.get('abordagem_terapeutica')?.invalid && cadastroForm.get('abordagem_terapeutica')?.touched" />
-      </div>
-
-      <div class="form-group full-width">
-        <label for="resumo">Descrição</label>
-        <textarea id="resumo" placeholder="Descrição" formControlName="resumo" rows="4"
-          [class.error]="cadastroForm.get('resumo')?.invalid && cadastroForm.get('resumo')?.touched"></textarea>
-      </div>
-
-      <!-- <div class="form-group">
-        <label for="valor_consulta">Valor da sessão</label>
-        <input 
-          type="number" 
-          id="valor_consulta"
-          placeholder="Valor da sessão" 
-          formControlName="valor_consulta" 
-          min="0"
-          step="0.01"
-          [class.error]="cadastroForm.get('valor_consulta')?.invalid && cadastroForm.get('valor_consulta')?.touched"
-        />
-      </div> -->
-
-      <div class="form-group">
-        <label for="whatsapp">Endereço do WhatsApp</label>
-        <input type="text" id="whatsapp" placeholder="Endereço do WhatsApp" formControlName="whatsapp"
-          [class.error]="cadastroForm.get('whatsapp')?.invalid && cadastroForm.get('whatsapp')?.touched" />
-      </div>
-
-      <div class="form-group">
-        <label for="senha">Senha</label>
-        <input type="password" id="senha" placeholder="Senha" formControlName="senha"
-          [class.error]="cadastroForm.get('senha')?.invalid && cadastroForm.get('senha')?.touched" />
-      </div>
-      <button type="submit" [disabled]="loading || !cadastroForm.valid" class="submit-btn">
-        {{ loading ? 'Registrando...' : 'Registrar' }}
-      </button>
-
+      <!-- Messages -->
       <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
       <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
     </form>

@@ -32,7 +32,7 @@
         />
       </div>
 
-      <div class="tipo-usuario">
+      <!-- <div class="tipo-usuario">
         <label [class.active]="tipoUsuario==='paciente'" class="tipo-option">
           <input type="radio" name="tipo" (change)="setTipoUsuario('paciente')" [checked]="tipoUsuario==='paciente'" hidden>
           <span>Paciente</span>
@@ -41,7 +41,7 @@
           <input type="radio" name="tipo" (change)="setTipoUsuario('psicologo')" [checked]="tipoUsuario==='psicologo'" hidden>
           <span>Psicólogo</span>
         </label>
-      </div>
+      </div> -->
 
       <button type="submit" [disabled]="loading || !loginForm.valid" class="submit-btn">
         {{ loading ? 'Entrando...' : 'Entrar' }}
