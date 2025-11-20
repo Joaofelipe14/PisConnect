@@ -1,0 +1,134 @@
+<div class="page-container">
+  <h1>Psicólogos</h1>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <label>
+      <input type="radio" name="filtro" value="todos" (change)="onFiltroChange('todos')"
+        [checked]="filtroAtivo==='todos'"> Todos
+    </label>
+    <label>
+      <input type="radio" name="filtro" value="ativo" (change)="onFiltroChange('ativo')"
+        [checked]="filtroAtivo==='ativo'"> Ativos
+    </label>
+    <label>
+      <input type="radio" name="filtro" value="inativo" (change)="onFiltroChange('inativo')"
+        [checked]="filtroAtivo==='inativo'"> Inativos
+    </label>
+
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="empty-state">Carregando psicólogos...</div>
+
+  <!-- Lista de Psicólogos -->
+  <div class="psicologos-list">
+    <div class="psicologo-card" *ngFor="let p of psicologos" (click)="abrirModal(p)">
+
+      <!-- Foto ou inicial -->
+      <ng-container *ngIf="p.foto_url; else inicialFoto">
+        <img [src]="p.foto_url" alt="{{ p.nome }}" class="foto-perfil">
+      </ng-container>
+      <ng-template #inicialFoto>
+        <div class="foto-inicial">{{ getInicial(p.nome) }}</div>
+      </ng-template>
+
+      <h3>{{ p.nome }}</h3>
+      <p>Status: <span [class.ativo]="p.ativo" [class.inativo]="!p.ativo">{{ p.ativo ? 'Ativo' : 'Inativo' }}</span></p>
+      <button (click)="abrirConfirmToggle(p); $event.stopPropagation()"
+        [ngClass]="p.ativo ? 'btn-desativar' : 'btn-ativar'">
+        {{ p.ativo ? 'Desativar' : 'Ativar' }}
+      </button>
+
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal-backdrop" *ngIf="psicologoSelecionado">
+  <div class="modal">
+    <button class="close-btn" (click)="fecharModal()">×</button>
+
+    <div class="modal-header">
+      <!-- Foto ou inicial -->
+      <ng-container *ngIf="psicologoSelecionado.foto_url; else modalInicial">
+        <img [src]="psicologoSelecionado.foto_url" alt="{{ psicologoSelecionado.nome }}" class="foto-perfil-modal">
+      </ng-container>
+      <ng-template #modalInicial>
+        <div class="foto-inicial-modal">{{ getInicial(psicologoSelecionado.nome) }}</div>
+      </ng-template>
+
+      <div class="modal-titulo">
+        <h2>{{ psicologoSelecionado.nome }}</h2>
+        <span class="status" [class.ativo]="psicologoSelecionado.ativo" [class.inativo]="!psicologoSelecionado.ativo">
+          {{ psicologoSelecionado.ativo ? 'Ativo' : 'Inativo' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="info-item"><strong>CRP:</strong> {{ psicologoSelecionado.crp }}</div>
+      <div class="info-item"><strong>Email:</strong> {{ psicologoSelecionado.email }}</div>
+      <div class="info-item" *ngIf="psicologoSelecionado.formacao"><strong>Formação:</strong> {{
+        psicologoSelecionado.formacao }}</div>
+      <div class="info-item" *ngIf="psicologoSelecionado.areas_atuacao?.length"><strong>Áreas de atuação:</strong> {{
+        psicologoSelecionado.areas_atuacao.join(', ') }}</div>
+      <div class="info-item" *ngIf="psicologoSelecionado.abordagem_terapeutica?.length">
+        <strong>Abordagem terapêutica: </strong>
+        <span class="badge" *ngFor="let abordagem of psicologoSelecionado.abordagem_terapeutica">
+          {{ abordagem }}
+        </span>
+      </div>
+
+      <div class="info-item" *ngIf="psicologoSelecionado.publico_alvo?.length">
+        <strong>Público alvo: </strong>
+        <span class="badge" *ngFor="let publico of psicologoSelecionado.publico_alvo">
+          {{ publico }}
+        </span>
+      </div>
+
+      <div class="info-item resumo" *ngIf="psicologoSelecionado.resumo">
+        <strong>Resumo:</strong> {{ truncate(psicologoSelecionado.resumo, 450) }}
+      </div>
+
+      <div class="info-item" *ngIf="psicologoSelecionado.valor_consulta"><strong>Valor da consulta:</strong> R$ {{
+        psicologoSelecionado.valor_consulta }}</div>
+      <div class="info-item" *ngIf="psicologoSelecionado.whatsapp"><strong>WhatsApp:</strong> {{
+        psicologoSelecionado.whatsapp }}</div>
+      <div class="info-item" *ngIf="psicologoSelecionado.redes_sociais?.length">
+        <strong>Redes sociais:</strong>
+        <span *ngFor="let rede of psicologoSelecionado.redes_sociais; let i = index">
+          <a [href]="rede" target="_blank">{{ rede }}</a><span
+            *ngIf="i < psicologoSelecionado.redes_sociais.length -1">, </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal de Confirmação -->
+<div class="modal-backdrop" *ngIf="confirmTogglePsicologo">
+  <div class="modal">
+    <button class="close-btn" (click)="fecharConfirmToggle()">×</button>
+
+    <div class="modal-header">
+      <h2>Confirmar Alteração</h2>
+    </div>
+
+    <div class="modal-body">
+      <p>Você deseja <strong>{{ confirmTogglePsicologo.novoStatus ? 'Ativar' : 'Desativar' }}</strong> o psicólogo
+        <strong>{{
+          confirmTogglePsicologo.psicologo.nome }}</strong>?</p>
+
+      <label>
+        <input type="checkbox" [(ngModel)]="confirmTogglePsicologo.notificar">
+        Notificar cliente via WhatsApp e Email
+      </label>
+    </div>
+
+    <div class="modal-footer">
+      <button (click)="fecharConfirmToggle()" class="btn-cancel">Cancelar</button>
+      <button (click)="confirmarToggle()" class="btn-confirm">Confirmar</button>
+    </div>
+  </div>
+</div>

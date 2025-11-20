@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, Session, User } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -15,12 +15,50 @@ export class SupabaseService {
     );
   }
 
+  // ==========================
+  // AUTENTICAÇÃO
+  // ==========================
+
+  async signUp(email: string, password: string): Promise<User | null> {
+    const { data, error } = await this.supabase.auth.signUp({
+      email,
+      password
+    });
+
+
+    if (error) throw error;
+    return data.user;
+  }
+
+  async signIn(email: string, password: string): Promise<User | null> {
+    const { data, error } = await this.supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (data.session) {
+      localStorage.setItem('supa_access_token', data.session.access_token);
+    }
+
+    if (error) throw error;
+    return data.user;
+  }
+
+  async signOut(): Promise<void> {
+    const { error } = await this.supabase.auth.signOut();
+    if (error) throw error;
+  }
+
+
+  // ==========================
+  // PSICÓLOGOS
+  // ==========================
+
   async buscarPsicologos() {
     const { data, error } = await this.supabase
       .from('psicologos')
       .select('*')
       .order('criado_em', { ascending: false });
-    
+
     if (error) throw error;
     return data;
   }
@@ -31,31 +69,50 @@ export class SupabaseService {
       .select('*')
       .eq('id', id)
       .single();
-    
+
     if (error) throw error;
     return data;
   }
 
-async uploadFotoPerfil(usuarioId: string, file: File) {
-  const fileExt = file.name.split('.').pop();
-  const fileName = `foto_${usuarioId}.${fileExt}`;
-  const filePath = `${usuarioId}/${fileName}`;
+  async uploadFotoPerfil(usuarioId: string, file: File) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `foto_${usuarioId}.${fileExt}`;
+    const filePath = `${usuarioId}/${fileName}`;
 
-  const { error: uploadError } = await this.supabase.storage
-    .from('perfil')
-    .upload(filePath, file, {
-      upsert: true,
-      contentType: file.type
-    });
+    const { error: uploadError } = await this.supabase.storage
+      .from('perfil')
+      .upload(filePath, file, {
+        upsert: true,
+        contentType: file.type
+      });
 
-  if (uploadError) throw uploadError;
+    if (uploadError) throw uploadError;
 
-  const { data: urlData } = this.supabase.storage
-    .from('perfil')
-    .getPublicUrl(filePath);
+    const { data: urlData } = this.supabase.storage
+      .from('perfil')
+      .getPublicUrl(filePath);
 
-  return urlData.publicUrl;
-}
+    return urlData.publicUrl;
+  }
 
+  async toggleAtivoPsicologo(id: string, ativo: any) {
+    const { data, error } = await this.supabase
+      .from('psicologos')
+      .update({ ativo: ativo ? 1 : 0 })  // <-- converte boolean para 1 ou 0
+      .eq('id', id);
+
+    if (error) throw error;
+    return data;
+  }
+
+  async buscarPsicologosAdmin(filtroAtivo?: boolean) {
+    let query = this.supabase.from('psicologos').select('*').order('criado_em', { ascending: false });
+    if (filtroAtivo !== undefined) {
+      query = query.eq('ativo', filtroAtivo ? 1 : 0);  // <-- converte boolean para 1 ou 0
+    }
+    const { data, error } = await query;
+    if (error) throw error;
+    return data;
+  }
 
 }

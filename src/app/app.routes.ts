@@ -6,16 +6,19 @@ import { WelcomeComponent } from './components/welcome/welcome';
 import { DetalhesPsicologoComponent } from './components/detalhes-psicologo/detalhes-psicologo';
 import { SobreNos } from './sobre-nos/sobre-nos';
 import { MeusDadosComponent } from './components/meus-dados/meus-dados';
+import { Login } from './components/admin/login/login';
+import { AdminPsicologos } from './components/admin/psicologos/psicologos';
 
 export const routes: Routes = [
-   { path: '', component: WelcomeComponent, data: { title: 'SociPsi | Bem-vindo' } },
+  { path: '', component: WelcomeComponent, data: { title: 'SociPsi | Bem-vindo' } },
   { path: 'login', component: LoginComponent, data: { title: 'SociPsi | Login' } },
   { path: 'cadastro-psicologo', component: CadastroPsicologoComponent, data: { title: 'SociPsi | Cadastro Psicólogo' } },
   { path: 'psicologos', component: ListaPsicologos, data: { title: 'SociPsi | Psicólogos' } },
   { path: 'psicologo/:id', component: DetalhesPsicologoComponent, data: { title: 'SociPsi | Detalhes do Psicólogo' } },
-    { path: 'sobre-nos', component: SobreNos, data: { title: 'SociPsi | Sobre nos' } },
-        { path: 'meus-dados', component: MeusDadosComponent, data: { title: 'SociPsi | Meus dados' } },
-
+  { path: 'sobre-nos', component: SobreNos, data: { title: 'SociPsi | Sobre nos' } },
+  { path: 'meus-dados', component: MeusDadosComponent, data: { title: 'SociPsi | Meus dados' } },
+  { path: 'admin/login', component: Login, data: { title: 'SociPsi | Admin' } },
+  { path: 'admin/psicologos', component: AdminPsicologos, data: { title: 'SociPsi | Admin Psicologos' } },
 
   { path: '**', redirectTo: '/psicologos' },
 

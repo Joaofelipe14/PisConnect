@@ -1,0 +1,424 @@
+.page-container {
+    min-height: 100vh;
+    background: #ffffff;
+    padding: 1.5rem 1rem;
+    padding-top: calc(var(--navbar-height, 60px) + 1.5rem);
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+}
+
+.page-container h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-color, #1f2937);
+}
+
+.filtros {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filtros label {
+    font-size: 0.95rem;
+    cursor: pointer;
+    color: var(--text-secondary, #6b7280);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.psicologos-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.psicologo-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.psicologo-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(20, 184, 166, 0.12);
+    border-color: rgba(20, 184, 166, 0.2);
+}
+
+.foto-perfil {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #f0fdfa;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.psicologo-card:hover .foto-perfil {
+    border-color: var(--accent-color, #14b8a6);
+    transform: scale(1.08);
+}
+
+.psicologo-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-color, #1f2937);
+    text-align: center;
+}
+
+.psicologo-card p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary, #6b7280);
+    text-align: center;
+}
+
+.ativo {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.inativo {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+/* Botão ativar */
+.btn-ativar {
+    background-color: #4caf50;
+    /* verde */
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-ativar:hover {
+    background-color: #45a049;
+}
+
+/* Botão desativar */
+.btn-desativar {
+    background-color: #f44336;
+    /* vermelho */
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-desativar:hover {
+    background-color: #d32f2f;
+}
+
+
+.psicologo-card button {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.975rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2);
+}
+
+.psicologo-card button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.35);
+}
+
+.psicologo-card button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25);
+}
+
+@media (max-width: 768px) {
+    .psicologos-list {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+
+    .foto-perfil {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        padding: 1rem 0.75rem;
+        padding-top: calc(var(--navbar-height, 60px) + 1rem);
+    }
+
+    .psicologos-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .foto-perfil {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+.foto-inicial {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #14b8a6;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.psicologo-card:hover .foto-inicial {
+    transform: scale(1.08);
+}
+
+.profile-inicial {
+    width: 100px;
+    height: 100px;
+    background: #14b8a6;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(31, 41, 55, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+    color: var(--accent-color, #14b8a6);
+}
+
+.modal-header {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.foto-perfil-modal {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #f0fdfa;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.foto-inicial-modal {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--accent-color, #14b8a6);
+    color: #ffffff;
+    font-size: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+}
+
+.modal-titulo h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.status {
+    display: inline-block;
+    margin-top: 0.25rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+}
+
+.status.ativo {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.status.inativo {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.info-item strong {
+    color: #374151;
+}
+
+.info-item a {
+    color: var(--accent-color, #14b8a6);
+    text-decoration: none;
+}
+
+.info-item a:hover {
+    text-decoration: underline;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    margin-right: 0.5rem;
+    margin-top: 0.25rem;
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: #ffffff;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Cabeçalho do modal */
+.modal-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #333;
+}
+
+/* Corpo do modal */
+.modal-body p {
+    margin: 10px 0;
+    font-size: 15px;
+    color: #444;
+}
+
+/* Checkbox */
+.modal-body label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.modal-body input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Footer com botões */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Botão Cancelar */
+.btn-cancel {
+    background: #f0f0f0;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+    background: #e0e0e0;
+}
+
+/* Botão Confirmar */
+.btn-confirm {
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    background-color: #10b981;
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2);
+}
+
+.btn-confirm:hover {
+    background: #45a049;
+}
