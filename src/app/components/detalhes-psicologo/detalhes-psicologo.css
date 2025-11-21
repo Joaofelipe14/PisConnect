@@ -14,9 +14,14 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
-  padding: 6rem 1rem;
+  padding: 2rem 1rem;
+  padding-top: calc(var(--navbar-height, 60px) + 2rem);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .detalhes-container::before {
@@ -95,6 +100,8 @@
   z-index: 1;
   animation: fadeInUp 0.6s ease-out;
   max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-main-grid {
@@ -102,6 +109,9 @@
   grid-template-columns: 380px 1fr;
   gap: 2.5rem;
   align-items: start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-sidebar {
@@ -120,6 +130,9 @@
   border-radius: 20px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   border: 2px solid rgba(20, 184, 166, 0.1);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-card > .formacao-inline,
@@ -132,6 +145,10 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 @keyframes fadeInUp {
@@ -307,6 +324,9 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .info-section::before {
@@ -424,6 +444,7 @@
 
 .formacao-inline {
   width: 100%;
+  max-width: 100%;
   padding: 1.25rem;
   background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
   border-radius: 12px;
@@ -431,6 +452,8 @@
   margin-top: 0;
   text-align: center;
   box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .formacao-inline-header {
@@ -642,6 +665,9 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-description::before {
@@ -722,6 +748,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
+  max-width: 100%;
   margin-top: 0;
   box-sizing: border-box;
 }
@@ -822,29 +849,57 @@
 }
 
 @media (max-width: 992px) {
+  .detalhes-wrapper {
+    padding: 1.5rem 1rem;
+    padding-top: calc(var(--navbar-height, 60px) + 1.5rem);
+    align-items: flex-start;
+    overflow-x: hidden;
+  }
+
   .profile-main-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
+    max-width: 100%;
   }
 
   .profile-sidebar {
     position: relative;
     top: 0;
+    width: 100%;
+    max-width: 100%;
   }
 
   .profile-card {
     padding: 2rem 1.5rem;
+    width: 100%;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 480px) {
+  .detalhes-wrapper {
+    padding: 1rem 0.5rem;
+    padding-top: calc(var(--navbar-height, 60px) + 1rem);
+    overflow-x: hidden;
+  }
+
   .detalhes-container {
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 0.75rem;
     padding-top: calc(var(--navbar-height, 60px) + 1.5rem);
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .detalhes-content {
+    max-width: 100%;
+    width: 100%;
+    padding: 0;
   }
 
   .profile-card {
     padding: 1.5rem 1rem;
+    width: 100%;
+    max-width: 100%;
   }
 
   .profile-image-large {
@@ -890,9 +945,90 @@
   .profile-description,
   .info-section {
     padding: 1.75rem 1.25rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .profile-main-content {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .section-title {
     font-size: 1.1rem;
+  }
+
+  .detalhes-content {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .profile-main-grid {
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .profile-image-large {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .formacao-text,
+  .psicologo-name-large,
+  .psicologo-specialty-large {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .name-header {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .psicologo-name-large {
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .formacao-inline {
+    padding: 1rem;
+  }
+
+  .formacao-text {
+    font-size: 0.875rem;
+    word-break: break-word;
+  }
+
+  .rede-social-link {
+    padding: 0.875rem 1rem;
+  }
+
+  .rede-social-text {
+    font-size: 0.875rem;
+  }
+
+  .ver-mais-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  .profile-description p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .area-tag {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .publico-badge {
+    font-size: 0.875rem;
+    padding: 0.75rem 1.25rem;
   }
 }

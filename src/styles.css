@@ -19,6 +19,9 @@
 
 html, body {
   height: 100%;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -30,6 +33,7 @@ body {
   background: #ffffff;
   color: var(--text-color);
   line-height: 1.6;
+  position: relative;
 }
 
 main {
