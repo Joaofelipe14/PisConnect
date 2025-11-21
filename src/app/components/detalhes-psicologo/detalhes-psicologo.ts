@@ -18,6 +18,8 @@ export class DetalhesPsicologoComponent implements OnInit {
   error = false;
   faWhatsapp = faWhatsapp; // ⚠️ deve ser propriedade da classe
   shareSuccess = false;
+  resumoExpandido = false;
+  readonly RESUMO_LIMITE_CARACTERES = 300;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,11 +71,101 @@ export class DetalhesPsicologoComponent implements OnInit {
     this.router.navigate(['/psicologos']);
   }
 
+  parseJson(value: any): any {
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : (parsed ? [parsed] : []);
+      } catch {
+        // Se não for JSON válido, trata como string simples
+        return value ? [value] : [];
+      }
+    }
+    // Se já for array, retorna direto
+    if (Array.isArray(value)) {
+      return value;
+    }
+    // Se não for string nem array, retorna array vazio
+    return [];
+  }
+
   getAbordagem(): string {
-    return this.psicologo?.abordagem_terapeutica ||
-      (this.psicologo?.areas_atuacao && this.psicologo.areas_atuacao.length > 0
-        ? this.psicologo.areas_atuacao[0]
-        : 'Psicologia');
+    const abordagens = this.getAbordagensArray();
+    if (abordagens.length > 0) {
+      return abordagens[0];
+    }
+    return this.psicologo?.areas_atuacao && this.psicologo.areas_atuacao.length > 0
+      ? this.psicologo.areas_atuacao[0]
+      : 'Psicologia';
+  }
+
+  getAbordagensArray(): string[] {
+    return this.parseJson(this.psicologo?.abordagem_terapeutica);
+  }
+
+  getPublicoAlvoArray(): string[] {
+    return this.parseJson(this.psicologo?.publico_alvo);
+  }
+
+  getRedesSociais(): string[] {
+    const redes = this.psicologo?.redes_sociais;
+    if (Array.isArray(redes)) {
+      return redes;
+    }
+    return [];
+  }
+
+  identificarRedeSocial(url: string): string {
+    if (!url) return 'website';
+    
+    const urlLower = url.toLowerCase();
+    
+    // Normalizar URL (adicionar https:// se não tiver protocolo)
+    let normalizedUrl = urlLower;
+    if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+      normalizedUrl = 'https://' + normalizedUrl;
+    }
+    
+    // Instagram
+    if (normalizedUrl.includes('instagram.com') || urlLower.includes('instagram')) {
+      return 'instagram';
+    }
+    
+    // Facebook
+    if (normalizedUrl.includes('facebook.com') || urlLower.includes('facebook')) {
+      return 'facebook';
+    }
+    
+    // LinkedIn
+    if (normalizedUrl.includes('linkedin.com') || urlLower.includes('linkedin')) {
+      return 'linkedin';
+    }
+    
+    // Twitter/X
+    if (normalizedUrl.includes('twitter.com') || normalizedUrl.includes('x.com') || urlLower.includes('twitter') || urlLower.includes('x.com')) {
+      return 'twitter';
+    }
+    
+    // YouTube
+    if (normalizedUrl.includes('youtube.com') || normalizedUrl.includes('youtu.be') || urlLower.includes('youtube')) {
+      return 'youtube';
+    }
+    
+    // TikTok
+    if (normalizedUrl.includes('tiktok.com') || urlLower.includes('tiktok')) {
+      return 'tiktok';
+    }
+    
+    // Site pessoal (padrão)
+    return 'website';
+  }
+
+  normalizarUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return 'https://' + url;
   }
 
   getAvatarUrl(): string {
@@ -110,5 +202,29 @@ export class DetalhesPsicologoComponent implements OnInit {
         prompt('Copie o link:', url);
       });
     }
+  }
+
+  getResumoCompleto(): string {
+    return this.psicologo?.resumo || '';
+  }
+
+  getResumoTruncado(): string {
+    const resumo = this.psicologo?.resumo || '';
+    if (resumo.length <= this.RESUMO_LIMITE_CARACTERES) {
+      return resumo;
+    }
+    // Encontra o último espaço antes do limite para não cortar palavras
+    const truncado = resumo.substring(0, this.RESUMO_LIMITE_CARACTERES);
+    const ultimoEspaco = truncado.lastIndexOf(' ');
+    return ultimoEspaco > 0 ? truncado.substring(0, ultimoEspaco) + '...' : truncado + '...';
+  }
+
+  precisaVerMais(): boolean {
+    const resumo = this.psicologo?.resumo || '';
+    return resumo.length > this.RESUMO_LIMITE_CARACTERES;
+  }
+
+  toggleResumo() {
+    this.resumoExpandido = !this.resumoExpandido;
   }
 }

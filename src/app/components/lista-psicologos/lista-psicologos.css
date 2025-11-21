@@ -260,6 +260,20 @@
   font-size: 0.95rem;
 }
 
+.psicologo-card.card-mode .psicologo-resumo {
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #6b7280);
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
 .psicologo-card.card-mode .card-extra-info {
   width: 100%;
   display: flex;
@@ -417,6 +431,20 @@
   flex: 1;
   font-size: 0.9rem;
   min-width: 0;
+}
+
+.psicologo-card.list-mode .psicologo-resumo {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-secondary, #6b7280);
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
 }
 
 .psicologo-card.list-mode .card-extra-info {

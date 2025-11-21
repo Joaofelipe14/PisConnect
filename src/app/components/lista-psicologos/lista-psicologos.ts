@@ -42,13 +42,17 @@ export class ListaPsicologos implements OnInit {
       map(psicologos => {
         const term = this.searchTerm.toLowerCase();
         if (!term) return psicologos;
-        return psicologos.filter(p =>
-          p.nome?.toLowerCase().includes(term) ||
-          p.abordagem_terapeutica?.toLowerCase().includes(term) ||
-          p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
-          p.formacao?.toLowerCase().includes(term) ||
-          p.publico_alvo?.toLowerCase().includes(term)
-        );
+        return psicologos.filter(p => {
+          const abordagens = this.parseJson(p.abordagem_terapeutica);
+          const publicos = this.parseJson(p.publico_alvo);
+          return (
+            p.nome?.toLowerCase().includes(term) ||
+            abordagens.some((a: string) => a.toLowerCase().includes(term)) ||
+            p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
+            p.formacao?.toLowerCase().includes(term) ||
+            publicos.some((pub: string) => pub.toLowerCase().includes(term))
+          );
+        });
       })
     );
   }
@@ -58,13 +62,17 @@ export class ListaPsicologos implements OnInit {
       map(psicologos => {
         const term = this.searchTerm.toLowerCase();
         if (!term) return psicologos;
-        return psicologos.filter(p =>
-          p.nome?.toLowerCase().includes(term) ||
-          p.abordagem_terapeutica?.toLowerCase().includes(term) ||
-          p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
-          p.formacao?.toLowerCase().includes(term) ||
-          p.publico_alvo?.toLowerCase().includes(term)
-        );
+        return psicologos.filter(p => {
+          const abordagens = this.parseJson(p.abordagem_terapeutica);
+          const publicos = this.parseJson(p.publico_alvo);
+          return (
+            p.nome?.toLowerCase().includes(term) ||
+            abordagens.some((a: string) => a.toLowerCase().includes(term)) ||
+            p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
+            p.formacao?.toLowerCase().includes(term) ||
+            publicos.some((pub: string) => pub.toLowerCase().includes(term))
+          );
+        });
       })
     );
   }
@@ -80,8 +88,61 @@ export class ListaPsicologos implements OnInit {
     }
   }
 
+  parseJson(value: any): any {
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : (parsed ? [parsed] : []);
+      } catch {
+        // Se não for JSON válido, trata como string simples
+        return value ? [value] : [];
+      }
+    }
+    // Se já for array, retorna direto
+    if (Array.isArray(value)) {
+      return value;
+    }
+    // Se não for string nem array, retorna array vazio
+    return [];
+  }
+
   getPrimeiraArea(areas: string[]): string {
     return areas && areas.length > 0 ? areas[0] : 'Psicologia';
+  }
+
+  getPrimeiraAbordagem(psicologo: any): string {
+    const abordagens = this.parseJson(psicologo?.abordagem_terapeutica);
+    if (abordagens.length > 0) {
+      return abordagens[0];
+    }
+    return this.getPrimeiraArea(psicologo?.areas_atuacao);
+  }
+
+  getPublicoAlvo(psicologo: any): string {
+    const publicos = this.parseJson(psicologo?.publico_alvo);
+    if (publicos.length > 0) {
+      return publicos.join(', ');
+    }
+    return '';
+  }
+
+  getAbordagensArray(psicologo: any): string[] {
+    return this.parseJson(psicologo?.abordagem_terapeutica);
+  }
+
+  getPublicoAlvoArray(psicologo: any): string[] {
+    return this.parseJson(psicologo?.publico_alvo);
+  }
+
+  getResumoTruncado(psicologo: any, limite: number = 120): string {
+    const resumo = psicologo?.resumo || '';
+    if (!resumo || resumo.length <= limite) {
+      return resumo;
+    }
+    // Encontra o último espaço antes do limite para não cortar palavras
+    const truncado = resumo.substring(0, limite);
+    const ultimoEspaco = truncado.lastIndexOf(' ');
+    return ultimoEspaco > 0 ? truncado.substring(0, ultimoEspaco) + '...' : truncado + '...';
   }
 
   getAvatarUrl(psicologo: any): string {
