@@ -367,14 +367,11 @@ export class MeusDadosComponent implements OnInit {
     }
   }
 
-
-
   planos = [
     { nome: 'Mensal', valor: 10, periodo: 'mês', desconto: 0, preapproval_plan_id: 'mensal-id' },
-    { nome: 'Trimestral', valor: 28.5, periodo: '3 meses', desconto: 5, preapproval_plan_id: 'trimestral-id' },
+    { nome: 'Trimestral', valor: 1.5, periodo: '3 meses', desconto: 5, preapproval_plan_id: '5ce014e83e3e4dd595be8bef07e86b89' },
     { nome: 'Anual', valor: 108, periodo: 'ano', desconto: 10, preapproval_plan_id: 'anual-id' }
   ];
-
 
   openCardModal(plano: any) {
     const dialogRef = this.dialog.open(CardModalComponent, {
@@ -396,6 +393,7 @@ export class MeusDadosComponent implements OnInit {
   historicoFaturas: any[] = [];
   loadingPagamentos = false;
   async carregarAssinaturas() {
+    // buscar do getMe()
     const subscriptionIds = ['']; // ['30d0...', '30d1...', ...]
 
     console.log(subscriptionIds)

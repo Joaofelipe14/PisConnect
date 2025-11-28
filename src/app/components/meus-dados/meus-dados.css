@@ -562,3 +562,117 @@ textarea {
 .value {
   text-align: right;
 }
+/* ===========================
+   RESPONSIVIDADE
+=========================== */
+
+/* Telas até 1024px (tablets landscape) */
+@media (max-width: 1024px) {
+  .form-container {
+    padding: 1.5rem;
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .plans-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .plan-card,
+  .assinatura-resumo {
+    width: 100%;
+  }
+}
+
+/* Telas até 768px (tablets portrait / celulares grandes) */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  .progress-indicator {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    font-size: .85rem;
+  }
+
+  .form-container {
+    padding: 1.2rem;
+  }
+
+  .file-input-btn {
+    width: 100%;
+    max-width: none;
+  }
+
+  .foto-container {
+    padding: 14px;
+  }
+
+  .section-toggle {
+    flex-direction: column;
+  }
+
+  .toggle-btn {
+    width: 100%;
+  }
+
+  .form-navigation {
+    flex-direction: column;
+  }
+
+  .form-navigation button {
+    width: 100%;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+}
+
+/* Telas até 480px (celulares pequenos) */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.15rem;
+  }
+
+  .step-circle {
+    width: 28px;
+    height: 28px;
+    font-size: .8rem;
+  }
+
+  input,
+  textarea {
+    padding: .8rem;
+    font-size: .95rem;
+  }
+
+  .file-input-btn {
+    padding: 10px;
+    font-size: .9rem;
+  }
+
+  .plan-card,
+  .assinatura-resumo {
+    padding: 12px;
+  }
+
+  .acoes-assinatura {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .acoes-assinatura button {
+    width: 100%;
+  }
+}
