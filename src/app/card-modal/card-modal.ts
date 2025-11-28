@@ -22,7 +22,7 @@ export class CardModalComponent {
   cardForm: FormGroup;
   mp: any;
   erroMsg: string | null = null;
-  
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CardModalComponent>,
@@ -41,14 +41,14 @@ export class CardModalComponent {
     });
 
     // Inicializa o Mercado Pago
-    this.mp = new MercadoPago('APP_USR-895512992341275-112811-4b00743e63d7b1d9e87276bc5e7e2790-2483575932', { locale: 'pt-BR' });
+    this.mp = new MercadoPago('APP_USR-1e3e9f76-d85e-4269-9b5e-7fd7e34cf1b5', { locale: 'pt-BR' });
     // cartão polaris teste
     this.cardForm.setValue({
       cardNumber: '5162927233718417',
       cardHolder: 'Joao F M luz',
       expMonth: '09',
       expYear: '2033', // Mudei para string
-      cvv: '334'
+      cvv: ''
     });
   }
 

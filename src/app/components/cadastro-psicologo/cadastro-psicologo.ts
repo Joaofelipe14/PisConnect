@@ -41,41 +41,41 @@ export class CadastroPsicologoComponent {
     this.initForm();
   }
 
-  private initForm(): void {
-    this.cadastroForm = this.fb.group({
-      nome: ['João Silva', [Validators.required, Validators.minLength(3)]],
-      email: ['joao.silva@exampl1e.com', [Validators.required, Validators.email]],
-      senha: ['123456', [Validators.required, Validators.minLength(6)]],
-      confirma_senha: ['123456', Validators.required],
-      crp: ['12/12356', [Validators.required, Validators.pattern(/^\d{2}\/\d{5,6}$/)]],
-      resumo: ['Psicólogo com mais de 10 anos de experiência em diversos contextos e abordagens terapêuticas.', [Validators.required, Validators.minLength(50)]],
-      whatsapp: ['(11) 98765-4321', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]],
-      formacao: ['Graduação em Psicologia pela Universidade XYZ', [Validators.required, Validators.minLength(20)]],
-      areas_atuacao: [['Psicologia Clínica', 'Psicologia Escolar'], Validators.required],
-      abordagem_terapeutica: [['Terapia Cognitivo-Comportamental (TCC)', 'Psicanálise'], Validators.required],
-      publico_alvo: [['Adultos', 'Crianças'], Validators.required],
-      redes_sociais: this.fb.array([
-        this.fb.control('https://facebook.com/joaosilva', [Validators.pattern(/^https?:\/\/.+/)])
-      ])
-    });
-  }
-
   // private initForm(): void {
   //   this.cadastroForm = this.fb.group({
-  //     nome: ['', [Validators.required, Validators.minLength(3)]],
-  //     email: ['', [Validators.required, Validators.email]],
-  //     senha: ['', [Validators.required, Validators.minLength(6)]],
-  //     confirma_senha: ['', Validators.required],
-  //     crp: ['', [Validators.required, Validators.pattern(/^\d{2}\/\d{5,6}$/)]],
-  //     resumo: ['', [Validators.required, Validators.minLength(50)]],
-  //     whatsapp: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]],
-  //     formacao: ['', [Validators.required, Validators.minLength(20)]],
-  //     areas_atuacao: [[], Validators.required],
-  //     abordagem_terapeutica: [[], Validators.required],
-  //     publico_alvo: [[], Validators.required],
-  //     redes_sociais: this.fb.array([])
+  //     nome: ['João Silva', [Validators.required, Validators.minLength(3)]],
+  //     email: ['joao.silva@exampl1e.com', [Validators.required, Validators.email]],
+  //     senha: ['123456', [Validators.required, Validators.minLength(6)]],
+  //     confirma_senha: ['123456', Validators.required],
+  //     crp: ['12/12356', [Validators.required, Validators.pattern(/^\d{2}\/\d{5,6}$/)]],
+  //     resumo: ['Psicólogo com mais de 10 anos de experiência em diversos contextos e abordagens terapêuticas.', [Validators.required, Validators.minLength(50)]],
+  //     whatsapp: ['(11) 98765-4321', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]],
+  //     formacao: ['Graduação em Psicologia pela Universidade XYZ', [Validators.required, Validators.minLength(20)]],
+  //     areas_atuacao: [['Psicologia Clínica', 'Psicologia Escolar'], Validators.required],
+  //     abordagem_terapeutica: [['Terapia Cognitivo-Comportamental (TCC)', 'Psicanálise'], Validators.required],
+  //     publico_alvo: [['Adultos', 'Crianças'], Validators.required],
+  //     redes_sociais: this.fb.array([
+  //       this.fb.control('https://facebook.com/joaosilva', [Validators.pattern(/^https?:\/\/.+/)])
+  //     ])
   //   });
   // }
+
+  private initForm(): void {
+    this.cadastroForm = this.fb.group({
+      nome: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      senha: ['', [Validators.required, Validators.minLength(6)]],
+      confirma_senha: ['', Validators.required],
+      crp: ['', [Validators.required, Validators.pattern(/^\d{2}\/\d{5,6}$/)]],
+      resumo: ['', [Validators.required, Validators.minLength(50)]],
+      whatsapp: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]],
+      formacao: ['', [Validators.required, Validators.minLength(20)]],
+      areas_atuacao: [[], Validators.required],
+      abordagem_terapeutica: [[], Validators.required],
+      publico_alvo: [[], Validators.required],
+      redes_sociais: this.fb.array([])
+    });
+  }
 
   get redesSociais(): FormArray {
     return this.cadastroForm.get('redes_sociais') as FormArray;
