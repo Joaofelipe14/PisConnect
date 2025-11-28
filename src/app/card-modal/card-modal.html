@@ -1,37 +1,44 @@
-<!-- card-modal.component.html -->
-<h2 mat-dialog-title>Adicionar Cartão</h2>
-<form [formGroup]="cardForm" (ngSubmit)="submit()">
-  <mat-dialog-content>
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Número do cartão</mat-label>
-      <input matInput formControlName="cardNumber" type="text">
-    </mat-form-field>
+<div class="modal-container">
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Nome do titular</mat-label>
-      <input matInput formControlName="cardHolder" type="text">
-    </mat-form-field>
+  <!-- Cabeçalho -->
+  <div class="modal-header">
+    <h2>Finalizar Assinatura</h2>
+    <p class="plano-label">{{ plano?.nome }} — R$ {{ plano?.valor | number:'1.2-2' }}</p>
+  </div>
+  <div *ngIf="erroMsg" class="erro-box">
+    {{ erroMsg }}
+  </div>
 
-    <div style="display:flex; gap:10px;">
-      <mat-form-field appearance="fill">
-        <mat-label>Mês</mat-label>
-        <input matInput formControlName="expMonth" type="number">
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Ano</mat-label>
-        <input matInput formControlName="expYear" type="number">
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>CVV</mat-label>
-        <input matInput formControlName="cvv" type="text">
-      </mat-form-field>
+  <!-- Formulário -->
+  <form [formGroup]="cardForm" (ngSubmit)="submit()" class="form">
+
+    <div class="form-row">
+      <label>Número do cartão</label>
+      <input type="text" formControlName="cardNumber" />
     </div>
 
+    <div class="form-row">
+      <label>Nome do titular</label>
+      <input type="text" formControlName="cardHolder" />
+    </div>
 
-  </mat-dialog-content>
+    <div class="form-row">
+      <label>Validade (mês)</label>
+      <input type="text" formControlName="expMonth" />
+    </div>
 
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="close()">Cancelar</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="!cardForm.valid">Pagar</button>
-  </mat-dialog-actions>
-</form>
+    <div class="form-row">
+      <label>Validade (ano)</label>
+      <input type="text" formControlName="expYear" />
+    </div>
+
+    <div class="form-row">
+      <label>CVV</label>
+      <input type="text" formControlName="cvv" />
+    </div>
+
+    <button class="btn-submit" type="submit">Confirmar Assinatura</button>
+    <button class="btn-cancel" type="button" (click)="close()">Cancelar</button>
+  </form>
+
+</div>

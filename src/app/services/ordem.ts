@@ -42,6 +42,22 @@ export class ordem {
         })
       );
   }
+getAssinatura(id: string): Observable<any> {
+  return this.http.get<any>(
+      `${this.baseUrl}/${id}`,{ headers: this.getHeaders() } // headers vão no terceiro parâmetro
+    )
+    .pipe(
+      map(res => {
+        console.log(res);
+   
+        return res;
+      }),
+      catchError(err => {
+        console.error('Erro no cadastro:', err);
+        return throwError(() => err);
+      })
+    );
+}
 
 
 

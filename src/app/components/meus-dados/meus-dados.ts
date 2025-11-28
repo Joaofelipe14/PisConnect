@@ -9,6 +9,7 @@ import { ALL_ABORDAGENS, ALL_AREAS, ALL_PUBLICOS } from '../constants';
 import { S3StorageService } from '../../services/s3-storage.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CardModalComponent } from '../../card-modal/card-modal';
+import { ordem } from '../../services/ordem';
 
 @Component({
   selector: 'app-meus-dados',
@@ -40,7 +41,9 @@ export class MeusDadosComponent implements OnInit {
     dadosPessoais: true,
     especializacoes: false,
     areasAbordagensPublicos: false,
-    redesSociais: false
+    redesSociais: false,
+    pagamentos: false
+
   };
 
   constructor(
@@ -49,7 +52,8 @@ export class MeusDadosComponent implements OnInit {
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
     private s3service: S3StorageService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private ordem: ordem
   ) { }
 
   allAreas = ALL_AREAS
@@ -132,49 +136,49 @@ export class MeusDadosComponent implements OnInit {
     return value || []; // Se não for string, retorna o próprio valor ou um array vazio
   }
 
- loadUserData() {
-  this.loading = true;
+  loadUserData() {
+    this.loading = true;
 
-  this.auth.me().subscribe({
-    next: (res) => {
-      this.ngZone.run(() => {
-        const user = res.user;
-        this.user = user;
+    this.auth.me().subscribe({
+      next: (res) => {
+        this.ngZone.run(() => {
+          const user = res.user;
+          this.user = user;
 
-        this.meusDadosForm.patchValue({
-          nome: user.nome,
-          email: user.email,
-          crp: user.crp,
-          whatsapp: user.whatsapp,
-          resumo: user.resumo,
-          formacao: user.formacao,
-          areas_atuacao: user.areas_atuacao || [],
-          abordagem_terapeutica: this.parseJson(user.abordagem_terapeutica),
-          publico_alvo: this.parseJson(user.publico_alvo),
-          foto_url: user.foto_url
+          this.meusDadosForm.patchValue({
+            nome: user.nome,
+            email: user.email,
+            crp: user.crp,
+            whatsapp: user.whatsapp,
+            resumo: user.resumo,
+            formacao: user.formacao,
+            areas_atuacao: user.areas_atuacao || [],
+            abordagem_terapeutica: this.parseJson(user.abordagem_terapeutica),
+            publico_alvo: this.parseJson(user.publico_alvo),
+            foto_url: user.foto_url
+          });
+
+          this.fotoPreview = user.foto_url;
+
+          this.redesSociais.clear();
+          (user.redes_sociais || []).forEach((url: string) => {
+            this.redesSociais.push(this.fb.control(url));
+          });
+
+          this.loading = false;
+          this.cdr.markForCheck();
         });
+      },
 
-        this.fotoPreview = user.foto_url;
-
-        this.redesSociais.clear();
-        (user.redes_sociais || []).forEach((url: string) => {
-          this.redesSociais.push(this.fb.control(url));
+      error: () => {
+        this.ngZone.run(() => {
+          this.errorMessage = 'Erro ao carregar seus dados.';
+          this.loading = false;
+          this.cdr.markForCheck();
         });
-
-        this.loading = false;
-        this.cdr.markForCheck();
-      });
-    },
-
-    error: () => {
-      this.ngZone.run(() => {
-        this.errorMessage = 'Erro ao carregar seus dados.';
-        this.loading = false;
-        this.cdr.markForCheck();
-      });
-    }
-  });
-}
+      }
+    });
+  }
 
 
   // ---------------------------
@@ -303,14 +307,19 @@ export class MeusDadosComponent implements OnInit {
   //   CONTROLADOR DAS SEÇÕES EXPANSÍVEIS
   // ---------------------------
 
-  toggleSection(section: keyof typeof this.showSection) {
+  async toggleSection(section: keyof typeof this.showSection) {
     // Primeiro, desativa todas as seções
     Object.keys(this.showSection).forEach(key => {
       this.showSection[key as keyof typeof this.showSection] = false;
     });
 
-    // Ativa a seção clicada
     this.showSection[section] = true;
+    if (section == 'pagamentos' && this.assinaturas.length == 0) {
+      this.loadingPagamentos = true;
+      console.log('buscando pagamentos..')
+      await this.carregarAssinaturas()
+    }
+    console.log(section)
   }
 
   fotoUploadStatus = '';
@@ -358,18 +367,80 @@ export class MeusDadosComponent implements OnInit {
     }
   }
 
-  openCardModal() {
+
+
+  planos = [
+    { nome: 'Mensal', valor: 10, periodo: 'mês', desconto: 0, preapproval_plan_id: 'mensal-id' },
+    { nome: 'Trimestral', valor: 28.5, periodo: '3 meses', desconto: 5, preapproval_plan_id: 'trimestral-id' },
+    { nome: 'Anual', valor: 108, periodo: 'ano', desconto: 10, preapproval_plan_id: 'anual-id' }
+  ];
+
+
+  openCardModal(plano: any) {
     const dialogRef = this.dialog.open(CardModalComponent, {
-      width: '400px',
-      data: {} // se quiser passar dados pro modal
+      width: '600px',
+      data: plano // passando o plano selecionado
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Dados do cartão:', result);
+        console.log('Dados do cartão e plano:', result);
         // Aqui você faz a requisição pro seu endpoint de assinatura
         // Ex: this.assinar(result)
       }
     });
   }
+
+
+  assinaturas: any[] = [];
+  historicoFaturas: any[] = [];
+  loadingPagamentos = false;
+  async carregarAssinaturas() {
+    const subscriptionIds = ['']; // ['30d0...', '30d1...', ...]
+
+    console.log(subscriptionIds)
+    // Mapeia cada ID para uma promessa que nunca rejeita
+    const promises = subscriptionIds.map(id =>
+      this.ordem.getAssinatura(id).toPromise()
+        .then(res => res)
+        .catch(err => {
+          console.error(`Erro ao carregar assinatura ${id}:`, err);
+          this.loadingPagamentos = false;
+          return null; // retorna null se der erro, não quebra o Promise.all
+        })
+    );
+
+    const results = await Promise.all(promises);
+
+    this.ngZone.run(() => {
+
+      this.assinaturas = results.filter(r => r !== null);
+      this.historicoFaturas = this.assinaturas.map(a => ({
+        recebidos: a.summarized?.charged_quantity ?? 0,
+        total: a.summarized?.quotas ?? 0
+      }));
+
+      this.loadingPagamentos = false;
+
+      this.cdr.markForCheck();
+    });
+  }
+
+
+  assinarPlano(plano: any) {
+    this.openCardModal(plano)
+    console.log('Selecionou plano:', plano);
+    // abrir modal do cartão e criar assinatura
+  }
+
+  atualizarPagamento(plano: any) {
+    console.log('Atualizar forma de pagamento');
+    // abrir modal do cartão para atualizar card token
+  }
+
+  trocarPlano(plano: any) {
+    console.log('Trocar plano');
+    // abrir tela/modal para escolher novo plano
+  }
+
 }

@@ -4,7 +4,6 @@
   <div class="form-container">
     <h1>Meus Dados</h1>
 
-    <button mat-button (click)="openCardModal()">Assinar</button>
 
     <form [formGroup]="meusDadosForm">
       <!-- Botões para alternar entre seções -->
@@ -13,8 +12,10 @@
           (click)="toggleSection('dadosPessoais')">Dados Pessoais</button>
         <button type="button" class="toggle-btn" [class.active]="showSection.areasAbordagensPublicos"
           (click)="toggleSection('areasAbordagensPublicos')">Áreas e Públicos</button>
-        <button type="button" class="toggle-btn" [class.active]="showSection.redesSociais"
-          (click)="toggleSection('redesSociais')">Redes Sociais</button>
+        <!-- <button type="button" class="toggle-btn" [class.active]="showSection.redesSociais"
+          (click)="toggleSection('redesSociais')">Redes Sociais</button> -->
+        <button type="button" class="toggle-btn" [class.active]="showSection.pagamentos"
+          (click)="toggleSection('pagamentos')">Assinatura</button>
       </div>
 
       <!-- Seção Dados Pessoais -->
@@ -59,8 +60,17 @@
 
         <label>Resumo *</label>
         <textarea formControlName="resumo"></textarea>
+        <label>Redes Sociais </label>
 
-
+        <div class="redes-sociais-container">
+          <div *ngFor="let rede of redesSociais.controls; let i = index" class="rede-social-item">
+            <input type="url" placeholder="https://instagram.com/seu-perfil" [formControl]="$any(rede)" />
+            <button type="button" class="btn-remove-rede" (click)="removeRede(i)">
+              <span>×</span>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="btn-add-rede" (click)="addRede()">+ Adicionar Rede Social</button>
       </div>
 
 
@@ -134,22 +144,92 @@
 
       </div>
 
-      <!-- Seção Redes Sociais -->
-      <div class="form-group full-width section" *ngIf="showSection.redesSociais">
-        <label>Redes Sociais (opcional)</label>
-        <div class="redes-sociais-container">
-          <div *ngFor="let rede of redesSociais.controls; let i = index" class="rede-social-item">
-            <input type="url" placeholder="https://instagram.com/seu-perfil" [formControl]="$any(rede)" />
-            <button type="button" class="btn-remove-rede" (click)="removeRede(i)">
-              <span>×</span>
-            </button>
+      <div class="form-group full-width section" *ngIf="showSection.pagamentos">
+
+        <h1 *ngIf="loadingPagamentos">carregando pagamentos...</h1>
+        <div *ngIf="!loadingPagamentos" class="pagamentos-container">
+          <label>Assinaturas</label>
+          <!-- Itera sobre cada assinatura carregada -->
+          <div *ngFor="let assinatura of assinaturas; let i = index" class="assinatura-resumo">
+            <ng-container *ngIf="assinatura; else erroAssinatura">
+              <div class="row">
+                <div></div>
+                <strong class="value">{{ assinatura?.payer_id }}</strong>
+              </div>
+
+              <div class="row">
+                <span class="label">Paga:</span>
+                <span class="value">R$ {{ assinatura?.auto_recurring?.transaction_amount | number:'1.2-2' }}</span>
+              </div>
+
+              <div class="row">
+                <span class="label">Email:</span>
+                <span class="value">{{ assinatura?.payer_email }}</span>
+              </div>
+
+              <div class="row">
+                <span class="label">Data de adesão:</span>
+                <span class="value">{{ assinatura?.date_created | date:'dd/MM/yyyy' }}</span>
+              </div>
+
+              <div class="row">
+                <span class="label">Código de referência:</span>
+                <span class="value">{{ assinatura?.external_reference }}</span>
+              </div>
+
+              <div class="row">
+                <span class="label">Primeiro pagamento grátis:</span>
+                <span class="value">{{ assinatura?.auto_recurring?.free_trial ? 'Sim' : 'Não' }}</span>
+              </div>
+
+              <div class="row">
+                <span class="label">Data de cobrança:</span>
+                <span class="value">A cada {{ assinatura?.auto_recurring?.frequency }} {{
+                  assinatura?.auto_recurring?.frequency_type }}</span>
+              </div>
+
+              <div class="row">
+                <span class="label">Duração da assinatura:</span>
+                <span class="value">{{ assinatura?.auto_recurring?.end_date | date:'dd/MM/yyyy' }}</span>
+              </div>
+
+              <div class="mini-historico">
+                <h4>Pagamentos realizados</h4>
+                <p>{{ historicoFaturas[i]?.recebidos || 0 }} / {{ historicoFaturas[i]?.total || 0 }}</p>
+              </div>
+
+              <div class="acoes-assinatura">
+                <button (click)="trocarPlano(assinatura)">Trocar plano</button>
+                <button (click)="atualizarPagamento(assinatura)">Atualizar forma de pagamento</button>
+              </div>
+            </ng-container>
+
+            <!-- Template para erro ao carregar assinatura -->
+            <ng-template #erroAssinatura>
+              <div class="assinatura-erro">
+                <p>Erro ao carregar esta assinatura.</p>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Se não tiver nenhuma assinatura, mostra os planos para assinar -->
+          <div *ngIf="!loadingPagamentos" class="plans-container">
+            <ng-container *ngIf="assinaturas.length == 0">
+              <div class="plan-card" *ngFor="let plano of planos">
+                <h3>{{ plano.nome }}</h3>
+                <p>R$ {{ plano.valor | number:'1.2-2' }} / {{ plano.periodo }}</p>
+                <p *ngIf="plano.desconto">Desconto: {{ plano.desconto }}%</p>
+                <button (click)="assinarPlano(plano)">Assinar</button>
+              </div>
+            </ng-container>
           </div>
         </div>
-        <button type="button" class="btn-add-rede" (click)="addRede()">+ Adicionar Rede Social</button>
+
       </div>
 
+
       <!-- Botão de Salvar -->
-      <button type="button" class="submit-btn" (click)="salvarAlteracoes()">
+      <button *ngIf="!showSection.pagamentos" type="button" class="submit-btn" (click)="salvarAlteracoes()">
         {{ loading ? 'Salvando...' : 'Salvar Alterações' }}
       </button>
 

@@ -1,31 +1,36 @@
 // card-modal.component.ts
-import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { validateCardNumber, getCardBrand, validateExp, validateCvv } from '../../card-utils'
+import { validateCardNumber, validateExp, validateCvv } from '../../card-utils'
 import { ordem } from '../services/ordem';
-declare var MercadoPago: any; // SDK global do Mercado Pago
+declare var MercadoPago: any;
 
 @Component({
   selector: 'app-card-modal',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './card-modal.html',
+    styleUrls: ['./card-modal.css']
+
 })
 export class CardModalComponent {
   cardForm: FormGroup;
   mp: any;
+erroMsg: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CardModalComponent>,
     private ordem: ordem,
     private ngZone: NgZone,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(MAT_DIALOG_DATA) public plano: any // <-- aqui
+
   ) {
     this.cardForm = this.fb.group({
       cardNumber: ['', [Validators.required, Validators.minLength(13)]],
@@ -36,20 +41,17 @@ export class CardModalComponent {
     });
 
     // Inicializa o Mercado Pago
-    this.mp = new MercadoPago('APP_USR-1e3e9f76-d85e-4269-9b5e-7fd7e34cf1b5', { locale: 'pt-BR' });
+    this.mp = new MercadoPago('TEST-76682c7a-7fe7-4625-926e-03ad3713d430', { locale: 'pt-BR' });
 
     // cartão polaris teste
     this.cardForm.setValue({
       cardNumber: '5162927233718417',
       cardHolder: 'Joao F M luz',
       expMonth: '09',
-      expYear: '2033',
+      expYear: '2033', // Mudei para string
       cvv: '334'
     });
-
   }
-
-
 
   async submit() {
     if (!validateCardNumber(this.cardForm.value.cardNumber)) {
@@ -66,48 +68,47 @@ export class CardModalComponent {
     }
 
     try {
-      // Cria o token do cartão com Mercado Pago
+      // ⚠️ ATENÇÃO: Use os nomes corretos que o SDK JavaScript espera!
       const cardData = {
-        cardNumber: this.cardForm.value.cardNumber,
+        cardNumber: this.cardForm.value.cardNumber.replace(/\s/g, ''),
         cardholderName: this.cardForm.value.cardHolder,
-        expirationMonth: this.cardForm.value.expMonth,
-        expirationYear: this.cardForm.value.expYear,
-        securityCode: this.cardForm.value.cvv
-      };
+        cardExpirationMonth: this.cardForm.value.expMonth.toString().padStart(2, '0'),
+        cardExpirationYear: this.cardForm.value.expYear.toString(),
+        securityCode: this.cardForm.value.cvv,
 
+      };
       const tokenResponse = await this.mp.createCardToken(cardData);
 
       if (!tokenResponse.id) {
         alert('Erro ao gerar token do cartão');
         return;
       }
-
       const payload = {
         card_token_id: tokenResponse.id,
-        plano_id: "326ecf9b-b009-418b-8c22-1f7ab8e80862"
+        preapproval_plan_id: this.plano.preapproval_plan_id
       };
-
-      console.log('fazendo requisição...', payload);
 
       this.ordem.gerarOrdemAssinatura(payload).subscribe({
         next: (res) => {
           this.ngZone.run(() => {
-            console.log(res);
+            console.log('Sucesso:', res);
+            this.dialogRef.close(payload);
             this.cdr.markForCheck();
           });
         },
         error: (err) => {
           this.ngZone.run(() => {
-            console.log('Erro na assinatura:', err);
+            console.error('Erro na assinatura:', err);
+                this.erroMsg = err?.error?.message || 'Erro ao processar assinatura';
+
             this.cdr.markForCheck();
           });
         }
       });
 
-      this.dialogRef.close(payload);
     } catch (err) {
       console.error('Erro ao gerar token do cartão:', err);
-      alert('Erro ao processar cartão.');
+      alert('Erro ao processar cartão: ' + (err as any)?.message || 'Erro desconhecido');
     }
   }
 

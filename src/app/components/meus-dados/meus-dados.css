@@ -184,13 +184,14 @@ h1 {
 .file-input-preview {
   max-width: 125px;
   max-height: 125px;
+  border-radius: 50%;
 }
 
 .file-input-preview img {
-  width: 100%;
-  height: auto;
-  /* object-fit: cover; */
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 /* Texto de carregamento */
@@ -487,4 +488,77 @@ textarea {
 .dropdown-item:hover {
   background: #ccfbf1;
   color: #0f766e;
+}
+
+.plans-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.plan-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  width: 180px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background-color: #009ee3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.plans-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.plan-card,
+.assinatura-resumo {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  width: 500px;
+}
+
+.acoes-assinatura {
+  gap: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.plan-card button,
+.acoes-assinatura button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background-color: #009ee3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.label {
+  font-weight: bold;
+}
+
+.value {
+  text-align: right;
 }
