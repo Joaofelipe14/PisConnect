@@ -397,7 +397,7 @@ export class MeusDadosComponent implements OnInit {
   loadingPagamentos = false;
   async carregarAssinaturas() {
     // buscar do getMe()
-    const subscriptionIds = ['30d01694618b4ce0bc3315314f53efe1']; // ['30d0...', '30d1...', ...]
+    const subscriptionIds = ['']; // ['30d0...', '30d1...', ...]
 
     console.log(subscriptionIds)
     // Mapeia cada ID para uma promessa que nunca rejeita
