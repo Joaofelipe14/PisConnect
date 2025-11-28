@@ -1,44 +1,127 @@
 <div class="modal-container">
-
   <!-- Cabeçalho -->
   <div class="modal-header">
-    <h2>Finalizar Assinatura</h2>
-    <p class="plano-label">{{ plano?.nome }} — R$ {{ plano?.valor | number:'1.2-2' }}</p>
+    <div class="header-top">
+      <div class="header-icon">
+        <i class="fas fa-credit-card"></i>
+      </div>
+      <h2>Finalizar Assinatura</h2>
+    </div>
+    <div class="plano-info">
+      <div class="plano-row">
+        <div class="plano-badge">
+          <i class="fas fa-tag"></i>
+          <span>{{ plano?.nome }}</span>
+        </div>
+        <div class="plano-valor">
+          <span class="valor-simbolo">R$</span>
+          <span class="valor-amount">{{ plano?.valor | number:'1.2-2' }}</span>
+          <span class="valor-periodo">/ {{ plano?.periodo }}</span>
+        </div>
+      </div>
+      <p class="plano-descricao" *ngIf="plano?.desconto">
+        <i class="fas fa-gift"></i>
+        Desconto de {{ plano?.desconto }}% aplicado
+      </p>
+    </div>
   </div>
+
+  <!-- Mensagem de Erro -->
   <div *ngIf="erroMsg" class="erro-box">
-    {{ erroMsg }}
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ erroMsg }}</span>
   </div>
 
   <!-- Formulário -->
   <form [formGroup]="cardForm" (ngSubmit)="submit()" class="form">
+    <div class="form-section">
+      <h3 class="section-title">
+        <i class="fas fa-credit-card"></i>
+        Dados do Cartão
+      </h3>
 
-    <div class="form-row">
-      <label>Número do cartão</label>
-      <input type="text" formControlName="cardNumber" />
+      <div class="form-row">
+        <label>
+          <i class="fas fa-hashtag"></i>
+          Número do Cartão
+        </label>
+        <input 
+          type="text" 
+          formControlName="cardNumber" 
+          placeholder="0000 0000 0000 0000"
+          maxlength="19"
+          (input)="formatCardNumberInput($event)"
+        />
+      </div>
+
+      <div class="form-row">
+        <label>
+          <i class="fas fa-user"></i>
+          Nome do Titular
+        </label>
+        <input 
+          type="text" 
+          formControlName="cardHolder" 
+          placeholder="Nome como está no cartão"
+          (input)="formatCardHolder($event)"
+        />
+      </div>
+
+      <div class="form-row-duo">
+        <div class="form-row">
+          <label>
+            <i class="fas fa-calendar-alt"></i>
+            Validade
+          </label>
+          <div class="input-group">
+            <input 
+              type="text" 
+              formControlName="expMonth" 
+              placeholder="MM"
+              maxlength="2"
+              class="input-small"
+            />
+            <span class="separator">/</span>
+            <input 
+              type="text" 
+              formControlName="expYear" 
+              placeholder="AAAA"
+              maxlength="4"
+              class="input-small"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>
+            <i class="fas fa-lock"></i>
+            CVV
+          </label>
+          <input 
+            type="text" 
+            formControlName="cvv" 
+            placeholder="000"
+            maxlength="4"
+            class="input-small"
+          />
+        </div>
+      </div>
     </div>
 
-    <div class="form-row">
-      <label>Nome do titular</label>
-      <input type="text" formControlName="cardHolder" />
+    <div class="form-actions">
+      <button class="btn-submit" type="submit" [disabled]="loading">
+        <i class="fas" [class.fa-check-circle]="!loading" [class.fa-spinner]="loading" [class.fa-spin]="loading"></i>
+        <span>{{ loading ? 'Processando...' : 'Confirmar Assinatura' }}</span>
+      </button>
+      <button class="btn-cancel" type="button" (click)="close()" [disabled]="loading">
+        <i class="fas fa-times"></i>
+        <span>Cancelar</span>
+      </button>
     </div>
 
-    <div class="form-row">
-      <label>Validade (mês)</label>
-      <input type="text" formControlName="expMonth" />
+    <div class="security-info">
+      <i class="fas fa-shield-alt"></i>
+      <span>Seus dados estão protegidos e criptografados</span>
     </div>
-
-    <div class="form-row">
-      <label>Validade (ano)</label>
-      <input type="text" formControlName="expYear" />
-    </div>
-
-    <div class="form-row">
-      <label>CVV</label>
-      <input type="text" formControlName="cvv" />
-    </div>
-
-    <button class="btn-submit" type="submit">Confirmar Assinatura</button>
-    <button class="btn-cancel" type="button" (click)="close()">Cancelar</button>
   </form>
-
 </div>

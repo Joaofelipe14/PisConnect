@@ -375,7 +375,10 @@ export class MeusDadosComponent implements OnInit {
 
   openCardModal(plano: any) {
     const dialogRef = this.dialog.open(CardModalComponent, {
-      width: '600px',
+      width: '90%',
+      maxWidth: '600px',
+      maxHeight: '95vh',
+      panelClass: 'card-modal-panel',
       data: plano // passando o plano selecionado
     });
 
@@ -394,7 +397,7 @@ export class MeusDadosComponent implements OnInit {
   loadingPagamentos = false;
   async carregarAssinaturas() {
     // buscar do getMe()
-    const subscriptionIds = ['']; // ['30d0...', '30d1...', ...]
+    const subscriptionIds = ['30d01694618b4ce0bc3315314f53efe1']; // ['30d0...', '30d1...', ...]
 
     console.log(subscriptionIds)
     // Mapeia cada ID para uma promessa que nunca rejeita

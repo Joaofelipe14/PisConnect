@@ -15,13 +15,14 @@ declare var MercadoPago: any;
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './card-modal.html',
-  styleUrls: ['./card-modal.css']
+    styleUrls: ['./card-modal.css']
 
 })
 export class CardModalComponent {
   cardForm: FormGroup;
   mp: any;
   erroMsg: string | null = null;
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -42,17 +43,82 @@ export class CardModalComponent {
 
     // Inicializa o Mercado Pago
     this.mp = new MercadoPago('APP_USR-1e3e9f76-d85e-4269-9b5e-7fd7e34cf1b5', { locale: 'pt-BR' });
+
+    // Formatação automática do número do cartão
+    this.cardForm.get('cardNumber')?.valueChanges.subscribe(value => {
+      if (value) {
+        // Remove caracteres não numéricos
+        const numeric = value.replace(/\D/g, '');
+        // Formata com espaços a cada 4 dígitos
+        const formatted = this.formatCardNumber(numeric);
+        if (formatted !== value) {
+          this.cardForm.get('cardNumber')?.setValue(formatted, { emitEvent: false });
+        }
+      }
+    });
+
+    // Formatação automática do mês (adiciona zero à esquerda)
+    this.cardForm.get('expMonth')?.valueChanges.subscribe(value => {
+      if (value && value.length === 1 && parseInt(value) > 0) {
+        const formatted = value.padStart(2, '0');
+        if (formatted !== value) {
+          this.cardForm.get('expMonth')?.setValue(formatted, { emitEvent: false });
+        }
+      }
+    });
+
+    // Limita o CVV a apenas números
+    this.cardForm.get('cvv')?.valueChanges.subscribe(value => {
+      if (value && !/^\d*$/.test(value)) {
+        const numeric = value.replace(/\D/g, '');
+        this.cardForm.get('cvv')?.setValue(numeric, { emitEvent: false });
+      }
+    });
+
+    // Limita o ano a apenas números
+    this.cardForm.get('expYear')?.valueChanges.subscribe(value => {
+      if (value && !/^\d*$/.test(value)) {
+        const numeric = value.replace(/\D/g, '');
+        this.cardForm.get('expYear')?.setValue(numeric, { emitEvent: false });
+      }
+    });
+
     // cartão polaris teste
     this.cardForm.setValue({
-      cardNumber: '5162927233718417',
+      cardNumber: '5162 9272 3371 8417',
       cardHolder: 'Joao F M luz',
       expMonth: '09',
       expYear: '2033', // Mudei para string
-      cvv: ''
+      cvv: '123'
     });
   }
 
+  formatCardNumber(value: string): string {
+    // Remove todos os espaços e caracteres não numéricos
+    const numbers = value.replace(/\D/g, '');
+    // Adiciona espaços a cada 4 dígitos
+    return numbers.replace(/(.{4})/g, '$1 ').trim();
+  }
+
+  formatCardNumberInput(event: any) {
+    const input = event.target;
+    let value = input.value.replace(/\D/g, '');
+    value = value.replace(/(.{4})/g, '$1 ').trim();
+    if (value.length > 19) {
+      value = value.substring(0, 19);
+    }
+    this.cardForm.get('cardNumber')?.setValue(value, { emitEvent: false });
+  }
+
+  formatCardHolder(event: any) {
+    const input = event.target;
+    let value = input.value.toUpperCase();
+    this.cardForm.get('cardHolder')?.setValue(value, { emitEvent: false });
+  }
+
   async submit() {
+    if (this.loading) return;
+
     if (!validateCardNumber(this.cardForm.value.cardNumber)) {
       alert('Número do cartão inválido');
       return;
@@ -65,6 +131,9 @@ export class CardModalComponent {
       alert('CVV inválido');
       return;
     }
+
+    this.loading = true;
+    this.erroMsg = null;
 
     try {
       // ⚠️ ATENÇÃO: Use os nomes corretos que o SDK JavaScript espera!
@@ -91,13 +160,16 @@ export class CardModalComponent {
         next: (res) => {
           this.ngZone.run(() => {
             console.log('Sucesso:', res);
+            this.loading = false;
             this.dialogRef.close(payload);
             this.cdr.markForCheck();
           });
         },
         error: (err) => {
           this.ngZone.run(() => {
+            console.error('Erro na assinatura:', err);
             this.erroMsg = err?.error?.message || 'Erro ao processar assinatura';
+            this.loading = false;
             this.cdr.markForCheck();
           });
         }
@@ -105,7 +177,9 @@ export class CardModalComponent {
 
     } catch (err) {
       console.error('Erro ao gerar token do cartão:', err);
-      alert('Erro ao processar cartão: ' + (err as any)?.message || 'Erro desconhecido');
+      this.loading = false;
+      this.erroMsg = 'Erro ao processar cartão: ' + ((err as any)?.message || 'Erro desconhecido');
+      this.cdr.markForCheck();
     }
   }
 

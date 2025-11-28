@@ -112,47 +112,167 @@
       </div>
 
       <div class="form-group full-width section" *ngIf="showSection.pagamentos">
-        <h1 *ngIf="loadingPagamentos">carregando pagamentos...</h1>
+
+        <div *ngIf="loadingPagamentos" class="loading-assinaturas">
+          <div class="loading-spinner"></div>
+          <p>Carregando informações de assinatura...</p>
+        </div>
 
         <div *ngIf="!loadingPagamentos" class="pagamentos-container">
-          <label>Assinaturas</label>
+          <div class="assinaturas-header">
+            <h2>Minhas Assinaturas</h2>
+            <p class="assinaturas-subtitle">Gerencie seus planos e pagamentos</p>
+          </div>
 
-          <div class="assinatura-resumo" *ngFor="let assinatura of assinaturas; let i = index">
-            <ng-container *ngIf="assinatura; else erro">
-              <div class="row"><div></div><strong class="value">{{ assinatura?.payer_id }}</strong></div>
-              <div class="row"><span class="label">Paga:</span><span class="value">R$ {{ assinatura?.auto_recurring?.transaction_amount | number:'1.2-2' }}</span></div>
-              <div class="row"><span class="label">Email:</span><span class="value">{{ assinatura?.payer_email }}</span></div>
-              <div class="row"><span class="label">Data de adesão:</span><span class="value">{{ assinatura?.date_created | date:'dd/MM/yyyy' }}</span></div>
-              <div class="row"><span class="label">Código de referência:</span><span class="value">{{ assinatura?.external_reference }}</span></div>
-              <div class="row"><span class="label">Primeiro pagamento grátis:</span><span class="value">{{ assinatura?.auto_recurring?.free_trial ? 'Sim' : 'Não' }}</span></div>
-              <div class="row"><span class="label">Data de cobrança:</span><span class="value">A cada {{ assinatura?.auto_recurring?.frequency }} {{ assinatura?.auto_recurring?.frequency_type }}</span></div>
-              <div class="row"><span class="label">Duração da assinatura:</span><span class="value">{{ assinatura?.auto_recurring?.end_date | date:'dd/MM/yyyy' }}</span></div>
-
-              <div class="mini-historico">
-                <h4>Pagamentos realizados</h4>
-                <p>{{ historicoFaturas[i]?.recebidos || 0 }} / {{ historicoFaturas[i]?.total || 0 }}</p>
+          <!-- Itera sobre cada assinatura carregada -->
+          <div *ngFor="let assinatura of assinaturas; let i = index" class="assinatura-card">
+            <ng-container *ngIf="assinatura; else erroAssinatura">
+              <!-- Header do Card -->
+              <div class="assinatura-header">
+                <div class="assinatura-status">
+                  <div class="status-badge active">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Ativa</span>
+                  </div>
+                </div>
+                <div class="assinatura-id">
+                  <span class="id-label">ID da Assinatura</span>
+                  <span class="id-value">{{ assinatura?.payer_id }}</span>
+                </div>
               </div>
 
+              <!-- Valor Principal -->
+              <div class="assinatura-valor">
+                <span class="valor-label">Valor Mensal</span>
+                <span class="valor-amount">R$ {{ assinatura?.auto_recurring?.transaction_amount | number:'1.2-2' }}</span>
+              </div>
+
+              <!-- Informações da Assinatura -->
+              <div class="assinatura-info-grid">
+                <div class="info-item">
+                  <div class="info-icon">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                  <div class="info-content">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">{{ assinatura?.payer_email }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <div class="info-icon">
+                    <i class="fas fa-calendar-check"></i>
+                  </div>
+                  <div class="info-content">
+                    <span class="info-label">Data de Adesão</span>
+                    <span class="info-value">{{ assinatura?.date_created | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <div class="info-icon">
+                    <i class="fas fa-hashtag"></i>
+                  </div>
+                  <div class="info-content">
+                    <span class="info-label">Código de Referência</span>
+                    <span class="info-value">{{ assinatura?.external_reference }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <div class="info-icon">
+                    <i class="fas fa-gift"></i>
+                  </div>
+                  <div class="info-content">
+                    <span class="info-label">Período Grátis</span>
+                    <span class="info-value">{{ assinatura?.auto_recurring?.free_trial ? 'Sim' : 'Não' }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <div class="info-icon">
+                    <i class="fas fa-sync-alt"></i>
+                  </div>
+                  <div class="info-content">
+                    <span class="info-label">Frequência de Cobrança</span>
+                    <span class="info-value">A cada {{ assinatura?.auto_recurring?.frequency }} {{ assinatura?.auto_recurring?.frequency_type }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <div class="info-icon">
+                    <i class="fas fa-calendar-times"></i>
+                  </div>
+                  <div class="info-content">
+                    <span class="info-label">Término da Assinatura</span>
+                    <span class="info-value">{{ assinatura?.auto_recurring?.end_date | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Histórico de Pagamentos -->
+              <div class="historico-pagamentos">
+                <div class="historico-header">
+                  <i class="fas fa-history"></i>
+                  <h4>Histórico de Pagamentos</h4>
+                </div>
+                <div class="historico-stats">
+                  <div class="stat-item">
+                    <span class="stat-number">{{ historicoFaturas[i]?.total || 0 }}</span>
+                    <span class="stat-label">Pagamentos Realizados</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ações da Assinatura -->
               <div class="acoes-assinatura">
-                <button (click)="trocarPlano(assinatura)">Trocar plano</button>
-                <button (click)="atualizarPagamento(assinatura)">Atualizar forma de pagamento</button>
+                <button class="btn-acao btn-trocar" (click)="trocarPlano(assinatura)">
+                  <i class="fas fa-exchange-alt"></i>
+                  <span>Trocar Plano</span>
+                </button>
+                <button class="btn-acao btn-atualizar" (click)="atualizarPagamento(assinatura)">
+                  <i class="fas fa-credit-card"></i>
+                  <span>Atualizar Pagamento</span>
+                </button>
               </div>
             </ng-container>
 
-            <ng-template #erro>
-              <div class="assinatura-erro"><p>Erro ao carregar esta assinatura.</p></div>
+            <!-- Template para erro ao carregar assinatura -->
+            <ng-template #erroAssinatura>
+              <div class="assinatura-erro">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Erro ao carregar esta assinatura.</p>
+              </div>
             </ng-template>
           </div>
 
-          <div class="plans-container" *ngIf="assinaturas.length === 0">
-            <div class="plan-card" *ngFor="let plano of planos">
-              <h3>{{ plano.nome }}</h3>
-              <p>R$ {{ plano.valor | number:'1.2-2' }} / {{ plano.periodo }}</p>
-              <p *ngIf="plano.desconto">Desconto: {{ plano.desconto }}%</p>
-              <button (click)="assinarPlano(plano)">Assinar</button>
+          <!-- Se não tiver nenhuma assinatura, mostra os planos para assinar -->
+          <div *ngIf="!loadingPagamentos && assinaturas.length == 0" class="plans-section">
+            <div class="plans-header">
+              <h2>Escolha seu Plano</h2>
+              <p class="plans-subtitle">Selecione o plano ideal para você</p>
+            </div>
+            <div class="plans-container">
+              <div class="plan-card" *ngFor="let plano of planos">
+                <div class="plan-header">
+                  <h3>{{ plano.nome }}</h3>
+                  <div class="plan-badge" *ngIf="plano.desconto">
+                    <span>{{ plano.desconto }}% OFF</span>
+                  </div>
+                </div>
+                <div class="plan-price">
+                  <span class="price-amount">R$ {{ plano.valor | number:'1.2-2' }}</span>
+                  <span class="price-period">/ {{ plano.periodo }}</span>
+                </div>
+                <button class="btn-assinar" (click)="assinarPlano(plano)">
+                  <i class="fas fa-check"></i>
+                  <span>Assinar Agora</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <button class="submit-btn" *ngIf="!showSection.pagamentos" (click)="salvarAlteracoes()">

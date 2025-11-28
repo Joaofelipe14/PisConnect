@@ -490,78 +490,498 @@ textarea {
   color: #0f766e;
 }
 
-.plans-container {
+/* ============================================
+   SEÇÃO DE ASSINATURAS - DESIGN PROFISSIONAL
+   ============================================ */
+
+/* Loading de Assinaturas */
+.loading-assinaturas {
   display: flex;
-  gap: 16px;
-  margin-top: 8px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #14b8a6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-assinaturas p {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* Container de Pagamentos */
+.pagamentos-container {
+  width: 100%;
+  animation: fadeIn 0.4s ease;
+}
+
+.assinaturas-header {
+  margin-bottom: 2rem;
+}
+
+.assinaturas-header h2 {
+  font-size: 1.75rem;
+  color: #0f766e;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.assinaturas-subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Card de Assinatura */
+.assinatura-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.assinatura-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  transform: scaleY(1);
+}
+
+.assinatura-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: rgba(20, 184, 166, 0.25);
+}
+
+/* Header do Card */
+.assinatura-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f0fdfa;
+}
+
+.assinatura-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.status-badge.active i {
+  color: #16a34a;
+}
+
+.assinatura-id {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.id-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.id-value {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+/* Valor Principal */
+.assinatura-valor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.valor-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.valor-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f766e;
+  line-height: 1;
+}
+
+/* Grid de Informações */
+.assinatura-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.info-item:hover {
+  background: #f0fdfa;
+  transform: translateX(4px);
+}
+
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: white;
+  border-radius: 10px;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+/* Histórico de Pagamentos */
+.historico-pagamentos {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.historico-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.historico-header i {
+  color: #14b8a6;
+  font-size: 1.25rem;
+}
+
+.historico-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0f766e;
+  font-weight: 600;
+}
+
+.historico-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #14b8a6;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-align: center;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 60px;
+  background: #e5e7eb;
+}
+
+/* Ações da Assinatura */
+.acoes-assinatura {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-acao {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-acao i {
+  font-size: 1.1rem;
+}
+
+.btn-trocar {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: white;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+}
+
+.btn-trocar:hover {
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.35);
+  transform: translateY(-2px);
+}
+
+.btn-atualizar {
+  background: #ffffff;
+  color: #14b8a6;
+  border: 2px solid #14b8a6;
+}
+
+.btn-atualizar:hover {
+  background: #f0fdfa;
+  border-color: #0d9488;
+  color: #0d9488;
+  transform: translateY(-2px);
+}
+
+/* Erro de Assinatura */
+.assinatura-erro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+  text-align: center;
+}
+
+.assinatura-erro i {
+  font-size: 3rem;
+  color: #ef4444;
+}
+
+.assinatura-erro p {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Seção de Planos */
+.plans-section {
+  margin-top: 2rem;
+}
+
+.plans-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.plans-header h2 {
+  font-size: 1.75rem;
+  color: #0f766e;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.plans-subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.plans-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .plan-card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  width: 180px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.plan-card button {
-  margin-top: 12px;
-  padding: 8px 16px;
-  background-color: #009ee3;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.plans-container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 2px solid #f1f5f9;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
   display: flex;
-  gap: 16px;
-  margin-top: 8px;
-}
-
-.plan-card,
-.assinatura-resumo {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
-  width: 500px;
 }
 
-.acoes-assinatura {
-  gap: 10px;
+.plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: rgba(20, 184, 166, 0.3);
+}
+
+.plan-header {
+  width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
 }
 
-.plan-card button,
-.acoes-assinatura button {
-  margin-top: 12px;
-  padding: 8px 16px;
-  background-color: #009ee3;
+.plan-card h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #0f766e;
+  font-weight: 700;
+  flex: 1;
+  text-align: left;
+}
+
+.plan-badge {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.price-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f766e;
+  line-height: 1;
+}
+
+.price-period {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.btn-assinar {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+  margin-top: auto;
 }
 
-.row {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
+.btn-assinar:hover {
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.35);
+  transform: translateY(-2px);
 }
 
-.label {
-  font-weight: bold;
+.btn-assinar i {
+  font-size: 1rem;
 }
 
-.value {
-  text-align: right;
-}
 /* ===========================
    RESPONSIVIDADE
 =========================== */
@@ -572,19 +992,9 @@ textarea {
     padding: 1.5rem;
   }
 
-  .row {
-    flex-direction: column;
-    gap: 12px;
-  }
-
   .plans-container {
     flex-wrap: wrap;
     justify-content: center;
-  }
-
-  .plan-card,
-  .assinatura-resumo {
-    width: 100%;
   }
 }
 
@@ -637,6 +1047,40 @@ textarea {
   .row {
     flex-direction: column;
   }
+
+  /* Responsividade da Seção de Assinatura */
+  .assinatura-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acoes-assinatura {
+    flex-direction: column;
+  }
+
+  .assinatura-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .assinatura-id {
+    align-items: flex-start;
+  }
+
+  .historico-stats {
+    justify-content: center;
+  }
+
+  .plans-container {
+    grid-template-columns: 1fr;
+  }
+
+  .valor-amount {
+    font-size: 2rem;
+  }
+
+  .price-amount {
+    font-size: 2rem;
+  }
 }
 
 /* Telas até 480px (celulares pequenos) */
@@ -662,9 +1106,12 @@ textarea {
     font-size: .9rem;
   }
 
-  .plan-card,
-  .assinatura-resumo {
+  .plan-card {
     padding: 12px;
+  }
+
+  .assinatura-card {
+    padding: 1.5rem;
   }
 
   .acoes-assinatura {
