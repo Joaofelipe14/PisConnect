@@ -15,14 +15,14 @@ declare var MercadoPago: any;
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './card-modal.html',
-    styleUrls: ['./card-modal.css']
+  styleUrls: ['./card-modal.css']
 
 })
 export class CardModalComponent {
   cardForm: FormGroup;
   mp: any;
-erroMsg: string | null = null;
-
+  erroMsg: string | null = null;
+  
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CardModalComponent>,
@@ -41,8 +41,7 @@ erroMsg: string | null = null;
     });
 
     // Inicializa o Mercado Pago
-    this.mp = new MercadoPago('TEST-76682c7a-7fe7-4625-926e-03ad3713d430', { locale: 'pt-BR' });
-
+    this.mp = new MercadoPago('APP_USR-895512992341275-112811-4b00743e63d7b1d9e87276bc5e7e2790-2483575932', { locale: 'pt-BR' });
     // cartão polaris teste
     this.cardForm.setValue({
       cardNumber: '5162927233718417',
@@ -98,9 +97,7 @@ erroMsg: string | null = null;
         },
         error: (err) => {
           this.ngZone.run(() => {
-            console.error('Erro na assinatura:', err);
-                this.erroMsg = err?.error?.message || 'Erro ao processar assinatura';
-
+            this.erroMsg = err?.error?.message || 'Erro ao processar assinatura';
             this.cdr.markForCheck();
           });
         }
