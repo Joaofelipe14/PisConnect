@@ -7,6 +7,8 @@ import { Loading } from '../../loading/loading';
 import { SupabaseService } from '../../services/supabase';
 import { ALL_ABORDAGENS, ALL_AREAS, ALL_PUBLICOS } from '../constants';
 import { S3StorageService } from '../../services/s3-storage.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CardModalComponent } from '../../card-modal/card-modal';
 
 @Component({
   selector: 'app-meus-dados',
@@ -46,7 +48,8 @@ export class MeusDadosComponent implements OnInit {
     private auth: AuthService,
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
-    private s3service: S3StorageService
+    private s3service: S3StorageService,
+    private dialog: MatDialog
   ) { }
 
   allAreas = ALL_AREAS
@@ -355,5 +358,18 @@ export class MeusDadosComponent implements OnInit {
     }
   }
 
+  openCardModal() {
+    const dialogRef = this.dialog.open(CardModalComponent, {
+      width: '400px',
+      data: {} // se quiser passar dados pro modal
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Dados do cartão:', result);
+        // Aqui você faz a requisição pro seu endpoint de assinatura
+        // Ex: this.assinar(result)
+      }
+    });
+  }
 }
