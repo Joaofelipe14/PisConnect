@@ -57,12 +57,27 @@ export class CardModalComponent {
       }
     });
 
-    // Formatação automática do mês (adiciona zero à esquerda)
+    // Formatação automática do mês (adiciona zero à esquerda apenas quando necessário)
     this.cardForm.get('expMonth')?.valueChanges.subscribe(value => {
-      if (value && value.length === 1 && parseInt(value) > 0) {
-        const formatted = value.padStart(2, '0');
-        if (formatted !== value) {
-          this.cardForm.get('expMonth')?.setValue(formatted, { emitEvent: false });
+      if (value) {
+        // Remove caracteres não numéricos
+        const numeric = value.replace(/\D/g, '');
+        
+        // Limita a 2 dígitos
+        const limited = numeric.substring(0, 2);
+        
+        // Valida se está entre 1 e 12
+        const monthNum = parseInt(limited);
+        if (limited.length === 2 && (monthNum < 1 || monthNum > 12)) {
+          // Se for inválido, mantém apenas o primeiro dígito
+          const firstDigit = limited.substring(0, 1);
+          this.cardForm.get('expMonth')?.setValue(firstDigit, { emitEvent: false });
+          return;
+        }
+        
+        // Atualiza o valor se necessário
+        if (limited !== value) {
+          this.cardForm.get('expMonth')?.setValue(limited, { emitEvent: false });
         }
       }
     });
@@ -114,6 +129,17 @@ export class CardModalComponent {
     const input = event.target;
     let value = input.value.toUpperCase();
     this.cardForm.get('cardHolder')?.setValue(value, { emitEvent: false });
+  }
+
+  formatMonthOnBlur() {
+    const monthValue = this.cardForm.get('expMonth')?.value;
+    if (monthValue && monthValue.length === 1) {
+      const monthNum = parseInt(monthValue);
+      if (monthNum >= 1 && monthNum <= 9) {
+        // Adiciona zero à esquerda apenas quando o campo perde o foco e tem 1 dígito válido
+        this.cardForm.get('expMonth')?.setValue(monthValue.padStart(2, '0'), { emitEvent: false });
+      }
+    }
   }
 
   async submit() {

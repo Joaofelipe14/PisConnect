@@ -80,6 +80,7 @@
               placeholder="MM"
               maxlength="2"
               class="input-small"
+              (blur)="formatMonthOnBlur()"
             />
             <span class="separator">/</span>
             <input 
