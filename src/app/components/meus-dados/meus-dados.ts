@@ -4,12 +4,13 @@ import { AuthService } from '../../services/auth';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Loading } from '../../loading/loading';
-import { SupabaseService } from '../../services/supabase';
+import planosJson from './planos.json';
 import { ALL_ABORDAGENS, ALL_AREAS, ALL_PUBLICOS } from '../constants';
 import { S3StorageService } from '../../services/s3-storage.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CardModalComponent } from '../../card-modal/card-modal';
 import { ordem } from '../../services/ordem';
+import { ConfirmAssinaturaDialog } from '../../confirm-assinatura-dialog/confirm-assinatura-dialog';
 
 @Component({
   selector: 'app-meus-dados',
@@ -24,7 +25,13 @@ export class MeusDadosComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   meusDadosForm!: FormGroup;
-
+  today: string = new Date().toISOString().split('T')[0];
+  assinaturasTotais: {
+    total: string,
+    pagas: string,
+    pendentes: string,
+    vencidas: string
+  }[] = [];
   // Listas completas
 
 
@@ -59,6 +66,7 @@ export class MeusDadosComponent implements OnInit {
   allAreas = ALL_AREAS
   allAbordagens = ALL_ABORDAGENS
   allPublicos = ALL_PUBLICOS;
+  planos = planosJson;
 
   ngOnInit() {
     this.initForm();
@@ -77,7 +85,8 @@ export class MeusDadosComponent implements OnInit {
       abordagem_terapeutica: [[]],
       publico_alvo: [[]],
       redes_sociais: this.fb.array([]),
-      foto_url: ['']
+      foto_url: [''],
+      cpf: ['', Validators.required]
     });
   }
 
@@ -136,6 +145,32 @@ export class MeusDadosComponent implements OnInit {
     return value || []; // Se não for string, retorna o próprio valor ou um array vazio
   }
 
+  getStatusTexto(assinaturaItem: any): string {
+    if (!assinaturaItem || !assinaturaItem.assinatura) return 'Indisponível';
+
+    return 'Ativa';
+  }
+
+
+  formatCPF(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '');
+
+    if (!value) {
+      this.meusDadosForm.patchValue({ cpf: '' });
+      return;
+    }
+
+    if (value.length > 11) value = value.slice(0, 11);
+
+    if (value.length > 3) value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    if (value.length > 6) value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    if (value.length > 9) value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+    input.value = value;
+    this.meusDadosForm.patchValue({ cpf: value });
+  }
+
   loadUserData() {
     this.loading = true;
 
@@ -144,6 +179,14 @@ export class MeusDadosComponent implements OnInit {
         this.ngZone.run(() => {
           const user = res.user;
           this.user = user;
+
+          if (user.cpf) {
+            this.meusDadosForm.get('cpf')?.disable()
+
+          } else {
+            this.meusDadosForm.get('cpf')?.enable()
+
+          }
 
           this.meusDadosForm.patchValue({
             nome: user.nome,
@@ -155,8 +198,10 @@ export class MeusDadosComponent implements OnInit {
             areas_atuacao: user.areas_atuacao || [],
             abordagem_terapeutica: this.parseJson(user.abordagem_terapeutica),
             publico_alvo: this.parseJson(user.publico_alvo),
-            foto_url: user.foto_url
+            foto_url: user.foto_url,
+            cpf: user.cpf
           });
+
 
           this.fotoPreview = user.foto_url;
 
@@ -186,7 +231,6 @@ export class MeusDadosComponent implements OnInit {
   // ---------------------------
 
   addItem(field: string, item: string) {
-    console.log('Adding item:', item, 'to field:', field);
     const current = this.meusDadosForm.get(field)?.value;
     if (!current.includes(item)) {
       this.meusDadosForm.patchValue({ [field]: [...current, item] });
@@ -224,8 +268,6 @@ export class MeusDadosComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
     this.successMessage = '';
-
-    console.log('Dados para salvar:', this.meusDadosForm.value);
     this.auth.update(this.meusDadosForm.value).subscribe({
       next: () => {
         this.ngZone.run(() => {
@@ -254,7 +296,6 @@ export class MeusDadosComponent implements OnInit {
           this.loading = false;
 
           this.cdr.markForCheck();
-          console.log('markForCheck chamado (erro)');
         });
       }
     });
@@ -316,10 +357,8 @@ export class MeusDadosComponent implements OnInit {
     this.showSection[section] = true;
     if (section == 'pagamentos' && this.assinaturas.length == 0) {
       this.loadingPagamentos = true;
-      console.log('buscando pagamentos..')
       await this.carregarAssinaturas()
     }
-    console.log(section)
   }
 
   fotoUploadStatus = '';
@@ -346,7 +385,6 @@ export class MeusDadosComponent implements OnInit {
       };
       reader.readAsDataURL(file);
 
-      console.log(file)
       // Upload no Supabase
       const fotoUrl = await this.s3service.uploadFotoPerfil(this.user.id, file);
 
@@ -367,12 +405,6 @@ export class MeusDadosComponent implements OnInit {
     }
   }
 
-  planos = [
-    { nome: 'Mensal', valor: 10, periodo: 'mês', desconto: 0, preapproval_plan_id: 'mensal-id' },
-    { nome: 'Trimestral', valor: 1.5, periodo: '3 meses', desconto: 5, preapproval_plan_id: '5ce014e83e3e4dd595be8bef07e86b89' },
-    { nome: 'Anual', valor: 108, periodo: 'ano', desconto: 10, preapproval_plan_id: 'anual-id' }
-  ];
-
   openCardModal(plano: any) {
     const dialogRef = this.dialog.open(CardModalComponent, {
       width: '90%',
@@ -384,7 +416,6 @@ export class MeusDadosComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Dados do cartão e plano:', result);
         // Aqui você faz a requisição pro seu endpoint de assinatura
         // Ex: this.assinar(result)
       }
@@ -399,13 +430,12 @@ export class MeusDadosComponent implements OnInit {
     // buscar do getMe()
     const subscriptionIds = ['']; // ['30d0...', '30d1...', ...]
 
-    console.log(subscriptionIds)
-    // Mapeia cada ID para uma promessa que nunca rejeita
+    if (subscriptionIds.length == 0) {
+    }    // Mapeia cada ID para uma promessa que nunca rejeita
     const promises = subscriptionIds.map(id =>
-      this.ordem.getAssinatura(id).toPromise()
+      this.ordem.getMinhasAssinatura().toPromise()
         .then(res => res)
         .catch(err => {
-          console.error(`Erro ao carregar assinatura ${id}:`, err);
           this.loadingPagamentos = false;
           return null; // retorna null se der erro, não quebra o Promise.all
         })
@@ -414,13 +444,28 @@ export class MeusDadosComponent implements OnInit {
     const results = await Promise.all(promises);
 
     this.ngZone.run(() => {
+      if (results[0].assinaturas) {
+        this.assinaturas = results[0].assinaturas
+        if (this.assinaturas) {
+          const todayTimestamp = new Date().getTime();
 
-      this.assinaturas = results.filter(r => r !== null);
-      this.historicoFaturas = this.assinaturas.map(a => ({
-        recebidos: a.summarized?.charged_quantity ?? 0,
-        total: a.summarized?.quotas ?? 0
-      }));
+          this.assinaturas.forEach(item => {
+            const cobrancas = item?.cobrancas || [];
+            const totais = {
+              total: cobrancas.length,
+              pagas: cobrancas.filter((c: { status: string; }) => c?.status === 'RECEIVED').length,
+              pendentes: cobrancas.filter((c: { status: string; dueDate: string | number | Date; }) =>
+                c?.status === 'PENDING' && (!c?.dueDate || new Date(c.dueDate).getTime() >= todayTimestamp)
+              ).length,
+              vencidas: cobrancas.filter((c: { status: string; dueDate: string | number | Date; }) =>
+                c?.status === 'PENDING' && c?.dueDate && new Date(c.dueDate).getTime() < todayTimestamp
+              ).length
+            };
 
+            this.assinaturasTotais.push(totais);
+          });
+        }
+      }
       this.loadingPagamentos = false;
 
       this.cdr.markForCheck();
@@ -429,16 +474,54 @@ export class MeusDadosComponent implements OnInit {
 
 
   assinarPlano(plano: any) {
-    this.openCardModal(plano)
-    console.log('Selecionou plano:', plano);
-    // abrir modal do cartão e criar assinatura
+    const dialogRef = this.dialog.open(ConfirmAssinaturaDialog, {
+      width: '400px',
+      data: { plano }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.startLoadingAndAssinar(plano);
+      }
+    });
+
+  }
+
+  startLoadingAndAssinar(plano: any) {
+    setTimeout(() => {
+      this.loading = true;
+      this.gerarAssinatura(plano);
+      this.cdr.markForCheck();
+    }, 100);
+  }
+  gerarAssinatura(plano: any) {
+    this.mensagemDeCarregamento = "Criando assinatura";
+    this.loading = true;
+    const payload = { plano_id: plano.id };
+    this.ordem.gerarOrdemAssinatura(payload).subscribe({
+      next: (res: any) => {
+        this.ngZone.run(() => {
+          alert('Assinatura realizada com sucesso!');
+          this.carregarAssinaturas()
+          this.loading = false;
+          this.cdr.markForCheck();
+        });
+      },
+      error: (err: any) => {
+        this.ngZone.run(() => {
+          console.error('Erro na assinatura:', err);
+          alert('Erro ao assinar: ' + err);
+          this.loading = false;
+          this.cdr.markForCheck();
+        });
+      }
+    });
   }
 
   atualizarPagamento(plano: any) {
     console.log('Atualizar forma de pagamento');
     // abrir modal do cartão para atualizar card token
   }
-
+ 
   trocarPlano(plano: any) {
     console.log('Trocar plano');
     // abrir tela/modal para escolher novo plano

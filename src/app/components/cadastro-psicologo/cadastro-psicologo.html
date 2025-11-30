@@ -55,6 +55,18 @@
           />
         </div>
 
+          <div class="form-group">
+          <label for="cpf">CPF *</label>
+          <input
+            id="cpf"
+            type="text"
+            placeholder="123.456.789-12"
+            formControlName="cpf"
+            (input)="formatCPF($event)"
+            [class.error]="cadastroForm.get('cpf')?.invalid && cadastroForm.get('cpf')?.touched"
+          />
+        </div>
+
         <div class="form-group">
           <label for="whatsapp">WhatsApp (Formato: (99) 99999-9999) *</label>
           <input

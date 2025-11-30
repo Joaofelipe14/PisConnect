@@ -1,0 +1,35 @@
+[
+  {
+    "idx": 0,
+    "id": "326ecf9b-b009-418b-8c22-1f7ab8e80862",
+    "nome": "Plano Mensal",
+    "preco_normal": "10.00",
+    "preco_promocional": "10.00",
+    "duracao_dias": 30,
+    "ativo": 1,
+    "criado_em": "2025-11-28 15:00:54.992244+00",
+    "descricao": "Plano mensal para psicólogos se cadastrarem e aparecerem no sistema, permitindo que pacientes encontrem seus perfis rapidamente."
+  },
+  {
+    "idx": 1,
+    "id": "5b4f1a7a-5c1d-4b9b-9c7d-1f47979084e2",
+    "nome": "Plano Trimestral",
+    "preco_normal": "27.00",
+    "preco_promocional": "27.00",
+    "duracao_dias": 90,
+    "ativo": 1,
+    "criado_em": "2025-11-28 15:00:54.992244+00",
+    "descricao": "Plano trimestral que permite aos psicólogos manter seu cadastro ativo, garantindo visibilidade contínua para pacientes e maior alcance."
+  },
+  {
+    "idx": 2,
+    "id": "7eba0c6c-e570-4283-8067-b043726d26b7",
+    "nome": "Plano Anual",
+    "preco_normal": "108.00",
+    "preco_promocional": "108.00",
+    "duracao_dias": 365,
+    "ativo": 1,
+    "criado_em": "2025-11-28 15:00:54.992244+00",
+    "descricao": "Plano anual que garante máxima exposição dos psicólogos cadastrados, facilitando que pacientes encontrem e agendem consultas durante todo o ano."
+  }
+]

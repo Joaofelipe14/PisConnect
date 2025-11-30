@@ -880,7 +880,9 @@ textarea {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+
 }
 
 .plan-card {
@@ -1046,6 +1048,7 @@ textarea {
 
   .row {
     flex-direction: column;
+    gap: 0px;
   }
 
   /* Responsividade da Seção de Assinatura */
@@ -1122,4 +1125,51 @@ textarea {
   .acoes-assinatura button {
     width: 100%;
   }
+}
+
+.cobranca-item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  background-color: #f9f9f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.cobranca-item p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.cobranca-item a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.cobranca-item a:hover {
+  text-decoration: underline;
+}
+
+.cobranca-item.pago {
+  background-color: #d4edda;
+}
+
+.cobranca-item.pendente {
+  background-color: #fff3cd;
+}
+
+.cobranca-item.vencido {
+  background-color: #f8d7da;
+}
+
+.status-badge.expired {
+  background-color: orange;
+}
+
+.status-badge.canceled {
+  background-color: red;
+}
+
+.status-badge.inactive {
+  background-color: gray;
 }

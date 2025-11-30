@@ -27,7 +27,7 @@ export class ordem {
   }
 
   gerarOrdemAssinatura(data: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}`, data, { headers: this.getHeaders() })
+    return this.http.post<any>(`${this.baseUrl}/cadastrar`, data, { headers: this.getHeaders() })
       .pipe(
         map(res => {
             console.log(res)
@@ -42,14 +42,12 @@ export class ordem {
         })
       );
   }
-getAssinatura(id: string): Observable<any> {
+getMinhasAssinatura(): Observable<any> {
   return this.http.get<any>(
-      `${this.baseUrl}/${id}`,{ headers: this.getHeaders() } // headers vão no terceiro parâmetro
+      `${this.baseUrl}/minhas-assinaturas`,{ headers: this.getHeaders() }
     )
     .pipe(
       map(res => {
-        console.log(res);
-   
         return res;
       }),
       catchError(err => {

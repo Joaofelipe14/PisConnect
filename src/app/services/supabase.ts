@@ -98,7 +98,7 @@ export class SupabaseService {
   async toggleAtivoPsicologo(id: string, ativo: any) {
     const { data, error } = await this.supabase
       .from('psicologos')
-      .update({ ativo: ativo ? 1 : 0 })  // <-- converte boolean para 1 ou 0
+      .update({ liberado_admin: ativo ? 1 : 0 })  // <-- converte boolean para 1 ou 0
       .eq('id', id);
 
     if (error) throw error;
@@ -108,7 +108,7 @@ export class SupabaseService {
   async buscarPsicologosAdmin(filtroAtivo?: boolean) {
     let query = this.supabase.from('psicologos').select('*').order('criado_em', { ascending: false });
     if (filtroAtivo !== undefined) {
-      query = query.eq('ativo', filtroAtivo ? 1 : 0);  // <-- converte boolean para 1 ou 0
+      query = query.eq('liberado_admin', filtroAtivo ? 1 : 0);  // <-- converte boolean para 1 ou 0
     }
     const { data, error } = await query;
     if (error) throw error;
