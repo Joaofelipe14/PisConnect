@@ -34,10 +34,10 @@
       </ng-template>
 
       <h3>{{ p.nome }}</h3>
-      <p>Status: <span [class.ativo]="p.ativo" [class.inativo]="!p.ativo">{{ p.ativo ? 'Ativo' : 'Inativo' }}</span></p>
+      <p>Status: <span [class.ativo]="p.liberado_admin" [class.inativo]="!p.liberado_admin">{{ p.liberado_admin ? 'Ativo' : 'Inativo' }}</span></p>
       <button (click)="abrirConfirmToggle(p); $event.stopPropagation()"
-        [ngClass]="p.ativo ? 'btn-desativar' : 'btn-ativar'">
-        {{ p.ativo ? 'Desativar' : 'Ativar' }}
+        [ngClass]="p.liberado_admin ? 'btn-desativar' : 'btn-ativar'">
+        {{ p.liberado_admin ? 'Desativar' : 'Ativar' }}
       </button>
 
     </div>

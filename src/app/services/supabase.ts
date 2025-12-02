@@ -55,7 +55,7 @@ export class SupabaseService {
 
   async buscarPsicologos() {
     const { data, error } = await this.supabase
-      .from('psicologos')
+      .from('psicologos_ativos')
       .select('*')
       .order('criado_em', { ascending: false });
 
@@ -65,7 +65,7 @@ export class SupabaseService {
 
   async buscarPsicologoPorId(id: string) {
     const { data, error } = await this.supabase
-      .from('psicologos')
+      .from('psicologos_ativos')
       .select('*')
       .eq('id', id)
       .single();
