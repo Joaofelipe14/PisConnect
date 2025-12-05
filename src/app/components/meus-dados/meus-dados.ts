@@ -151,6 +151,177 @@ export class MeusDadosComponent implements OnInit {
     return 'Ativa';
   }
 
+  // Parse do motivo_status (JSON string)
+  getMotivoStatus(assinaturaItem: any): any {
+    if (!assinaturaItem?.motivo_status) return null;
+    
+    try {
+      if (typeof assinaturaItem.motivo_status === 'string') {
+        return JSON.parse(assinaturaItem.motivo_status);
+      }
+      return assinaturaItem.motivo_status;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Tradução de Cycle (Frequência)
+  traduzirCycle(cycle: string): string {
+    const traducoes: { [key: string]: string } = {
+      'WEEKLY': 'Semanal',
+      'MONTHLY': 'Mensal',
+      'YEARLY': 'Anual',
+      'DAILY': 'Diária',
+      'BIWEEKLY': 'Quinzenal',
+      'QUARTERLY': 'Trimestral',
+      'SEMIANNUAL': 'Semestral',
+      'BIANNUAL': 'Bianual'
+    };
+    return traducoes[cycle] || cycle;
+  }
+
+  // Tradução de BillingType (Forma de Pagamento)
+  traduzirBillingType(billingType: string): string {
+    const traducoes: { [key: string]: string } = {
+      'UNDEFINED': 'Indefinido',
+      'CREDIT_CARD': 'Cartão de Crédito',
+      'BOLETO': 'Boleto Bancário',
+      'PIX': 'PIX',
+      'DEBIT_CARD': 'Cartão de Débito',
+      'TRANSFER': 'Transferência Bancária'
+    };
+    return traducoes[billingType] || billingType;
+  }
+
+  // Tradução de Status
+  traduzirStatus(status: string): string {
+    const traducoes: { [key: string]: string } = {
+      'ACTIVE': 'Ativa',
+      'INACTIVE': 'Inativa',
+      'EXPIRED': 'Expirada',
+      'CANCELED': 'Cancelada',
+      'PENDING': 'Pendente'
+    };
+    return traducoes[status] || status;
+  }
+
+  // Formatar data de próximo vencimento
+  getProximoVencimento(assinaturaItem: any): string {
+    const motivoStatus = this.getMotivoStatus(assinaturaItem);
+    if (!motivoStatus?.nextDueDate) return 'Não informado';
+    
+    try {
+      const date = new Date(motivoStatus.nextDueDate);
+      return date.toLocaleDateString('pt-BR');
+    } catch (e) {
+      return motivoStatus.nextDueDate;
+    }
+  }
+
+  // Verifica se deve mostrar aviso de desativação
+  // Mostra quando há data_expiracao e está dentro da janela de 5 dias após expiração
+  deveMostrarAvisoDesativacao(assinaturaItem: any): boolean {
+    const dataExpiracao = assinaturaItem?.data_expiracao;
+    if (!dataExpiracao) return false;
+
+    try {
+      const dataExp = new Date(dataExpiracao);
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      dataExp.setHours(0, 0, 0, 0);
+
+      // Calcula a diferença em dias
+      const diffTime = dataExp.getTime() - hoje.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      // Mostra aviso se já expirou ou está nos últimos 5 dias antes de expirar
+      // E também mostra se já passou até 5 dias após a expiração
+      const dataLimite = new Date(dataExp);
+      dataLimite.setDate(dataLimite.getDate() + 5); // 5 dias após expiração
+      const diffLimite = dataLimite.getTime() - hoje.getTime();
+      const diasAteLimite = Math.ceil(diffLimite / (1000 * 60 * 60 * 24));
+
+      // Mostra se está nos últimos 5 dias antes de expirar OU se já expirou mas ainda está dentro dos 5 dias após
+      return (diffDays <= 5 && diffDays >= 0) || (diffDays < 0 && diasAteLimite >= 0);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Calcula dias até/pós expiração
+  getDiasExpiracao(assinaturaItem: any): number {
+    const dataExpiracao = assinaturaItem?.data_expiracao;
+    if (!dataExpiracao) return 0;
+
+    try {
+      const dataExp = new Date(dataExpiracao);
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      dataExp.setHours(0, 0, 0, 0);
+
+      const diffTime = dataExp.getTime() - hoje.getTime();
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  // Verifica se já expirou
+  jaExpirou(assinaturaItem: any): boolean {
+    return this.getDiasExpiracao(assinaturaItem) < 0;
+  }
+
+  // Formata data de expiração
+  getDataExpiracaoFormatada(assinaturaItem: any): string {
+    // Tenta primeiro data_expiracao, depois endDate
+    const dataExpiracao = assinaturaItem?.data_expiracao || assinaturaItem?.assinatura?.endDate;
+    if (!dataExpiracao) return '';
+
+    try {
+      const date = new Date(dataExpiracao);
+      return date.toLocaleDateString('pt-BR');
+    } catch (e) {
+      return '';
+    }
+  }
+
+  // Verifica se é o dia do vencimento/expiração
+  ehDiaVencimento(assinaturaItem: any): boolean {
+    const dataExpiracao = assinaturaItem?.data_expiracao || assinaturaItem?.assinatura?.endDate;
+    if (!dataExpiracao) return false;
+
+    try {
+      const dataExp = new Date(dataExpiracao);
+      const hoje = new Date();
+      
+      // Compara apenas dia, mês e ano (ignora horas)
+      hoje.setHours(0, 0, 0, 0);
+      dataExp.setHours(0, 0, 0, 0);
+
+      return dataExp.getTime() === hoje.getTime();
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Calcula data limite para desativação (5 dias após expiração)
+  getDataLimiteDesativacao(assinaturaItem: any): string {
+    const dataExpiracao = assinaturaItem?.data_expiracao;
+    if (!dataExpiracao) return 'Não informado';
+
+    try {
+      const dataExp = new Date(dataExpiracao);
+      // Adiciona 5 dias
+      dataExp.setDate(dataExp.getDate() + 5);
+      return dataExp.toLocaleDateString('pt-BR');
+    } catch (e) {
+      return 'Não informado';
+    }
+  }
+
+  // Expor Math para uso no template
+  Math = Math;
+
 
   formatCPF(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -475,7 +646,10 @@ export class MeusDadosComponent implements OnInit {
 
   assinarPlano(plano: any) {
     const dialogRef = this.dialog.open(ConfirmAssinaturaDialog, {
-      width: '400px',
+      width: '90%',
+      maxWidth: '500px',
+      maxHeight: '95vh',
+      panelClass: 'confirm-assinatura-panel',
       data: { plano }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -500,7 +674,9 @@ export class MeusDadosComponent implements OnInit {
     this.ordem.gerarOrdemAssinatura(payload).subscribe({
       next: (res: any) => {
         this.ngZone.run(() => {
-          alert('Assinatura realizada com sucesso!');
+          const mensagem = 'Assinatura realizada com sucesso!\n\n' +
+            'Após a confirmação do pagamento, seu nome aparecerá na listagem pública de psicólogos.';
+          alert(mensagem);
           this.carregarAssinaturas()
           this.loading = false;
           this.cdr.markForCheck();
@@ -525,6 +701,20 @@ export class MeusDadosComponent implements OnInit {
   trocarPlano(plano: any) {
     console.log('Trocar plano');
     // abrir tela/modal para escolher novo plano
+  }
+
+  cancelarPlano(assinaturaItem: any) {
+    const confirmacao = confirm(
+      'Tem certeza que deseja cancelar sua assinatura?\n\n' +
+      'Ao cancelar, você perderá o acesso ao plano e seu perfil será removido da listagem pública.\n\n' +
+      'Esta ação não pode ser desfeita.'
+    );
+    
+    if (confirmacao) {
+      console.log('Cancelar assinatura:', assinaturaItem);
+      // Implementar lógica de cancelamento aqui
+      // this.ordem.cancelarAssinatura(assinaturaItem.id).subscribe(...)
+    }
   }
 
 }

@@ -7,19 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-confirm-assinatura-dialog',
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule],
-  template: `
-    <h1 mat-dialog-title>Confirmação de Assinatura</h1>
-    <div mat-dialog-content>
-      <p><strong>Plano:</strong> {{data.plano.nome}}</p>
-      <p>{{data.plano.descricao}}</p>
-      <p>Preço: R$ {{data.plano.preco_promocional}} | Duração: {{data.plano.duracao_dias}} dias</p>
-      <p>Você será cobrado hoje e terá acesso ao plano pelos próximos {{data.plano.duracao_dias}} dias.</p>
-    </div>
-    <div mat-dialog-actions>
-      <button mat-button (click)="onCancel()">Cancelar</button>
-      <button mat-button color="primary" (click)="onConfirm()">Confirmar</button>
-    </div>
-  `
+  templateUrl: './confirm-assinatura-dialog.html',
+  styleUrls: ['./confirm-assinatura-dialog.css']
 })
 export class ConfirmAssinaturaDialog {
   constructor(

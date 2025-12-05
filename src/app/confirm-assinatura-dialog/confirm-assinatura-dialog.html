@@ -1,1 +1,86 @@
-<p>confirm-assinatura-dialog works!</p>
+<div class="modal-container">
+  <!-- Cabeçalho -->
+  <div class="modal-header">
+    <div class="header-top">
+      <div class="header-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h2>Confirmação de Assinatura</h2>
+    </div>
+    <div class="plano-info">
+      <div class="plano-row">
+        <div class="plano-badge">
+          <i class="fas fa-tag"></i>
+          <span>{{ data.plano.nome }}</span>
+        </div>
+        <div class="plano-valor">
+          <span class="valor-simbolo">R$</span>
+          <span class="valor-amount">{{ (+data.plano.preco_promocional) | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <p class="plano-descricao" *ngIf="data.plano.duracao_dias">
+        <i class="fas fa-calendar-alt"></i>
+        Duração: {{ data.plano.duracao_dias }} dias
+      </p>
+    </div>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="modal-content">
+    <div class="content-section">
+      <div class="info-item">
+        <i class="fas fa-info-circle"></i>
+        <div class="info-text">
+          <p class="info-label">Descrição do Plano</p>
+          <p class="info-value">{{ data.plano.descricao }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i class="fas fa-dollar-sign"></i>
+        <div class="info-text">
+          <p class="info-label">Valor</p>
+          <p class="info-value">R$ {{ (+data.plano.preco_promocional) | number:'1.2-2' }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i class="fas fa-clock"></i>
+        <div class="info-text">
+          <p class="info-label">Período de Acesso</p>
+          <p class="info-value">{{ data.plano.duracao_dias }} dias</p>
+        </div>
+      </div>
+
+      <div class="alert-box">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>Você será cobrado hoje e terá acesso ao plano pelos próximos {{ data.plano.duracao_dias }} dias.</p>
+      </div>
+
+      <div class="info-box-public">
+        <i class="fas fa-users"></i>
+        <div class="info-text-public">
+          <p class="info-label-public">Importante</p>
+          <p class="info-value-public">Após a confirmação do pagamento, seu nome aparecerá na listagem pública de psicólogos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ações -->
+  <div class="form-actions">
+    <button class="btn-submit" (click)="onConfirm()">
+      <i class="fas fa-check"></i>
+      <span>Confirmar Assinatura</span>
+    </button>
+    <button class="btn-cancel" (click)="onCancel()">
+      <i class="fas fa-times"></i>
+      <span>Cancelar</span>
+    </button>
+  </div>
+
+  <div class="security-info">
+    <i class="fas fa-shield-alt"></i>
+    <span>Seus dados estão protegidos e criptografados</span>
+  </div>
+</div>

@@ -214,8 +214,19 @@
                 <span class="valor-label">Valor</span>
                 <span class="valor-amount">R$ {{ assinaturaItem?.assinatura?.value | number:'1.2-2' }}</span>
               </div>
-              <div class="assinatura-descricao">
-                {{ assinaturaItem?.assinatura?.description }}
+              
+              <!-- Aviso de Desativação Automática -->
+              <div class="aviso-desativacao-descricao" *ngIf="assinaturaItem?.assinatura && ehDiaVencimento(assinaturaItem)">
+                <div class="aviso-descricao-content">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <p>
+                    <strong>Atenção:</strong> Hoje é o dia do vencimento do pagamento 
+                    <ng-container *ngIf="getDataExpiracaoFormatada(assinaturaItem) || assinaturaItem?.assinatura?.endDate">
+                      (data de expiração: <strong>{{ getDataExpiracaoFormatada(assinaturaItem) || (assinaturaItem?.assinatura?.endDate | date:'dd/MM/yyyy') }}</strong>)
+                    </ng-container>
+                    . Após 5 dias da expiração, sua conta será <strong>automaticamente desativada</strong> e seu perfil será removido da listagem pública.
+                  </p>
+                </div>
               </div>
 
               <!-- Informações da Assinatura -->
@@ -240,17 +251,184 @@
                   <div class="info-icon"><i class="fas fa-sync-alt"></i></div>
                   <div class="info-content">
                     <span class="info-label">Frequência</span>
-                    <span class="info-value">{{ assinaturaItem?.assinatura?.cycle }}</span>
+                    <span class="info-value">{{ traduzirCycle(getMotivoStatus(assinaturaItem)?.cycle || assinaturaItem?.assinatura?.cycle) }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Aviso de Desativação Automática -->
+              <div class="aviso-desativacao" [ngClass]="{'expired': jaExpirou(assinaturaItem)}" *ngIf="deveMostrarAvisoDesativacao(assinaturaItem)">
+                <div class="aviso-desativacao-content">
+                  <div class="aviso-icon">
+                    <i class="fas" [ngClass]="{
+                      'fa-exclamation-triangle': !jaExpirou(assinaturaItem),
+                      'fa-exclamation-circle': jaExpirou(assinaturaItem)
+                    }"></i>
+                  </div>
+                  <div class="aviso-text">
+                    <p class="aviso-title">
+                      <ng-container *ngIf="!jaExpirou(assinaturaItem)">
+                        Assinatura expira em {{ getDiasExpiracao(assinaturaItem) }} dia(s)
+                      </ng-container>
+                      <ng-container *ngIf="jaExpirou(assinaturaItem)">
+                        Assinatura expirada há {{ Math.abs(getDiasExpiracao(assinaturaItem)) }} dia(s)
+                      </ng-container>
+                    </p>
+                    <p class="aviso-message">
+                      <strong>Data de expiração:</strong> {{ getDataExpiracaoFormatada(assinaturaItem) }}<br>
+                      <ng-container *ngIf="jaExpirou(assinaturaItem)">
+                        Após 5 dias da expiração, sua conta será <strong>automaticamente desativada</strong> e seu perfil será removido da listagem pública.
+                      </ng-container>
+                      <ng-container *ngIf="!jaExpirou(assinaturaItem)">
+                        Após 5 dias da expiração ({{ getDataLimiteDesativacao(assinaturaItem) }}), sua conta será <strong>automaticamente desativada</strong> e seu perfil será removido da listagem pública.
+                      </ng-container>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detalhes Adicionais da Assinatura -->
+              <div class="detalhes-assinatura" *ngIf="getMotivoStatus(assinaturaItem)">
+                <div class="detalhes-header">
+                  <i class="fas fa-info-circle"></i>
+                  <h4>Detalhes da Assinatura</h4>
+                </div>
+
+                <div class="detalhes-grid">
+                  <div class="detalhe-item" *ngIf="getMotivoStatus(assinaturaItem)?.nextDueDate">
+                    <div class="detalhe-icon">
+                      <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="detalhe-content">
+                      <span class="detalhe-label">Próximo Vencimento</span>
+                      <span class="detalhe-value">{{ getProximoVencimento(assinaturaItem) }}</span>
+                    </div>
+                  </div>
+
+                  <div class="detalhe-item" *ngIf="getMotivoStatus(assinaturaItem)?.billingType">
+                    <div class="detalhe-icon">
+                      <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="detalhe-content">
+                      <span class="detalhe-label">Forma de Pagamento</span>
+                      <span class="detalhe-value">{{ traduzirBillingType(getMotivoStatus(assinaturaItem)?.billingType) }}</span>
+                    </div>
+                  </div>
+
+                  <div class="detalhe-item" *ngIf="getMotivoStatus(assinaturaItem)?.maxPayments">
+                    <div class="detalhe-icon">
+                      <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="detalhe-content">
+                      <span class="detalhe-label">Máximo de Pagamentos</span>
+                      <span class="detalhe-value">{{ getMotivoStatus(assinaturaItem)?.maxPayments }}</span>
+                    </div>
+                  </div>
+
+                  <div class="detalhe-item" *ngIf="getMotivoStatus(assinaturaItem)?.status">
+                    <div class="detalhe-icon">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="detalhe-content">
+                      <span class="detalhe-label">Status no Sistema</span>
+                      <span class="detalhe-value">{{ traduzirStatus(getMotivoStatus(assinaturaItem)?.status) }}</span>
+                    </div>
+                  </div>
+
+                  <div class="detalhe-item" *ngIf="getMotivoStatus(assinaturaItem)?.externalReference">
+                    <div class="detalhe-icon">
+                      <i class="fas fa-hashtag"></i>
+                    </div>
+                    <div class="detalhe-content">
+                      <span class="detalhe-label">Referência Externa</span>
+                      <span class="detalhe-value">{{ getMotivoStatus(assinaturaItem)?.externalReference }}</span>
+                    </div>
+                  </div>
+
+                  <div class="detalhe-item" *ngIf="getMotivoStatus(assinaturaItem)?.id">
+                    <div class="detalhe-icon">
+                      <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="detalhe-content">
+                      <span class="detalhe-label">ID da Assinatura (Asaas)</span>
+                      <span class="detalhe-value">{{ getMotivoStatus(assinaturaItem)?.id }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Informações de Multa e Juros -->
+                <div class="multa-juros-section" *ngIf="getMotivoStatus(assinaturaItem)?.fine || getMotivoStatus(assinaturaItem)?.interest">
+                  <div class="multa-juros-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Multa e Juros</span>
+                  </div>
+                  <div class="multa-juros-grid">
+                    <div class="multa-juros-item" *ngIf="getMotivoStatus(assinaturaItem)?.fine">
+                      <span class="multa-juros-label">Multa:</span>
+                      <span class="multa-juros-value">
+                        <ng-container *ngIf="getMotivoStatus(assinaturaItem)?.fine?.type === 'FIXED'">
+                          R$ {{ getMotivoStatus(assinaturaItem)?.fine?.value | number:'1.2-2' }}
+                        </ng-container>
+                        <ng-container *ngIf="getMotivoStatus(assinaturaItem)?.fine?.type !== 'FIXED'">
+                          {{ getMotivoStatus(assinaturaItem)?.fine?.value }}%
+                        </ng-container>
+                      </span>
+                    </div>
+                    <div class="multa-juros-item" *ngIf="getMotivoStatus(assinaturaItem)?.interest">
+                      <span class="multa-juros-label">Juros:</span>
+                      <span class="multa-juros-value">
+                        <ng-container *ngIf="getMotivoStatus(assinaturaItem)?.interest?.type === 'PERCENTAGE'">
+                          {{ getMotivoStatus(assinaturaItem)?.interest?.value }}%
+                        </ng-container>
+                        <ng-container *ngIf="getMotivoStatus(assinaturaItem)?.interest?.type !== 'PERCENTAGE'">
+                          R$ {{ getMotivoStatus(assinaturaItem)?.interest?.value | number:'1.2-2' }}
+                        </ng-container>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <!-- Resumo de Pagamentos -->
               <div class="historico-resumo" *ngIf="assinaturasTotais[i]">
-                <strong>Total de Faturas:</strong> {{ assinaturasTotais[i].total }} |
-                <strong>Pagas:</strong> {{ assinaturasTotais[i].pagas }} |
-                <strong>Pendentes:</strong> {{ assinaturasTotais[i].pendentes }} |
-                <strong>Vencidas:</strong> {{ assinaturasTotais[i].vencidas }}
+                <div class="resumo-grid">
+                  <div class="resumo-item">
+                    <div class="resumo-icon total">
+                      <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div class="resumo-content">
+                      <span class="resumo-label">Total de Faturas</span>
+                      <span class="resumo-value">{{ assinaturasTotais[i].total }}</span>
+                    </div>
+                  </div>
+                  <div class="resumo-item">
+                    <div class="resumo-icon pago">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="resumo-content">
+                      <span class="resumo-label">Pagas</span>
+                      <span class="resumo-value">{{ assinaturasTotais[i].pagas }}</span>
+                    </div>
+                  </div>
+                  <div class="resumo-item">
+                    <div class="resumo-icon pendente">
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="resumo-content">
+                      <span class="resumo-label">Pendentes</span>
+                      <span class="resumo-value">{{ assinaturasTotais[i].pendentes }}</span>
+                    </div>
+                  </div>
+                  <div class="resumo-item">
+                    <div class="resumo-icon vencido">
+                      <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="resumo-content">
+                      <span class="resumo-label">Vencidas</span>
+                      <span class="resumo-value">{{ assinaturasTotais[i].vencidas }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- Histórico de Pagamentos -->
@@ -260,21 +438,70 @@
                   <h4>Histórico de Pagamentos</h4>
                 </div>
 
-                <div *ngFor="let cobranca of assinaturaItem?.cobrancas" class="cobranca-item" [ngClass]="{
-             'pago': cobranca?.status === 'RECEIVED',
-             'pendente': cobranca?.status === 'PENDING' && (!cobranca?.dueDate || cobranca?.dueDate >= today),
-             'vencido': cobranca?.status === 'OVERDUE' && (cobranca?.dueDate && cobranca?.dueDate < today)
-           }">
-                  <p><strong>Fatura #:</strong> {{ cobranca?.invoiceNumber || 'N/A' }}</p>
-                  <p><strong>Valor:</strong> R$ {{ cobranca?.value | number:'1.2-2' }}</p>
-                  <p><strong>Status:</strong> {{ cobranca?.status || 'N/A' }}</p>
-                  <p><strong>Vencimento:</strong> {{ cobranca?.dueDate | date:'dd/MM/yyyy' }}</p>
-                  <p><strong>Data de Pagamento:</strong> {{ cobranca?.paymentDate ? (cobranca?.paymentDate |
-                    date:'dd/MM/yyyy') : 'Não pago' }}</p>
-                  <p *ngIf="cobranca?.bankSlipUrl">
-                    <a [href]="cobranca?.invoiceUrl" target="_blank">Ver Boleto</a>
-                  </p>
-                  <hr>
+                <div class="cobrancas-grid">
+                  <div *ngFor="let cobranca of assinaturaItem?.cobrancas" class="cobranca-item" [ngClass]="{
+                    'pago': cobranca?.status === 'RECEIVED',
+                    'pendente': cobranca?.status === 'PENDING' && (!cobranca?.dueDate || cobranca?.dueDate >= today),
+                    'vencido': cobranca?.status === 'OVERDUE' || (cobranca?.status === 'PENDING' && cobranca?.dueDate && cobranca?.dueDate < today)
+                  }">
+                    <div class="cobranca-header">
+                      <div class="cobranca-status-badge" [ngClass]="{
+                        'pago': cobranca?.status === 'RECEIVED',
+                        'pendente': cobranca?.status === 'PENDING' && (!cobranca?.dueDate || cobranca?.dueDate >= today),
+                        'vencido': cobranca?.status === 'OVERDUE' || (cobranca?.status === 'PENDING' && cobranca?.dueDate && cobranca?.dueDate < today)
+                      }">
+                        <i class="fas" [ngClass]="{
+                          'fa-check-circle': cobranca?.status === 'RECEIVED',
+                          'fa-clock': cobranca?.status === 'PENDING' && (!cobranca?.dueDate || cobranca?.dueDate >= today),
+                          'fa-exclamation-triangle': cobranca?.status === 'OVERDUE' || (cobranca?.status === 'PENDING' && cobranca?.dueDate && cobranca?.dueDate < today)
+                        }"></i>
+                        <span>{{ cobranca?.status === 'RECEIVED' ? 'Pago' : (cobranca?.status === 'OVERDUE' || (cobranca?.status === 'PENDING' && cobranca?.dueDate && cobranca?.dueDate < today) ? 'Vencido' : 'Pendente') }}</span>
+                      </div>
+                      <div class="cobranca-valor">
+                        <span class="valor-label">Valor</span>
+                        <span class="valor-amount">R$ {{ cobranca?.value | number:'1.2-2' }}</span>
+                      </div>
+                    </div>
+
+                    <div class="cobranca-info-grid">
+                      <div class="cobranca-info-item">
+                        <div class="info-icon">
+                          <i class="fas fa-hashtag"></i>
+                        </div>
+                        <div class="info-content">
+                          <span class="info-label">Fatura #</span>
+                          <span class="info-value">{{ cobranca?.invoiceNumber || 'N/A' }}</span>
+                        </div>
+                      </div>
+
+                      <div class="cobranca-info-item">
+                        <div class="info-icon">
+                          <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="info-content">
+                          <span class="info-label">Vencimento</span>
+                          <span class="info-value">{{ cobranca?.dueDate | date:'dd/MM/yyyy' }}</span>
+                        </div>
+                      </div>
+
+                      <div class="cobranca-info-item" *ngIf="cobranca?.paymentDate">
+                        <div class="info-icon">
+                          <i class="fas fa-check"></i>
+                        </div>
+                        <div class="info-content">
+                          <span class="info-label">Data de Pagamento</span>
+                          <span class="info-value">{{ cobranca?.paymentDate | date:'dd/MM/yyyy' }}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="cobranca-actions" *ngIf="cobranca?.bankSlipUrl || cobranca?.invoiceUrl">
+                      <a [href]="cobranca?.invoiceUrl || cobranca?.bankSlipUrl" target="_blank" class="btn-ver-boleto">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Ver Boleto</span>
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -288,6 +515,14 @@
                   (click)="atualizarPagamento(assinaturaItem)">
                   <i class="fas fa-credit-card"></i>
                   <span>Atualizar Pagamento</span>
+                </button>
+              </div>
+
+              <!-- Botão de Cancelar Plano (Discreto) -->
+              <div class="cancelar-plano-container">
+                <button class="btn-cancelar-plano" (click)="cancelarPlano(assinaturaItem)">
+                  <i class="fas fa-times-circle"></i>
+                  <span>Cancelar Assinatura</span>
                 </button>
               </div>
 

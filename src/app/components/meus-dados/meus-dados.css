@@ -660,6 +660,44 @@ textarea {
   line-height: 1;
 }
 
+/* Aviso de Desativação Automática (substitui descrição) */
+.aviso-desativacao-descricao {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.aviso-descricao-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-left: 4px solid #f59e0b;
+  border-radius: 12px;
+}
+
+.aviso-descricao-content i {
+  font-size: 1.25rem;
+  color: #d97706;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.aviso-descricao-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #78350f;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.aviso-descricao-content p strong {
+  color: #92400e;
+  font-weight: 700;
+}
+
 /* Grid de Informações */
 .assinatura-info-grid {
   display: grid;
@@ -715,6 +753,270 @@ textarea {
   font-size: 0.95rem;
   color: #1f2937;
   font-weight: 500;
+}
+
+/* Detalhes Adicionais da Assinatura */
+.detalhes-assinatura {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(20, 184, 166, 0.12);
+}
+
+.detalhes-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(20, 184, 166, 0.1);
+}
+
+.detalhes-header i {
+  color: #14b8a6;
+  font-size: 1.25rem;
+}
+
+.detalhes-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0f766e;
+  font-weight: 600;
+}
+
+.detalhes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.detalhe-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+}
+
+.detalhe-item:hover {
+  background: #f9fafb;
+  transform: translateX(4px);
+  border-color: rgba(20, 184, 166, 0.2);
+}
+
+.detalhe-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: white;
+  border-radius: 10px;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.detalhe-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.detalhe-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.detalhe-value {
+  font-size: 0.95rem;
+  color: #1f2937;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+/* Aviso de Desativação Automática */
+.aviso-desativacao {
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.aviso-desativacao-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-left: 4px solid #f59e0b;
+  position: relative;
+}
+
+.aviso-desativacao-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.aviso-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(245, 158, 11, 0.2);
+  border-radius: 12px;
+  flex-shrink: 0;
+  animation: pulseIcon 2s ease-in-out infinite;
+}
+
+@keyframes pulseIcon {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.aviso-icon i {
+  font-size: 1.5rem;
+  color: #d97706;
+}
+
+.aviso-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.aviso-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #92400e;
+  line-height: 1.3;
+}
+
+.aviso-message {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #78350f;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.aviso-message strong {
+  color: #92400e;
+  font-weight: 700;
+}
+
+/* Estilo quando já expirou (mais urgente) */
+.aviso-desativacao.expired .aviso-desativacao-content {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-color: #ef4444;
+  border-left-color: #ef4444;
+}
+
+.aviso-desativacao.expired .aviso-icon {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.aviso-desativacao.expired .aviso-icon i {
+  color: #dc2626;
+}
+
+.aviso-desativacao.expired .aviso-title {
+  color: #991b1b;
+}
+
+.aviso-desativacao.expired .aviso-message {
+  color: #7f1d1d;
+}
+
+.aviso-desativacao.expired .aviso-message strong {
+  color: #991b1b;
+}
+
+/* Seção de Multa e Juros */
+.multa-juros-section {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid rgba(20, 184, 166, 0.1);
+}
+
+.multa-juros-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.multa-juros-header i {
+  color: #f59e0b;
+  font-size: 1rem;
+}
+
+.multa-juros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.multa-juros-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.multa-juros-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.multa-juros-value {
+  font-size: 0.95rem;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 /* Histórico de Pagamentos */
@@ -829,6 +1131,51 @@ textarea {
   border-color: #0d9488;
   color: #0d9488;
   transform: translateY(-2px);
+}
+
+/* Botão de Cancelar Plano (Discreto) */
+.cancelar-plano-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0fdfa;
+}
+
+.btn-cancelar-plano {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: #9ca3af;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-cancelar-plano i {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.btn-cancelar-plano:hover {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+.btn-cancelar-plano:hover i {
+  color: #ef4444;
+}
+
+.btn-cancelar-plano:active {
+  transform: scale(0.98);
 }
 
 /* Erro de Assinatura */
@@ -1125,41 +1472,428 @@ textarea {
   .acoes-assinatura button {
     width: 100%;
   }
+
+  .btn-cancelar-plano {
+    font-size: 0.8rem;
+    padding: 0.45rem 0.875rem;
+  }
+
+  /* Responsividade do Histórico de Pagamentos */
+  .resumo-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .resumo-item {
+    padding: 0.75rem;
+  }
+
+  .resumo-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .resumo-value {
+    font-size: 1.25rem;
+  }
+
+  .cobrancas-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .cobranca-item {
+    padding: 1.25rem;
+  }
+
+  .cobranca-info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .cobranca-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .cobranca-valor {
+    align-items: flex-start;
+  }
+
+  /* Responsividade dos Detalhes */
+  .detalhes-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .multa-juros-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .resumo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .resumo-item {
+    padding: 0.875rem;
+  }
+
+  .resumo-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+
+  .resumo-value {
+    font-size: 1.1rem;
+  }
+
+  .cobranca-item {
+    padding: 1rem;
+  }
+
+  .cobranca-valor .valor-amount {
+    font-size: 1.25rem;
+  }
+
+  /* Responsividade dos Detalhes - Mobile */
+  .detalhes-assinatura {
+    padding: 1rem;
+  }
+
+  .detalhe-item {
+    padding: 0.875rem;
+  }
+
+  .detalhe-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+
+  .detalhe-value {
+    font-size: 0.875rem;
+  }
+
+  /* Responsividade do Aviso de Desativação */
+  .aviso-desativacao-content {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .aviso-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .aviso-icon i {
+    font-size: 1.25rem;
+  }
+
+  .aviso-title {
+    font-size: 0.9rem;
+  }
+
+  .aviso-message {
+    font-size: 0.85rem;
+  }
+}
+
+/* Resumo de Pagamentos */
+.historico-resumo {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(20, 184, 166, 0.12);
+}
+
+.resumo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.resumo-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.resumo-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.resumo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+}
+
+.resumo-icon.total {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: white;
+}
+
+.resumo-icon.pago {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: white;
+}
+
+.resumo-icon.pendente {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.resumo-icon.vencido {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.resumo-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.resumo-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.resumo-value {
+  font-size: 1.5rem;
+  color: #1f2937;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Histórico de Pagamentos - Cards */
+.cobrancas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
 }
 
 .cobranca-item {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 12px;
-  background-color: #f9f9f9;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.cobranca-item p {
-  margin: 4px 0;
-  font-size: 14px;
+.cobranca-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  transition: all 0.3s ease;
 }
 
-.cobranca-item a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.cobranca-item a:hover {
-  text-decoration: underline;
+.cobranca-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .cobranca-item.pago {
-  background-color: #d4edda;
+  border-color: rgba(22, 163, 74, 0.2);
+}
+
+.cobranca-item.pago::before {
+  background: linear-gradient(135deg, #16a34a, #15803d);
 }
 
 .cobranca-item.pendente {
-  background-color: #fff3cd;
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.cobranca-item.pendente::before {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
 }
 
 .cobranca-item.vencido {
-  background-color: #f8d7da;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.cobranca-item.vencido::before {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.cobranca-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0fdfa;
+}
+
+.cobranca-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cobranca-status-badge.pago {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.cobranca-status-badge.pago i {
+  color: #16a34a;
+}
+
+.cobranca-status-badge.pendente {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.cobranca-status-badge.pendente i {
+  color: #d97706;
+}
+
+.cobranca-status-badge.vencido {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.cobranca-status-badge.vencido i {
+  color: #dc2626;
+}
+
+.cobranca-valor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.cobranca-valor .valor-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.cobranca-valor .valor-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f766e;
+  line-height: 1;
+}
+
+.cobranca-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cobranca-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.cobranca-info-item .info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: white;
+  border-radius: 8px;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+}
+
+.cobranca-info-item .info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.cobranca-info-item .info-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.cobranca-info-item .info-value {
+  font-size: 0.875rem;
+  color: #1f2937;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.cobranca-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #f0fdfa;
+}
+
+.btn-ver-boleto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2);
+  width: 100%;
+}
+
+.btn-ver-boleto:hover {
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-ver-boleto i {
+  font-size: 1rem;
 }
 
 .status-badge.expired {
