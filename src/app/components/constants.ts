@@ -1,7 +1,23 @@
 export const ALL_AREAS = [
-  'Psicologia Clínica', 'Psicologia Social', 'Psicologia Escolar', 'Psicologia Hospitalar',
-  'Psicologia Organizacional', 'Neuropsicologia', 'Psicologia Jurídica', 'Psicologia do Esporte',
-  'Psicologia do Trânsito', 'Psicopedagogia'
+  'Ansiedade',
+  'Depressão',
+  'Estresse',
+  'Burnout',
+  'Transtornos de humor',
+  'Transtornos de personalidade',
+  'Transtorno de pânico',
+  'Fobias',
+  'TOC (Transtorno Obsessivo-Compulsivo)',
+  'TDAH em adultos',
+  'Autoconhecimento',
+  'Baixa autoestima',
+  'Autocrítica excessiva',
+  'Perfeccionismo',
+  'Luto',
+  'Relacionamentos amorosos',
+  'Conflitos familiares',
+  'Dificuldades de comunicação',
+  'Dependência emocional'
 ];
 
 export const ALL_ABORDAGENS = [
