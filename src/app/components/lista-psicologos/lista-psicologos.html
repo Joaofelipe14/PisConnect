@@ -29,6 +29,18 @@
     </div>
   </div>
 
+  <!-- Texto Explicativo -->
+  <div class="explicacao-plataforma">
+    <div class="explicacao-content">
+      <p class="explicacao-texto">
+        O SociPsi foi criado para aproximar você do cuidado psicológico de forma simples e acessível.
+      </p>
+      <p class="explicacao-texto">
+        Nosso compromisso é tornar o atendimento psicológico mais humano, seguro e acessível, para que você receba apoio no tempo certo: o seu tempo.
+      </p>
+    </div>
+  </div>
+
   <div *ngIf="psicologosFiltrados$ | async as psicologos" class="content-container">
     <div *ngIf="psicologos.length === 0" class="empty-state">
       <p>Nenhum psicólogo encontrado.</p>
