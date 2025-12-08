@@ -41,6 +41,114 @@
     </div>
   </div>
 
+  <!-- Filtros -->
+  <div class="filtros-container">
+    <div class="filtros-content">
+      <h3 class="filtros-title">Filtrar por:</h3>
+      
+      <div class="filtros-grid">
+        <!-- Filtro de Áreas -->
+        <div class="filtro-group">
+          <label class="filtro-label">Áreas de Atuação</label>
+          <div class="autocomplete-wrapper">
+            <input
+              type="text"
+              placeholder="Buscar área..."
+              [(ngModel)]="searchAreas"
+              [ngModelOptions]="{standalone: true}"
+              (focus)="openDropdown('areas')"
+              class="filtro-input"
+            />
+            <div class="dropdown" *ngIf="showAreasDropdown && filteredAreas.length > 0">
+              <div
+                *ngFor="let area of filteredAreas"
+                class="dropdown-item"
+                (click)="addFilter('areas', area); $event.stopPropagation()"
+              >
+                {{ area }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips" *ngIf="selectedAreas.length > 0">
+            <span
+              *ngFor="let area of selectedAreas"
+              class="chip"
+            >
+              {{ area }}
+              <button type="button" class="chip-remove" (click)="removeFilter('areas', area)">×</button>
+            </span>
+          </div>
+        </div>
+
+        <!-- Filtro de Abordagens -->
+        <div class="filtro-group">
+          <label class="filtro-label">Abordagem Terapêutica</label>
+          <div class="autocomplete-wrapper">
+            <input
+              type="text"
+              placeholder="Buscar abordagem..."
+              [(ngModel)]="searchAbordagens"
+              [ngModelOptions]="{standalone: true}"
+              (focus)="openDropdown('abordagens')"
+              class="filtro-input"
+            />
+            <div class="dropdown" *ngIf="showAbordagensDropdown && filteredAbordagens.length > 0">
+              <div
+                *ngFor="let abordagem of filteredAbordagens"
+                class="dropdown-item"
+                (click)="addFilter('abordagens', abordagem); $event.stopPropagation()"
+              >
+                {{ abordagem }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips" *ngIf="selectedAbordagens.length > 0">
+            <span
+              *ngFor="let abordagem of selectedAbordagens"
+              class="chip"
+            >
+              {{ abordagem }}
+              <button type="button" class="chip-remove" (click)="removeFilter('abordagens', abordagem)">×</button>
+            </span>
+          </div>
+        </div>
+
+        <!-- Filtro de Públicos -->
+        <div class="filtro-group">
+          <label class="filtro-label">Público Alvo</label>
+          <div class="autocomplete-wrapper">
+            <input
+              type="text"
+              placeholder="Buscar público..."
+              [(ngModel)]="searchPublicos"
+              [ngModelOptions]="{standalone: true}"
+              (focus)="openDropdown('publicos')"
+              class="filtro-input"
+            />
+            <div class="dropdown" *ngIf="showPublicosDropdown && filteredPublicos.length > 0">
+              <div
+                *ngFor="let publico of filteredPublicos"
+                class="dropdown-item"
+                (click)="addFilter('publicos', publico); $event.stopPropagation()"
+              >
+                {{ publico }}
+              </div>
+            </div>
+          </div>
+          <div class="selected-chips" *ngIf="selectedPublicos.length > 0">
+            <span
+              *ngFor="let publico of selectedPublicos"
+              class="chip"
+            >
+              {{ publico }}
+              <button type="button" class="chip-remove" (click)="removeFilter('publicos', publico)">×</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div *ngIf="psicologosFiltrados$ | async as psicologos" class="content-container">
     <div *ngIf="psicologos.length === 0" class="empty-state">
       <p>Nenhum psicólogo encontrado.</p>

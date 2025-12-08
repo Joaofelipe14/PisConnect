@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { from, Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { ALL_ABORDAGENS, ALL_AREAS, ALL_PUBLICOS } from '../constants';
 @Component({
   selector: 'app-lista-psicologos',
   standalone: true,
@@ -20,6 +21,22 @@ export class ListaPsicologos implements OnInit {
   searchTerm = '';
   viewMode: 'card' | 'list' = 'card';
   faWhatsapp = faWhatsapp;
+
+  allAreas = ALL_AREAS;
+  allAbordagens = ALL_ABORDAGENS;
+  allPublicos = ALL_PUBLICOS;
+  
+  selectedAreas: string[] = [];
+  selectedAbordagens: string[] = [];
+  selectedPublicos: string[] = [];
+  
+  searchAreas = '';
+  searchAbordagens = '';
+  searchPublicos = '';
+  
+  showAreasDropdown = false;
+  showAbordagensDropdown = false;
+  showPublicosDropdown = false;
 
   constructor(
     private supabaseService: SupabaseService,
@@ -37,44 +54,57 @@ export class ListaPsicologos implements OnInit {
 
   ngOnInit() {
     this.psicologos$ = from(this.supabaseService.buscarPsicologos());
+    this.aplicarFiltros();
+  }
 
+  aplicarFiltros() {
     this.psicologosFiltrados$ = this.psicologos$.pipe(
       map(psicologos => {
+        let filtrados = psicologos;
+
         const term = this.searchTerm.toLowerCase();
-        if (!term) return psicologos;
-        return psicologos.filter(p => {
-          const abordagens = this.parseJson(p.abordagem_terapeutica);
-          const publicos = this.parseJson(p.publico_alvo);
-          return (
-            p.nome?.toLowerCase().includes(term) ||
-            abordagens.some((a: string) => a.toLowerCase().includes(term)) ||
-            p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
-            p.formacao?.toLowerCase().includes(term) ||
-            publicos.some((pub: string) => pub.toLowerCase().includes(term))
-          );
-        });
+        if (term) {
+          filtrados = filtrados.filter(p => {
+            const abordagens = this.parseJson(p.abordagem_terapeutica);
+            const publicos = this.parseJson(p.publico_alvo);
+            return (
+              p.nome?.toLowerCase().includes(term) ||
+              abordagens.some((a: string) => a.toLowerCase().includes(term)) ||
+              p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
+              p.formacao?.toLowerCase().includes(term) ||
+              publicos.some((pub: string) => pub.toLowerCase().includes(term))
+            );
+          });
+        }
+
+        if (this.selectedAreas.length > 0) {
+          filtrados = filtrados.filter(p => {
+            const areas = p.areas_atuacao || [];
+            return this.selectedAreas.some(area => areas.includes(area));
+          });
+        }
+
+        if (this.selectedAbordagens.length > 0) {
+          filtrados = filtrados.filter(p => {
+            const abordagens = this.parseJson(p.abordagem_terapeutica);
+            return this.selectedAbordagens.some(ab => abordagens.includes(ab));
+          });
+        }
+
+        if (this.selectedPublicos.length > 0) {
+          filtrados = filtrados.filter(p => {
+            const publicos = this.parseJson(p.publico_alvo);
+            return this.selectedPublicos.some(pub => publicos.includes(pub));
+          });
+        }
+
+        return filtrados;
       })
     );
   }
 
   onSearchChange() {
-    this.psicologosFiltrados$ = this.psicologos$.pipe(
-      map(psicologos => {
-        const term = this.searchTerm.toLowerCase();
-        if (!term) return psicologos;
-        return psicologos.filter(p => {
-          const abordagens = this.parseJson(p.abordagem_terapeutica);
-          const publicos = this.parseJson(p.publico_alvo);
-          return (
-            p.nome?.toLowerCase().includes(term) ||
-            abordagens.some((a: string) => a.toLowerCase().includes(term)) ||
-            p.areas_atuacao?.some((area: string) => area.toLowerCase().includes(term)) ||
-            p.formacao?.toLowerCase().includes(term) ||
-            publicos.some((pub: string) => pub.toLowerCase().includes(term))
-          );
-        });
-      })
-    );
+    this.aplicarFiltros();
   }
 
   verDetalhes(id: string) {
@@ -94,15 +124,12 @@ export class ListaPsicologos implements OnInit {
         const parsed = JSON.parse(value);
         return Array.isArray(parsed) ? parsed : (parsed ? [parsed] : []);
       } catch {
-        // Se não for JSON válido, trata como string simples
         return value ? [value] : [];
       }
     }
-    // Se já for array, retorna direto
     if (Array.isArray(value)) {
       return value;
     }
-    // Se não for string nem array, retorna array vazio
     return [];
   }
 
@@ -155,9 +182,101 @@ export class ListaPsicologos implements OnInit {
 
   setViewMode(mode: 'card' | 'list') {
     this.viewMode = mode;
-    // Salvar preferência apenas no browser
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('psicologos-view-mode', mode);
+    }
+  }
+
+  get filteredAreas(): string[] {
+    return this.allAreas.filter(a =>
+      a.toLowerCase().includes(this.searchAreas.toLowerCase()) &&
+      !this.selectedAreas.includes(a)
+    );
+  }
+
+  get filteredAbordagens(): string[] {
+    return this.allAbordagens.filter(a =>
+      a.toLowerCase().includes(this.searchAbordagens.toLowerCase()) &&
+      !this.selectedAbordagens.includes(a)
+    );
+  }
+
+  get filteredPublicos(): string[] {
+    return this.allPublicos.filter(p =>
+      p.toLowerCase().includes(this.searchPublicos.toLowerCase()) &&
+      !this.selectedPublicos.includes(p)
+    );
+  }
+
+  addFilter(type: 'areas' | 'abordagens' | 'publicos', item: string): void {
+    if (type === 'areas') {
+      if (!this.selectedAreas.includes(item)) {
+        this.selectedAreas.push(item);
+        this.searchAreas = '';
+        this.showAreasDropdown = false;
+      }
+    } else if (type === 'abordagens') {
+      if (!this.selectedAbordagens.includes(item)) {
+        this.selectedAbordagens.push(item);
+        this.searchAbordagens = '';
+        this.showAbordagensDropdown = false;
+      }
+    } else if (type === 'publicos') {
+      if (!this.selectedPublicos.includes(item)) {
+        this.selectedPublicos.push(item);
+        this.searchPublicos = '';
+        this.showPublicosDropdown = false;
+      }
+    }
+    this.aplicarFiltros();
+  }
+
+  removeFilter(type: 'areas' | 'abordagens' | 'publicos', item: string): void {
+    if (type === 'areas') {
+      this.selectedAreas = this.selectedAreas.filter(i => i !== item);
+    } else if (type === 'abordagens') {
+      this.selectedAbordagens = this.selectedAbordagens.filter(i => i !== item);
+    } else if (type === 'publicos') {
+      this.selectedPublicos = this.selectedPublicos.filter(i => i !== item);
+    }
+    this.aplicarFiltros();
+  }
+
+  openDropdown(dropdown: 'areas' | 'abordagens' | 'publicos'): void {
+    this.closeAllDropdowns();
+    
+    if (dropdown === 'areas') {
+      this.showAreasDropdown = true;
+    } else if (dropdown === 'abordagens') {
+      this.showAbordagensDropdown = true;
+    } else if (dropdown === 'publicos') {
+      this.showPublicosDropdown = true;
+    }
+  }
+
+  closeAllDropdowns(): void {
+    this.showAreasDropdown = false;
+    this.showAbordagensDropdown = false;
+    this.showPublicosDropdown = false;
+  }
+
+  closeDropdownWithDelay(dropdown: 'areas' | 'abordagens' | 'publicos'): void {
+    setTimeout(() => {
+      if (dropdown === 'areas') {
+        this.showAreasDropdown = false;
+      } else if (dropdown === 'abordagens') {
+        this.showAbordagensDropdown = false;
+      } else if (dropdown === 'publicos') {
+        this.showPublicosDropdown = false;
+      }
+    }, 200);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.autocomplete-wrapper')) {
+      this.closeAllDropdowns();
     }
   }
 }
