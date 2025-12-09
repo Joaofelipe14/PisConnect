@@ -676,6 +676,7 @@ export class MeusDadosComponent implements OnInit {
   }
 
 
+  // so opção cartão por enqaunto 
   assinarPlano(plano: any) {
     // const dialogRef = this.dialog.open(ConfirmAssinaturaDialog, {
     //   width: '90%',
@@ -702,7 +703,7 @@ export class MeusDadosComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.startLoadingAndAssinar(plano);
+        alert( 'Assinatura realizada.')
       }
     });
 
