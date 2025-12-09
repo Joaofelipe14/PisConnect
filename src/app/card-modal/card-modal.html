@@ -1,5 +1,5 @@
 <div class="modal-container">
-  <!-- Cabeçalho -->
+
   <div class="modal-header">
     <div class="header-top">
       <div class="header-icon">
@@ -7,6 +7,7 @@
       </div>
       <h2>Finalizar Assinatura</h2>
     </div>
+
     <div class="plano-info">
       <div class="plano-row">
         <div class="plano-badge">
@@ -19,110 +20,124 @@
           <span class="valor-periodo">/ {{ plano?.periodo }}</span>
         </div>
       </div>
-      <p class="plano-descricao" *ngIf="plano?.desconto">
-        <i class="fas fa-gift"></i>
-        Desconto de {{ plano?.desconto }}% aplicado
-      </p>
     </div>
   </div>
 
-  <!-- Mensagem de Erro -->
   <div *ngIf="erroMsg" class="erro-box">
     <i class="fas fa-exclamation-circle"></i>
     <span>{{ erroMsg }}</span>
   </div>
 
-  <!-- Formulário -->
-  <form [formGroup]="cardForm" (ngSubmit)="submit()" class="form">
-    <div class="form-section">
+  <div class="step-indicator">
+    <div class="step-item completed">
+      <div class="step-circle completed"><i class="fas fa-check"></i></div>
+      <span class="step-label">Dados</span>
+    </div>
+
+    <div class="step-divider completed"></div>
+
+    <div class="step-item active">
+      <div class="step-circle active">2</div>
+      <span class="step-label">Pagamento</span>
+    </div>
+  </div>
+
+  <!-- FORM UNIFICADO -->
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <!-- STEP 1 -->
+    <div *ngIf="step === 1" class="form-section">
       <h3 class="section-title">
-        <i class="fas fa-credit-card"></i>
-        Dados do Cartão
+        <i class="fas fa-user-circle"></i> Seus Dados
       </h3>
 
+      <div class="form-row readonly">
+        <label><i class="fas fa-id-card"></i> Nome</label>
+        <input type="text" [value]="user?.nome" disabled />
+      </div>
+
+      <div class="form-row readonly">
+        <label><i class="fas fa-envelope"></i> Email</label>
+        <input type="text" [value]="user?.email" disabled />
+      </div>
+
+      <div class="form-row readonly">
+        <label><i class="fas fa-id-badge"></i> CPF</label>
+        <input type="text" [value]="user?.cpf" disabled />
+      </div>
+
+      <div class="form-row readonly">
+        <label><i class="fas fa-phone"></i> WhatsApp</label>
+        <input type="text" [value]="user?.whatsapp" disabled />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-submit" (click)="goToStep(2)">
+          Continuar
+        </button>
+        <button type="button" class="btn-cancel" (click)="close()">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div *ngIf="step === 2" class="form-section">
+      <h3 class="section-title"><i class="fas fa-credit-card"></i> Dados do Cartão</h3>
+
       <div class="form-row">
-        <label>
-          <i class="fas fa-hashtag"></i>
-          Número do Cartão
-        </label>
-        <input 
-          type="text" 
-          formControlName="cardNumber" 
-          placeholder="0000 0000 0000 0000"
-          maxlength="19"
-          (input)="formatCardNumberInput($event)"
-        />
+        <label><i class="fas fa-hashtag"></i> Número do Cartão</label>
+        <input type="text" formControlName="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19"
+          (input)="formatCardNumberInput($event)" />
       </div>
 
       <div class="form-row">
-        <label>
-          <i class="fas fa-user"></i>
-          Nome do Titular
-        </label>
-        <input 
-          type="text" 
-          formControlName="cardHolder" 
-          placeholder="Nome como está no cartão"
-          (input)="formatCardHolder($event)"
-        />
+        <label><i class="fas fa-user"></i> Nome do Titular</label>
+        <input type="text" formControlName="cardHolder" placeholder="Nome como no cartão"
+          (input)="formatCardHolder($event)" />
       </div>
 
       <div class="form-row-duo">
         <div class="form-row">
-          <label>
-            <i class="fas fa-calendar-alt"></i>
-            Validade
-          </label>
+          <label><i class="fas fa-calendar-alt"></i> Validade</label>
           <div class="input-group">
-            <input 
-              type="text" 
-              formControlName="expMonth" 
-              placeholder="MM"
-              maxlength="2"
-              class="input-small"
-              (blur)="formatMonthOnBlur()"
-            />
+            <input type="text" class="input-small" formControlName="expMonth" placeholder="MM" maxlength="2"
+              (blur)="formatMonthOnBlur()" />
             <span class="separator">/</span>
-            <input 
-              type="text" 
-              formControlName="expYear" 
-              placeholder="AAAA"
-              maxlength="4"
-              class="input-small"
-            />
+            <input type="text" class="input-small" formControlName="expYear" placeholder="AAAA" maxlength="4" />
           </div>
         </div>
 
         <div class="form-row">
-          <label>
-            <i class="fas fa-lock"></i>
-            CVV
-          </label>
-          <input 
-            type="text" 
-            formControlName="cvv" 
-            placeholder="000"
-            maxlength="4"
-            class="input-small"
-          />
+          <label><i class="fas fa-lock"></i> CVV</label>
+          <input type="text" class="input-small" formControlName="cvv" placeholder="000" maxlength="4" />
         </div>
+      </div>
+
+      <h3 class="section-title"><i class="fas fa-home"></i> Endereço</h3>
+
+      <div class="form-row-duo">
+        <div class="form-row">
+          <label>CEP</label>
+          <input type="text" formControlName="postalCode" placeholder="00000000" />
+        </div>
+
+        <div class="form-row">
+          <label>Nº Endereço</label>
+          <input type="text" formControlName="addressNumber" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="goToStep(1)">Voltar</button>
+        <button type="submit" class="btn-submit" [disabled]="loading">
+          {{ loading ? 'Processando...' : 'Confirmar Assinatura' }}
+        </button>
       </div>
     </div>
 
-    <div class="form-actions">
-      <button class="btn-submit" type="submit" [disabled]="loading">
-        <i class="fas" [class.fa-check-circle]="!loading" [class.fa-spinner]="loading" [class.fa-spin]="loading"></i>
-        <span>{{ loading ? 'Processando...' : 'Confirmar Assinatura' }}</span>
-      </button>
-      <button class="btn-cancel" type="button" (click)="close()" [disabled]="loading">
-        <i class="fas fa-times"></i>
-        <span>Cancelar</span>
-      </button>
-    </div>
-
-    <div class="security-info">
-      <i class="fas fa-shield-alt"></i>
-      <span>Seus dados estão protegidos e criptografados</span>
-    </div>
   </form>
+
+  <div class="security-info">
+    <i class="fas fa-shield-alt"></i>
+    <span>Seus dados estão protegidos</span>
+  </div>
 </div>

@@ -27,7 +27,7 @@ export class ordem {
   }
 
   gerarOrdemAssinatura(data: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/cadastrar`, data, { headers: this.getHeaders() })
+    return this.http.post<any>(`${this.baseUrl}/cadastrar-cartao`, data, { headers: this.getHeaders() })
       .pipe(
         map(res => {
             console.log(res)

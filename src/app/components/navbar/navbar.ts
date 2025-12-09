@@ -50,7 +50,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    if (window.confirm('Desaja sair do aplicativo?')) {
+    if (window.confirm('Deseja sair do aplicativo?')) {
       this.authService.logout();
       this.router.navigate(['/login']);
 

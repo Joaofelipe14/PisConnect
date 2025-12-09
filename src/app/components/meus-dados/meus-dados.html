@@ -141,13 +141,25 @@
         </div>
 
         <div *ngIf="!loadingPagamentos" class="pagamentos-container">
-          <div class="assinaturas-header">
+          <div *ngIf="user?.liberado_admin != 1" class="plans-header">
+
+            <div class="aviso-descricao-content">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p>Acesso em análise</p>
+              <p class="assinaturas-subtitle">
+                Por favor, aguarde até que seja liberado. Entraremos em contato com você.
+              </p>
+            </div>
+
+          </div>
+
+          <div *ngIf="!podeMostrarPlanos(assinaturas)" class="plans-header">
             <h2>Minhas Assinaturas</h2>
             <p class="assinaturas-subtitle">Gerencie seus planos e pagamentos</p>
           </div>
           <!-- Se não tiver nenhuma assinatura, mostra os planos para assinar -->
           <!-- Se não tiver nenhuma assinatura ativa, mostra os planos para assinar -->
-          <div *ngIf="!loadingPagamentos " class="plans-section">
+          <div *ngIf="!loadingPagamentos && podeMostrarPlanos(assinaturas) " class="plans-section">
             <div class="plans-header">
               <h2>Escolha seu Plano</h2>
               <p class="plans-subtitle">Selecione o plano ideal para você</p>
@@ -200,12 +212,18 @@
      }">
                     </i>
                     <span title="sua assinatura...">{{ getStatusTexto(assinaturaItem) }}</span>
+
                   </div>
+                  <a *ngIf="getStatusTexto(assinaturaItem) === 'Ativa'" class="id-value link-ativo"
+                    [routerLink]="['/psicologo', assinaturaItem?.banco?.psicologo_id]" target="_blank">
+                    Acesse sua pagina pessoal
+                  </a>
 
                 </div>
                 <div class="assinatura-id">
                   <span class="id-label">ID da Assinatura</span>
                   <span class="id-value">{{ assinaturaItem?.assinatura?.id }}</span>
+
                 </div>
               </div>
 
@@ -214,17 +232,21 @@
                 <span class="valor-label">Valor</span>
                 <span class="valor-amount">R$ {{ assinaturaItem?.assinatura?.value | number:'1.2-2' }}</span>
               </div>
-              
+
               <!-- Aviso de Desativação Automática -->
-              <div class="aviso-desativacao-descricao" *ngIf="assinaturaItem?.assinatura && ehDiaVencimento(assinaturaItem)">
+              <div class="aviso-desativacao-descricao"
+                *ngIf="assinaturaItem?.assinatura && ehDiaVencimento(assinaturaItem)">
                 <div class="aviso-descricao-content">
                   <i class="fas fa-exclamation-triangle"></i>
                   <p>
-                    <strong>Atenção:</strong> Hoje é o dia do vencimento do pagamento 
-                    <ng-container *ngIf="getDataExpiracaoFormatada(assinaturaItem) || assinaturaItem?.assinatura?.endDate">
-                      (data de expiração: <strong>{{ getDataExpiracaoFormatada(assinaturaItem) || (assinaturaItem?.assinatura?.endDate | date:'dd/MM/yyyy') }}</strong>)
+                    <strong>Atenção:</strong> Hoje é o dia do vencimento do pagamento
+                    <ng-container
+                      *ngIf="getDataExpiracaoFormatada(assinaturaItem) || assinaturaItem?.assinatura?.endDate">
+                      (data de expiração: <strong>{{ getDataExpiracaoFormatada(assinaturaItem) ||
+                        (assinaturaItem?.assinatura?.endDate | date:'dd/MM/yyyy') }}</strong>)
                     </ng-container>
-                    . Após 5 dias da expiração, sua conta será <strong>automaticamente desativada</strong> e seu perfil será removido da listagem pública.
+                    . Após 5 dias da expiração, sua conta será <strong>automaticamente desativada</strong> e seu perfil
+                    será removido da listagem pública.
                   </p>
                 </div>
               </div>
@@ -251,13 +273,15 @@
                   <div class="info-icon"><i class="fas fa-sync-alt"></i></div>
                   <div class="info-content">
                     <span class="info-label">Frequência</span>
-                    <span class="info-value">{{ traduzirCycle(getMotivoStatus(assinaturaItem)?.cycle || assinaturaItem?.assinatura?.cycle) }}</span>
+                    <span class="info-value">{{ traduzirCycle(getMotivoStatus(assinaturaItem)?.cycle ||
+                      assinaturaItem?.assinatura?.cycle) }}</span>
                   </div>
                 </div>
               </div>
 
               <!-- Aviso de Desativação Automática -->
-              <div class="aviso-desativacao" [ngClass]="{'expired': jaExpirou(assinaturaItem)}" *ngIf="deveMostrarAvisoDesativacao(assinaturaItem)">
+              <div class="aviso-desativacao" [ngClass]="{'expired': jaExpirou(assinaturaItem)}"
+                *ngIf="deveMostrarAvisoDesativacao(assinaturaItem)">
                 <div class="aviso-desativacao-content">
                   <div class="aviso-icon">
                     <i class="fas" [ngClass]="{
@@ -277,10 +301,12 @@
                     <p class="aviso-message">
                       <strong>Data de expiração:</strong> {{ getDataExpiracaoFormatada(assinaturaItem) }}<br>
                       <ng-container *ngIf="jaExpirou(assinaturaItem)">
-                        Após 5 dias da expiração, sua conta será <strong>automaticamente desativada</strong> e seu perfil será removido da listagem pública.
+                        Após 5 dias da expiração, sua conta será <strong>automaticamente desativada</strong> e seu
+                        perfil será removido da listagem pública.
                       </ng-container>
                       <ng-container *ngIf="!jaExpirou(assinaturaItem)">
-                        Após 5 dias da expiração ({{ getDataLimiteDesativacao(assinaturaItem) }}), sua conta será <strong>automaticamente desativada</strong> e seu perfil será removido da listagem pública.
+                        Após 5 dias da expiração ({{ getDataLimiteDesativacao(assinaturaItem) }}), sua conta será
+                        <strong>automaticamente desativada</strong> e seu perfil será removido da listagem pública.
                       </ng-container>
                     </p>
                   </div>
@@ -311,7 +337,8 @@
                     </div>
                     <div class="detalhe-content">
                       <span class="detalhe-label">Forma de Pagamento</span>
-                      <span class="detalhe-value">{{ traduzirBillingType(getMotivoStatus(assinaturaItem)?.billingType) }}</span>
+                      <span class="detalhe-value">{{ traduzirBillingType(getMotivoStatus(assinaturaItem)?.billingType)
+                        }}</span>
                     </div>
                   </div>
 
@@ -357,7 +384,8 @@
                 </div>
 
                 <!-- Informações de Multa e Juros -->
-                <div class="multa-juros-section" *ngIf="getMotivoStatus(assinaturaItem)?.fine || getMotivoStatus(assinaturaItem)?.interest">
+                <div class="multa-juros-section"
+                  *ngIf="getMotivoStatus(assinaturaItem)?.fine || getMotivoStatus(assinaturaItem)?.interest">
                   <div class="multa-juros-header">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span>Multa e Juros</span>
@@ -455,7 +483,9 @@
                           'fa-clock': cobranca?.status === 'PENDING' && (!cobranca?.dueDate || cobranca?.dueDate >= today),
                           'fa-exclamation-triangle': cobranca?.status === 'OVERDUE' || (cobranca?.status === 'PENDING' && cobranca?.dueDate && cobranca?.dueDate < today)
                         }"></i>
-                        <span>{{ cobranca?.status === 'RECEIVED' ? 'Pago' : (cobranca?.status === 'OVERDUE' || (cobranca?.status === 'PENDING' && cobranca?.dueDate && cobranca?.dueDate < today) ? 'Vencido' : 'Pendente') }}</span>
+                        <span>{{ cobranca?.status === 'RECEIVED' ? 'Pago' : (cobranca?.status === 'OVERDUE' ||
+                          (cobranca?.status === 'PENDING' && cobranca?.dueDate && cobranca?.dueDate < today) ? 'Vencido'
+                            : 'Pendente' ) }}</span>
                       </div>
                       <div class="cobranca-valor">
                         <span class="valor-label">Valor</span>

@@ -1,4 +1,3 @@
-// card-modal.component.ts
 import { ChangeDetectorRef, Component, Inject, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -6,208 +5,165 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { validateCardNumber, validateExp, validateCvv } from '../../card-utils'
+import { HttpClient } from '@angular/common/http';
 import { ordem } from '../services/ordem';
-declare var MercadoPago: any;
 
 @Component({
   selector: 'app-card-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+  ],
   templateUrl: './card-modal.html',
-    styleUrls: ['./card-modal.css']
-
+  styleUrls: ['./card-modal.css']
 })
 export class CardModalComponent {
-  cardForm: FormGroup;
-  mp: any;
+  step = 1;
+  loading = false;
   erroMsg: string | null = null;
-  loading: boolean = false;
+  remoteIp: string | null = null;
+  plano: any;
+  user: any;
+
+  form: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<CardModalComponent>,
     private ordem: ordem,
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
-    @Inject(MAT_DIALOG_DATA) public plano: any // <-- aqui
-
+    private http: HttpClient,
+    private dialogRef: MatDialogRef<CardModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.cardForm = this.fb.group({
-      cardNumber: ['', [Validators.required, Validators.minLength(13)]],
-      cardHolder: ['', Validators.required],
-      expMonth: ['', [Validators.required, Validators.min(1), Validators.max(12)]],
-      expYear: ['', [Validators.required, Validators.min(new Date().getFullYear())]],
-      cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(4)]],
+    this.plano = data?.plano || null;
+    this.user = data?.user || null;
+
+    this.form = this.fb.group({
+      cardNumber: ['4111111111111111', Validators.required],
+      cardHolder: ['JOAO FELIPE', Validators.required],
+      expMonth: ['12', Validators.required],
+      expYear: ['2029', Validators.required],
+      cvv: ['123', Validators.required],
+      postalCode: ['65000-000', Validators.required],
+      addressNumber: ['123', Validators.required]
     });
 
-    // Inicializa o Mercado Pago
-    this.mp = new MercadoPago('APP_USR-1e3e9f76-d85e-4269-9b5e-7fd7e34cf1b5', { locale: 'pt-BR' });
-
-    // Formatação automática do número do cartão
-    this.cardForm.get('cardNumber')?.valueChanges.subscribe(value => {
-      if (value) {
-        // Remove caracteres não numéricos
-        const numeric = value.replace(/\D/g, '');
-        // Formata com espaços a cada 4 dígitos
-        const formatted = this.formatCardNumber(numeric);
-        if (formatted !== value) {
-          this.cardForm.get('cardNumber')?.setValue(formatted, { emitEvent: false });
-        }
-      }
-    });
-
-    // Formatação automática do mês (adiciona zero à esquerda apenas quando necessário)
-    this.cardForm.get('expMonth')?.valueChanges.subscribe(value => {
-      if (value) {
-        // Remove caracteres não numéricos
-        const numeric = value.replace(/\D/g, '');
-        
-        // Limita a 2 dígitos
-        const limited = numeric.substring(0, 2);
-        
-        // Valida se está entre 1 e 12
-        const monthNum = parseInt(limited);
-        if (limited.length === 2 && (monthNum < 1 || monthNum > 12)) {
-          // Se for inválido, mantém apenas o primeiro dígito
-          const firstDigit = limited.substring(0, 1);
-          this.cardForm.get('expMonth')?.setValue(firstDigit, { emitEvent: false });
-          return;
-        }
-        
-        // Atualiza o valor se necessário
-        if (limited !== value) {
-          this.cardForm.get('expMonth')?.setValue(limited, { emitEvent: false });
-        }
-      }
-    });
-
-    // Limita o CVV a apenas números
-    this.cardForm.get('cvv')?.valueChanges.subscribe(value => {
-      if (value && !/^\d*$/.test(value)) {
-        const numeric = value.replace(/\D/g, '');
-        this.cardForm.get('cvv')?.setValue(numeric, { emitEvent: false });
-      }
-    });
-
-    // Limita o ano a apenas números
-    this.cardForm.get('expYear')?.valueChanges.subscribe(value => {
-      if (value && !/^\d*$/.test(value)) {
-        const numeric = value.replace(/\D/g, '');
-        this.cardForm.get('expYear')?.setValue(numeric, { emitEvent: false });
-      }
-    });
-
-    // cartão polaris teste
-    this.cardForm.setValue({
-      cardNumber: '5162 9272 3371 8417',
-      cardHolder: 'Joao F M luz',
-      expMonth: '09',
-      expYear: '2033', // Mudei para string
-      cvv: '123'
-    });
+    this.http.get('https://api.ipify.org?format=json')
+      .subscribe((res: any) => {
+        this.remoteIp = res.ip;
+      });
   }
 
-  formatCardNumber(value: string): string {
-    // Remove todos os espaços e caracteres não numéricos
-    const numbers = value.replace(/\D/g, '');
-    // Adiciona espaços a cada 4 dígitos
-    return numbers.replace(/(.{4})/g, '$1 ').trim();
+  goToStep(step: number) {
+    this.step = step;
   }
 
   formatCardNumberInput(event: any) {
-    const input = event.target;
-    let value = input.value.replace(/\D/g, '');
-    value = value.replace(/(.{4})/g, '$1 ').trim();
-    if (value.length > 19) {
-      value = value.substring(0, 19);
-    }
-    this.cardForm.get('cardNumber')?.setValue(value, { emitEvent: false });
+    let v = event.target.value.replace(/\D/g, '').substring(0, 16);
+    v = v.replace(/(.{4})/g, '$1 ').trim();
+    this.form.patchValue({ cardNumber: v }, { emitEvent: false });
   }
 
   formatCardHolder(event: any) {
-    const input = event.target;
-    let value = input.value.toUpperCase();
-    this.cardForm.get('cardHolder')?.setValue(value, { emitEvent: false });
+    const v = event.target.value.toUpperCase();
+    this.form.patchValue({ cardHolder: v }, { emitEvent: false });
   }
 
   formatMonthOnBlur() {
-    const monthValue = this.cardForm.get('expMonth')?.value;
-    if (monthValue && monthValue.length === 1) {
-      const monthNum = parseInt(monthValue);
-      if (monthNum >= 1 && monthNum <= 9) {
-        // Adiciona zero à esquerda apenas quando o campo perde o foco e tem 1 dígito válido
-        this.cardForm.get('expMonth')?.setValue(monthValue.padStart(2, '0'), { emitEvent: false });
-      }
+    const m = this.form.value.expMonth;
+    if (m && m.length === 1) {
+      this.form.patchValue({ expMonth: '0' + m }, { emitEvent: false });
     }
   }
-
   async submit() {
+    console.log('enviando');
     if (this.loading) return;
+    if (this.form.invalid) return;
 
-    if (!validateCardNumber(this.cardForm.value.cardNumber)) {
-      alert('Número do cartão inválido');
-      return;
-    }
-    if (!validateExp(this.cardForm.value.expMonth, this.cardForm.value.expYear)) {
-      alert('Data de validade inválida');
-      return;
-    }
-    if (!validateCvv(this.cardForm.value.cvv)) {
-      alert('CVV inválido');
-      return;
-    }
+  const values = this.form.value;
 
-    this.loading = true;
-    this.erroMsg = null;
+    const payload = {
+      plano_id: this.plano.id,
+      creditCard: {
+        holderName: values.cardHolder,
+        number: values.cardNumber.replace(/\s/g, ''),
+        expiryMonth: values.expMonth.toString().padStart(2, '0'),
+        expiryYear: values.expYear.toString(),
+        ccv: values.cvv
+      },
+      creditCardHolderInfo: {
+        name: this.user.nome,
+        email: this.user.email,
+        cpfCnpj: this.user.cpf.replace(/\D/g, ''),
+        postalCode: values.postalCode.replace(/\D/g, ''),
+        addressNumber: values.addressNumber,
+        phone: this.user.whatsapp.replace(/\D/g, '')
+      },
+      remoteIp: this.remoteIp
+    };
+    const secret = 'minha-chave-secreta-qualquer';
 
-    try {
-      // ⚠️ ATENÇÃO: Use os nomes corretos que o SDK JavaScript espera!
-      const cardData = {
-        cardNumber: this.cardForm.value.cardNumber.replace(/\s/g, ''),
-        cardholderName: this.cardForm.value.cardHolder,
-        cardExpirationMonth: this.cardForm.value.expMonth.toString().padStart(2, '0'),
-        cardExpirationYear: this.cardForm.value.expYear.toString(),
-        securityCode: this.cardForm.value.cvv,
+    console.log(payload)
+    const encrypted = await this.encryptData(payload, secret);
 
-      };
-      const tokenResponse = await this.mp.createCardToken(cardData);
 
-      if (!tokenResponse.id) {
-        alert('Erro ao gerar token do cartão');
-        return;
+
+    this.ordem.gerarOrdemAssinatura(encrypted).subscribe({
+      next: (res) => {
+        this.ngZone.run(() => {
+          this.loading = false;
+          this.dialogRef.close(res);
+          this.cdr.markForCheck();
+        });
+      },
+      error: (err) => {
+        this.ngZone.run(() => {
+          this.erroMsg = err?.error?.message || 'Erro ao processar assinatura';
+          this.loading = false;
+          this.cdr.markForCheck();
+        });
       }
-      const payload = {
-        card_token_id: tokenResponse.id,
-        preapproval_plan_id: this.plano.preapproval_plan_id
-      };
-
-      this.ordem.gerarOrdemAssinatura(payload).subscribe({
-        next: (res) => {
-          this.ngZone.run(() => {
-            console.log('Sucesso:', res);
-            this.loading = false;
-            this.dialogRef.close(payload);
-            this.cdr.markForCheck();
-          });
-        },
-        error: (err) => {
-          this.ngZone.run(() => {
-            console.error('Erro na assinatura:', err);
-            this.erroMsg = err?.error?.message || 'Erro ao processar assinatura';
-            this.loading = false;
-            this.cdr.markForCheck();
-          });
-        }
-      });
-
-    } catch (err) {
-      console.error('Erro ao gerar token do cartão:', err);
-      this.loading = false;
-      this.erroMsg = 'Erro ao processar cartão: ' + ((err as any)?.message || 'Erro desconhecido');
-      this.cdr.markForCheck();
-    }
+    });
   }
+
+  private async getCryptoKey(secretKey: string) {
+    const enc = new TextEncoder();
+    const keyMaterial = enc.encode(secretKey);
+    const hash = await crypto.subtle.digest('SHA-256', keyMaterial);
+
+    return crypto.subtle.importKey(
+      'raw',
+      hash,
+      'AES-GCM',
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
+  async encryptData(data: any, secretKey: string) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await this.getCryptoKey(secretKey);
+    const enc = new TextEncoder();
+    const encoded = enc.encode(JSON.stringify(data));
+
+    const cipherBuffer = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      encoded
+    );
+
+    return {
+      iv: btoa(String.fromCharCode(...iv)),
+      data: btoa(String.fromCharCode(...new Uint8Array(cipherBuffer)))
+    };
+  }
+
+
 
   close() {
     this.dialogRef.close();

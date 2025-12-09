@@ -11,11 +11,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { CardModalComponent } from '../../card-modal/card-modal';
 import { ordem } from '../../services/ordem';
 import { ConfirmAssinaturaDialog } from '../../confirm-assinatura-dialog/confirm-assinatura-dialog';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-meus-dados',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule, Loading],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule, Loading, RouterModule],
   templateUrl: './meus-dados.html',
   styleUrls: ['./meus-dados.css'],
 })
@@ -145,16 +146,46 @@ export class MeusDadosComponent implements OnInit {
     return value || []; // Se não for string, retorna o próprio valor ou um array vazio
   }
 
-  getStatusTexto(assinaturaItem: any): string {
-    if (!assinaturaItem || !assinaturaItem.assinatura) return 'Indisponível';
+  getStatusTexto(item: any) {
+    const hoje = new Date()
+    const expira = item.banco?.data_expiracao ? new Date(item.banco.data_expiracao) : null
+    const diff = expira ? (expira.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24) : null
 
-    return 'Ativa';
+    if (item.banco?.status === 'ativo') {
+      if (diff !== null && diff <= 5 && diff >= 0) return 'Prestes a Expirar'
+      if (diff !== null && diff < 0) return 'Expirada'
+      return 'Ativa'
+    }
+
+    if (item.banco?.status === 'inativo' && item.banco?.motivo_status === 'PAYMENT_OVERDUE') return 'Pagamento em Atraso'
+    if (item.banco?.status === 'inativo' && diff !== null && diff < 0) return 'Expirada'
+    if (item.banco?.status === 'cancelado') return 'Cancelada'
+
+    return 'Inativa'
+  }
+
+  podeMostrarPlanos(lista: any[]) {
+
+    if (this.user.liberado_admin !== 1) {
+      return false
+    }
+    if (!lista || !Array.isArray(lista) || lista.length === 0) {
+      return true
+    }
+    for (const item of lista) {
+      const status = this.getStatusTexto(item)
+      if (status === 'Ativa' || status === 'Pagamento em Atraso') {
+        return false
+      }
+    }
+
+    return true
   }
 
   // Parse do motivo_status (JSON string)
   getMotivoStatus(assinaturaItem: any): any {
     if (!assinaturaItem?.motivo_status) return null;
-    
+
     try {
       if (typeof assinaturaItem.motivo_status === 'string') {
         return JSON.parse(assinaturaItem.motivo_status);
@@ -209,7 +240,7 @@ export class MeusDadosComponent implements OnInit {
   getProximoVencimento(assinaturaItem: any): string {
     const motivoStatus = this.getMotivoStatus(assinaturaItem);
     if (!motivoStatus?.nextDueDate) return 'Não informado';
-    
+
     try {
       const date = new Date(motivoStatus.nextDueDate);
       return date.toLocaleDateString('pt-BR');
@@ -293,7 +324,7 @@ export class MeusDadosComponent implements OnInit {
     try {
       const dataExp = new Date(dataExpiracao);
       const hoje = new Date();
-      
+
       // Compara apenas dia, mês e ano (ignora horas)
       hoje.setHours(0, 0, 0, 0);
       dataExp.setHours(0, 0, 0, 0);
@@ -633,6 +664,7 @@ export class MeusDadosComponent implements OnInit {
               ).length
             };
 
+            console.log(this.assinaturas)
             this.assinaturasTotais.push(totais);
           });
         }
@@ -645,18 +677,35 @@ export class MeusDadosComponent implements OnInit {
 
 
   assinarPlano(plano: any) {
-    const dialogRef = this.dialog.open(ConfirmAssinaturaDialog, {
+    // const dialogRef = this.dialog.open(ConfirmAssinaturaDialog, {
+    //   width: '90%',
+    //   maxWidth: '800px',
+    //   maxHeight: '95vh',
+    //   panelClass: 'confirm-assinatura-panel',
+    //   data: { plano }
+    // });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     this.startLoadingAndAssinar(plano);
+    //   }
+    // });
+
+    const data = {
+      plano,
+      user: this.user
+    }
+    const dialogRef = this.dialog.open(CardModalComponent, {
       width: '90%',
-      maxWidth: '500px',
+      maxWidth: '800px',
       maxHeight: '95vh',
-      panelClass: 'confirm-assinatura-panel',
-      data: { plano }
+      data: data
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.startLoadingAndAssinar(plano);
       }
     });
+
 
   }
 
@@ -697,7 +746,7 @@ export class MeusDadosComponent implements OnInit {
     console.log('Atualizar forma de pagamento');
     // abrir modal do cartão para atualizar card token
   }
- 
+
   trocarPlano(plano: any) {
     console.log('Trocar plano');
     // abrir tela/modal para escolher novo plano
@@ -709,7 +758,7 @@ export class MeusDadosComponent implements OnInit {
       'Ao cancelar, você perderá o acesso ao plano e seu perfil será removido da listagem pública.\n\n' +
       'Esta ação não pode ser desfeita.'
     );
-    
+
     if (confirmacao) {
       console.log('Cancelar assinatura:', assinaturaItem);
       // Implementar lógica de cancelamento aqui
