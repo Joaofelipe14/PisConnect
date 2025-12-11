@@ -7,3 +7,4 @@ export const SOCIOPSI_CONTACT = {
   instagram: 'https://www.instagram.com/socipsi?igsh=azl4MnVuMnZ1YjQz&utm_source=qr',
   linkedin: 'https://www.linkedin.com/company/socipsi/'
 } as const;
+

@@ -63,3 +63,4 @@ export function extrairDadosDoSlug(slug: string): { nome: string; crp: string } 
     crp: crpSlug.replace(/-/g, '/')
   };
 }
+

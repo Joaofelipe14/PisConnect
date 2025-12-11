@@ -678,34 +678,34 @@ export class MeusDadosComponent implements OnInit {
 
   // so opção cartão por enqaunto 
   assinarPlano(plano: any) {
-    // const dialogRef = this.dialog.open(ConfirmAssinaturaDialog, {
-    //   width: '90%',
-    //   maxWidth: '800px',
-    //   maxHeight: '95vh',
-    //   panelClass: 'confirm-assinatura-panel',
-    //   data: { plano }
-    // });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.startLoadingAndAssinar(plano);
-    //   }
-    // });
-
-    const data = {
-      plano,
-      user: this.user
-    }
-    const dialogRef = this.dialog.open(CardModalComponent, {
+    const dialogRef = this.dialog.open(ConfirmAssinaturaDialog, {
       width: '90%',
       maxWidth: '800px',
       maxHeight: '95vh',
-      data: data
+      panelClass: 'confirm-assinatura-panel',
+      data: { plano }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        alert( 'Assinatura realizada.')
+        this.startLoadingAndAssinar(plano);
       }
     });
+
+    // const data = {
+    //   plano,
+    //   user: this.user
+    // }
+    // const dialogRef = this.dialog.open(CardModalComponent, {
+    //   width: '90%',
+    //   maxWidth: '800px',
+    //   maxHeight: '95vh',
+    //   data: data
+    // });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     alert( 'Assinatura realizada.')
+    //   }
+    // });
 
 
   }
