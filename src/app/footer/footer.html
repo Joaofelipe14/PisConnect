@@ -3,37 +3,40 @@
     <div class="footer-column footer-brand">
       <h2 class="footer-logo">SociPsi</h2>
       <p class="footer-description">Conectando psicólogos e pessoas com empatia e propósito.</p>
-
-
-      <img class="logo" src="logo.png" alt="">
+      <img class="logo" src="logo.png" alt="SociPsi Logo">
     </div>
 
     <div class="footer-column footer-contact">
       <h3 class="footer-title">Contato</h3>
-      <p>Email: <a href="mailto:contato@socipsi.com" class="footer-link">contato@socipsi.com</a></p>
-      <p>Telefone: <a href="tel:+5591999999999" class="footer-link">+55 91 99999-9999</a></p>
+      <div class="contact-item">
+        <fa-icon [icon]="faEnvelope" class="contact-icon"></fa-icon>
+        <a [href]="'mailto:' + contact.email" class="footer-link">{{ contact.email }}</a>
+      </div>
+      <div class="contact-item">
+        <fa-icon [icon]="faPhone" class="contact-icon"></fa-icon>
+        <a [href]="getPhoneLink()" class="footer-link">{{ contact.phone }}</a>
+      </div>
     </div>
 
     <div class="footer-column footer-socials">
       <h3 class="footer-title">Redes Sociais</h3>
       <div class="social-icons">
-        <a href="#" target="_blank" class="social-link">
-          <fa-icon [icon]="faFacebook"></fa-icon> Facebook
+        <a [href]="contact.instagram" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+          <fa-icon [icon]="faInstagram"></fa-icon>
+          <span>Instagram</span>
         </a>
-        <a href="#" target="_blank" class="social-link">
-          <fa-icon [icon]="faInstagram"></fa-icon> Instagram
-        </a>
-        <a href="#" target="_blank" class="social-link">
-          <fa-icon [icon]="faLinkedin"></fa-icon> LinkedIn
+        <a [href]="contact.linkedin" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
+          <fa-icon [icon]="faLinkedin"></fa-icon>
+          <span>LinkedIn</span>
         </a>
       </div>
     </div>
 
     <div class="footer-column footer-links">
       <h3 class="footer-title">Links</h3>
-      <a href="#" class="footer-link">Início</a>
-      <a href="#" class="footer-link">Sobre</a>
-      <a href="#" class="footer-link">Política de Privacidade</a>
+      <a routerLink="/" class="footer-link">Início</a>
+      <a routerLink="/sobre-nos" class="footer-link">Sobre</a>
+      <a routerLink="/termos-privacidade" class="footer-link">Política de Privacidade</a>
     </div>
   </div>
 

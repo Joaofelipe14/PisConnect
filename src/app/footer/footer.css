@@ -7,10 +7,11 @@
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
   justify-content: space-between;
-  flex-wrap: nowrap;
-
+  justify-items: center;
 }
 
 .logo {
@@ -25,6 +26,11 @@
 
 .footer-column {
   min-width: 200px;
+  flex: 1;
+}
+
+.footer-brand {
+  max-width: 300px;
 }
 
 .footer-logo {
@@ -81,13 +87,16 @@
 
 @media (max-width: 768px) {
   .footer-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .footer-column {
     text-align: center;
+  }
+
+  .contact-item {
+    justify-content: center;
   }
 
   .footer-socials {
@@ -103,8 +112,33 @@
   gap: 0.5rem;
 }
 
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .social-link fa-icon {
-  margin-right: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.contact-icon {
+  font-size: 1rem;
+  opacity: 0.9;
+  min-width: 16px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 @media (max-width: 768px) {
