@@ -31,24 +31,29 @@
   </div>
 
   <div class="step-indicator">
-    <div class="step-item completed">
-      <div class="step-circle completed"><i class="fas fa-check"></i></div>
+    <div class="step-item" [class.completed]="step >= 1" [class.active]="step === 1">
+      <div class="step-circle" [class.completed]="step > 1" [class.active]="step === 1">
+        <i *ngIf="step > 1" class="fas fa-check"></i>
+        <span *ngIf="step <= 1">1</span>
+      </div>
       <span class="step-label">Dados</span>
     </div>
 
-    <div class="step-divider completed"></div>
+    <div class="step-divider" [class.completed]="step >= 2"></div>
 
-    <div class="step-item active">
-      <div class="step-circle active">2</div>
+    <div class="step-item" [class.active]="step === 2">
+      <div class="step-circle" [class.active]="step === 2">
+        <span>2</span>
+      </div>
       <span class="step-label">Pagamento</span>
     </div>
   </div>
 
   <!-- FORM UNIFICADO -->
-  <form [formGroup]="form" (ngSubmit)="submit()">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-container">
 
     <!-- STEP 1 -->
-    <div *ngIf="step === 1" class="form-section">
+    <div *ngIf="step === 1" class="form-section scrollable-section">
       <h3 class="section-title">
         <i class="fas fa-user-circle"></i> Seus Dados
       </h3>
@@ -82,7 +87,7 @@
     </div>
 
     <!-- STEP 2 -->
-    <div *ngIf="step === 2" class="form-section">
+    <div *ngIf="step === 2" class="form-section scrollable-section">
       <h3 class="section-title"><i class="fas fa-credit-card"></i> Dados do Cartão</h3>
 
       <div class="form-row">

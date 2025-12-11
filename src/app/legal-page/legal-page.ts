@@ -103,11 +103,11 @@ R$ 34,99 por mês
 
 Trimestral:
 R$ 79,99 o pacote
-→ R$ 26,66 por mês 
+→ 3 parcelas de R$ 26,90
 
 Anual:
 R$ 299,99 o pacote
-→ R$ 24,99 por mês 
+→ 12 parcelas de R$ 24,99 
 
 10 dias grátis em qualquer modalidade
 → Data de cobrança inicial = hoje + 10 dias
