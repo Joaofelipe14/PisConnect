@@ -18,7 +18,7 @@
         </div>
         <div class="plano-valor">
           <span class="valor-simbolo">R$</span>
-          <span class="valor-amount">{{ plano?.preco_normal | number:'1.2-2' }}</span>
+          <span class="valor-amount">{{ (plano?.promocao === 1 && plano?.preco_promocional) ? plano.preco_promocional : plano?.preco_normal | number:'1.2-2' }}</span>
           <span class="valor-periodo">/ {{ plano?.duracao_dias }} dias </span>
         </div>
       </div>

@@ -40,21 +40,26 @@
         <i class="fas fa-dollar-sign"></i>
         <div class="info-text">
           <p class="info-label">Valor</p>
-          <p class="info-value">R$ {{ (+data.plano.preco_promocional) | number:'1.2-2' }}</p>
+          <p class="info-value">R$ {{ (data.plano.promocao === 1 && data.plano.preco_promocional) ? data.plano.preco_promocional : data.plano.preco_normal | number:'1.2-2' }}</p>
         </div>
       </div>
 
-      <div class="info-item">
-        <i class="fas fa-clock"></i>
+      <div class="info-item" *ngIf="data.plano.dia_gratis && data.plano.dia_gratis > 0">
+        <i class="fas fa-gift"></i>
         <div class="info-text">
-          <p class="info-label">Período de Liberação</p>
-          <p class="info-value">{{ data.plano.duracao_dias }} dias</p>
+          <p class="info-label">Período Grátis</p>
+          <p class="info-value">{{ data.plano.dia_gratis }} dias grátis - 1ª cobrança em {{ getPrimeiraCobranca(data.plano.dia_gratis) | date:'dd/MM/yyyy' }}</p>
         </div>
       </div>
 
       <div class="alert-box">
         <i class="fas fa-exclamation-triangle"></i>
-        <p>Você será cobrado hoje e terá acesso ao plano pelos próximos {{ data.plano.duracao_dias }} dias.</p>
+        <p *ngIf="data.plano.dia_gratis && data.plano.dia_gratis > 0">
+          Você terá {{ data.plano.dia_gratis }} dias grátis. A primeira cobrança será em {{ getPrimeiraCobranca(data.plano.dia_gratis) | date:'dd/MM/yyyy' }} e terá acesso ao plano pelos próximos {{ data.plano.duracao_dias }} dias.
+        </p>
+        <p *ngIf="!data.plano.dia_gratis || data.plano.dia_gratis === 0">
+          Você será cobrado hoje e terá acesso ao plano pelos próximos {{ data.plano.duracao_dias }} dias.
+        </p>
       </div>
 
       <div class="info-box-public">
@@ -63,6 +68,18 @@
           <p class="info-label-public">Importante</p>
           <p class="info-value-public">Após a confirmação do pagamento, seu nome aparecerá na listagem pública de psicólogos.</p>
         </div>
+      </div>
+
+      <div class="termos-aceite">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="aceitoTermos" class="checkbox-input" />
+          <span class="checkbox-text">
+            Eu concordo com a 
+            <a [href]="termosUrl" target="_blank" rel="noopener noreferrer" class="termos-link">
+              política de assinatura
+            </a>
+          </span>
+        </label>
       </div>
     </div>
   </div>

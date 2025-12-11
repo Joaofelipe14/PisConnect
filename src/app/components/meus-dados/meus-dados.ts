@@ -654,6 +654,30 @@ export class MeusDadosComponent implements OnInit {
 
           this.assinaturas.forEach(item => {
             const cobrancas = item?.cobrancas || [];
+            
+            // Ordena as cobranças: primeira parcela no topo (por data de vencimento ou installmentNumber)
+            const cobrancasOrdenadas = [...cobrancas].sort((a: any, b: any) => {
+              // Se tiver installmentNumber, ordena por ele
+              if (a.installmentNumber !== undefined && b.installmentNumber !== undefined) {
+                return a.installmentNumber - b.installmentNumber;
+              }
+              // Caso contrário, ordena por data de vencimento
+              const dateA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
+              const dateB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
+              return dateA - dateB;
+            });
+            
+            // Adiciona informação de parcela a cada cobrança
+            cobrancasOrdenadas.forEach((cobranca: any, index: number) => {
+              if (!cobranca.installmentNumber) {
+                cobranca.installmentNumber = index + 1;
+              }
+              cobranca.totalInstallments = cobrancasOrdenadas.length;
+            });
+            
+            // Atualiza as cobranças ordenadas no item
+            item.cobrancas = cobrancasOrdenadas;
+            
             const totais = {
               total: cobrancas.length,
               pagas: cobrancas.filter((c: { status: string; }) => c?.status === 'RECEIVED').length,
@@ -762,6 +786,20 @@ export class MeusDadosComponent implements OnInit {
       // Implementar lógica de cancelamento aqui
       // this.ordem.cancelarAssinatura(assinaturaItem.id).subscribe(...)
     }
+  }
+
+  getPrimeiraCobranca(diasGratis: number): Date {
+    const hoje = new Date();
+    const primeiraCobranca = new Date(hoje);
+    primeiraCobranca.setDate(hoje.getDate() + diasGratis);
+    return primeiraCobranca;
+  }
+
+  getPrecoPlano(plano: any): string {
+    if (plano.promocao === 1 && plano.preco_promocional) {
+      return plano.preco_promocional;
+    }
+    return plano.preco_normal;
   }
 
 }

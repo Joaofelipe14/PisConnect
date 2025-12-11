@@ -170,7 +170,7 @@
                 <div class="plan-header">
                   <h3>{{ plano.nome }}</h3>
                   <div class="plan-badge"
-                    *ngIf="plano.preco_normal && plano.preco_promocional && plano.preco_promocional < plano.preco_normal">
+                    *ngIf="plano.promocao === 1 && plano.preco_normal && plano.preco_promocional && plano.preco_promocional < plano.preco_normal">
                     <span>
                       {{ ((+plano.preco_normal - +plano.preco_promocional) / +plano.preco_normal * 100) | number:'1.0-0'
                       }}% OFF
@@ -178,9 +178,13 @@
                   </div>
                 </div>
                 <div class="plan-price">
-                  <span class="price-amount">R$ {{ plano.preco_promocional || plano.preco_normal | number:'1.2-2'
-                    }}</span>
+                  <span class="price-amount">R$ {{ getPrecoPlano(plano) | number:'1.2-2' }}</span>
                   <span class="price-period">/ {{ plano.duracao_dias }} dias</span>
+                </div>
+                <div class="plan-gratis-info" *ngIf="plano.dia_gratis && plano.dia_gratis > 0">
+                  <i class="fas fa-gift"></i>
+                  <span>{{ plano.dia_gratis }} dias grátis</span>
+                  <span class="primeira-cobranca">1ª cobrança: {{ getPrimeiraCobranca(plano.dia_gratis) | date:'dd/MM/yyyy' }}</span>
                 </div>
                 <button class="btn-assinar" (click)="assinarPlano(plano)">
                   <i class="fas fa-check"></i>
@@ -487,6 +491,9 @@
                         <span>{{ cobranca?.status === 'RECEIVED' ? 'Pago' : (cobranca?.status === 'OVERDUE' ||
                           (cobranca?.status === 'PENDING' && cobranca?.dueDate && cobranca?.dueDate < today) ? 'Vencido'
                             : 'Pendente' ) }}</span>
+                        <span *ngIf="cobranca?.installmentNumber && cobranca?.totalInstallments" class="parcela-info">
+                          - Parcela {{ cobranca.installmentNumber }}/{{ cobranca.totalInstallments }}
+                        </span>
                       </div>
                       <div class="cobranca-valor">
                         <span class="valor-label">Valor</span>
@@ -529,7 +536,7 @@
                     <div class="cobranca-actions" *ngIf="cobranca?.bankSlipUrl || cobranca?.invoiceUrl">
                       <a [href]="cobranca?.invoiceUrl || cobranca?.bankSlipUrl" target="_blank" class="btn-ver-boleto">
                         <i class="fas fa-file-pdf"></i>
-                        <span>Ver Boleto</span>
+                        <span>Fatura</span>
                       </a>
                     </div>
                   </div>

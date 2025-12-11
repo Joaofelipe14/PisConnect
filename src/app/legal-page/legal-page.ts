@@ -30,6 +30,7 @@ export class LegalPageComponent {
     const showAssinatura = this.route.snapshot.queryParamMap.get('assinatura');
     if (showAssinatura === '1') {
       this.sections.splice(4, 0, { id: 'assinatura', title: 'Assinatura', icon: '💳' });
+      this.activeSection = 'assinatura';
     }
   }
 
