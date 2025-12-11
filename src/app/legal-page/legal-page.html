@@ -1,0 +1,41 @@
+<div class="termos-container">
+    <div class="termos-header">
+        <h1>Documentação Legal</h1>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs">
+            <button *ngFor="let section of sections" [class.active]="activeSection === section.id"
+                (click)="setActiveSection(section.id)" class="tab-button">
+                <span class="tab-icon">{{section.icon}}</span>
+                <span class="tab-title">{{section.title}}</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <div class="document-card">
+
+            <div class="document-content">
+                <pre>{{getDocumentContent(activeSection)}}</pre>
+            </div>
+
+            <div class="document-footer">
+                <p class="update-date">Última atualização: {{dataAtualizacao}}</p>
+                <button class="scroll-top" (click)="scrollToTop()">
+                    ↑ Voltar ao topo
+                </button>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-icon">ℹ️</div>
+            <h3>Informação Importante</h3>
+            <p>Estes documentos foram elaborados para estar em conformidade com a legislação brasileira, incluindo LGPD,
+                Marco Civil da Internet e Código de Defesa do Consumidor.</p>
+            <!-- <p class="info-note">⚠️ Recomendamos consultar um advogado especializado para revisar estes documentos antes
+                do uso oficial.</p> -->
+        </div>
+    </div>
+</div>
+*/

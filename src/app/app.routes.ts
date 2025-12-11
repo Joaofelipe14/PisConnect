@@ -8,6 +8,7 @@ import { SobreNos } from './sobre-nos/sobre-nos';
 import { MeusDadosComponent } from './components/meus-dados/meus-dados';
 import { Login } from './components/admin/login/login';
 import { AdminPsicologos } from './components/admin/psicologos/psicologos';
+import { LegalPageComponent } from './legal-page/legal-page';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent, data: { title: 'SociPsi | Bem-vindo' } },
@@ -19,6 +20,8 @@ export const routes: Routes = [
   { path: 'meus-dados', component: MeusDadosComponent, data: { title: 'SociPsi | Meus dados' } },
   { path: 'admin/login', component: Login, data: { title: 'SociPsi | Admin' } },
   { path: 'admin/psicologos', component: AdminPsicologos, data: { title: 'SociPsi | Admin Psicologos' } },
+  { path: 'termos-privacidade', component: LegalPageComponent, data: { title: 'SociPsi | Termos e privacidade' } },
+
 
   { path: '**', redirectTo: '/psicologos' },
 
