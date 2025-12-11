@@ -3,6 +3,7 @@ import { SupabaseService } from '../../../services/supabase';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { gerarSlug } from '../../../utils/slug';
 
 @Component({
   selector: 'app-lista-psicologos',
@@ -147,7 +148,7 @@ export class AdminPsicologos implements OnInit {
   diasTeste: number = 7;
   motivoTeste: string = '';
 
-  async liberarPeriodoGratis(p: any) {
+  async   liberarPeriodoGratis(p: any) {
     if (!this.diasTeste || this.diasTeste < 1) return;
 
     const resp = await this.supabaseService.criarAssinaturaTeste(
@@ -177,6 +178,9 @@ export class AdminPsicologos implements OnInit {
     this.fecharModal();
   }
 
-
+  getSlug(psicologo: any): string {
+    if (!psicologo) return '';
+    return gerarSlug(psicologo.nome || '', psicologo.crp || '');
+  }
 
 }

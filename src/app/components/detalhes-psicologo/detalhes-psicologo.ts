@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { gerarSlug } from '../../utils/slug';
 
 @Component({
   selector: 'app-detalhes-psicologo',
@@ -36,9 +37,9 @@ export class DetalhesPsicologoComponent implements OnInit {
     this.cdr.markForCheck();
 
     this.route.params.subscribe(params => {
-      const id = params['id'];
+      const slug = params['id']; // O parâmetro ainda se chama 'id' na rota, mas agora recebe o slug
 
-      this.supabaseService.buscarPsicologoPorId(id)
+      this.supabaseService.buscarPsicologoPorSlug(slug)
         .then(psicologo => {
           this.ngZone.run(() => {
             this.psicologo = psicologo || null;
@@ -178,8 +179,12 @@ export class DetalhesPsicologoComponent implements OnInit {
   }
 
   compartilharPerfil() {
-    const url = window.location.href;
+    // Gera o link com slug (nome + CRP) ao invés do ID
     const nome = this.psicologo?.nome || 'Psicólogo';
+    const crp = this.psicologo?.crp || '';
+    const slug = gerarSlug(nome, crp);
+    const baseUrl = window.location.origin;
+    const url = `${baseUrl}/psicologo/${slug}`;
     const texto = `Conheça ${nome} no SociPsi - ${this.getAbordagem()}`;
 
     // Tenta usar a Web Share API se disponível (mobile)

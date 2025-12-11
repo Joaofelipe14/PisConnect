@@ -113,7 +113,7 @@
 
       <div class="info-item" *ngIf="isAtivo(psicologoSelecionado)">
         <strong>pagina pessoal:</strong>
-        <a [href]="'/psicologo/' + psicologoSelecionado?.id" target="_blank" rel="noopener noreferrer">
+        <a [href]="'/psicologo/' + getSlug(psicologoSelecionado)" target="_blank" rel="noopener noreferrer">
         clique aqui
         </a>
       </div>

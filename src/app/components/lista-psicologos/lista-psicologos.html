@@ -159,7 +159,7 @@
       *ngIf="psicologos.length > 0">
       <div class="psicologo-card" *ngFor="let p of psicologos" [class.card-mode]="viewMode === 'card'"
         [class.list-mode]="viewMode === 'list'">
-        <div class="card-content" (click)="verDetalhes(p.id)" style="cursor: pointer;">
+        <div class="card-content" (click)="verDetalhes(p)" style="cursor: pointer;">
           <img [src]="getAvatarUrl(p)" alt="{{ p.nome }}" class="profile-image" />
           <div class="card-info">
             <h3 class="psicologo-name">{{ p.nome }}</h3>

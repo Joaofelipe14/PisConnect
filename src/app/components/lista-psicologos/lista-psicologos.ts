@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { ALL_ABORDAGENS, ALL_AREAS, ALL_PUBLICOS } from '../constants';
+import { gerarSlug } from '../../utils/slug';
 @Component({
   selector: 'app-lista-psicologos',
   standalone: true,
@@ -107,8 +108,12 @@ export class ListaPsicologos implements OnInit {
     this.aplicarFiltros();
   }
 
-  verDetalhes(id: string) {
-    this.router.navigate(['/psicologo', id]);
+  verDetalhes(psicologo: any) {
+    // Gera o slug a partir do nome e CRP do psicólogo
+    const nome = psicologo?.nome || '';
+    const crp = psicologo?.crp || '';
+    const slug = gerarSlug(nome, crp);
+    this.router.navigate(['/psicologo', slug]);
   }
 
   abrirWhatsApp(whatsapp: string) {
