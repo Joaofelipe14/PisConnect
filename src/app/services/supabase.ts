@@ -95,24 +95,63 @@ export class SupabaseService {
     return urlData.publicUrl;
   }
 
+
   async toggleAtivoPsicologo(id: string, ativo: any) {
     const { data, error } = await this.supabase
       .from('psicologos')
-      .update({ liberado_admin: ativo ? 1 : 0 })  // <-- converte boolean para 1 ou 0
-      .eq('id', id);
+      .update({ liberado_admin: ativo ? 1 : 0 })
+      .eq('id', id)
+      .select(); // <- obrigatório para retornar data
 
     if (error) throw error;
     return data;
   }
+
 
   async buscarPsicologosAdmin(filtroAtivo?: boolean) {
-    let query = this.supabase.from('psicologos').select('*').order('criado_em', { ascending: false });
+    let query = this.supabase
+      .from('psicologos')
+      .select(`
+      *,
+      assinaturas:assinaturas(
+        status,
+        motivo_status,
+        data_expiracao
+      )
+    `)
+      .order('criado_em', { ascending: false })
+      .order('atualizado_em', { referencedTable: 'assinaturas', ascending: false });
+    ;
+
     if (filtroAtivo !== undefined) {
-      query = query.eq('liberado_admin', filtroAtivo ? 1 : 0);  // <-- converte boolean para 1 ou 0
+      query = query.eq('liberado_admin', filtroAtivo ? 1 : 0);
     }
+
     const { data, error } = await query;
+    if (error) throw error;
+
+    return data;
+  }
+  async criarAssinaturaTeste(psicologoId: string, dias: number, motivo = 'liberado admin - Periodo gratis') {
+    const hoje = new Date();
+    const expiracao = new Date(hoje.getTime() + dias * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split('T')[0];
+
+    const { data, error } = await this.supabase
+      .from('assinaturas')
+      .insert({
+        psicologo_id: psicologoId,
+        status: 'ativo',
+        motivo_status: motivo,
+        data_pagamento: hoje.toISOString().split('T')[0],
+        data_expiracao: expiracao
+      })
+      .select();
+
     if (error) throw error;
     return data;
   }
+
 
 }

@@ -48,7 +48,7 @@ export class Login implements OnInit {
       if (user) {
         console.log(user)
         // Redireciona para a home ou dashboard
-        this.router.navigate(['/admin/piscologos']);
+        this.router.navigate(['admin/psicologos']);
       }
     } catch (err: any) {
       this.ngZone.run(() => {

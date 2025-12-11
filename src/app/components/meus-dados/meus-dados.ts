@@ -618,6 +618,7 @@ export class MeusDadosComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.carregarAssinaturas()
         // Aqui você faz a requisição pro seu endpoint de assinatura
         // Ex: this.assinar(result)
       }
@@ -664,7 +665,6 @@ export class MeusDadosComponent implements OnInit {
               ).length
             };
 
-            console.log(this.assinaturas)
             this.assinaturasTotais.push(totais);
           });
         }
@@ -744,12 +744,10 @@ export class MeusDadosComponent implements OnInit {
   }
 
   atualizarPagamento(plano: any) {
-    console.log('Atualizar forma de pagamento');
     // abrir modal do cartão para atualizar card token
   }
 
   trocarPlano(plano: any) {
-    console.log('Trocar plano');
     // abrir tela/modal para escolher novo plano
   }
 
@@ -761,7 +759,6 @@ export class MeusDadosComponent implements OnInit {
     );
 
     if (confirmacao) {
-      console.log('Cancelar assinatura:', assinaturaItem);
       // Implementar lógica de cancelamento aqui
       // this.ordem.cancelarAssinatura(assinaturaItem.id).subscribe(...)
     }

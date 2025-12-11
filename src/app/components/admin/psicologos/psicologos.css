@@ -14,6 +14,28 @@
     color: var(--text-color, #1f2937);
 }
 
+.card-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.button-ver-mais {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.975rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2);
+}
+
 .filtros {
     display: flex;
     gap: 1.25rem;
@@ -100,14 +122,18 @@
 /* Botão ativar */
 .btn-ativar {
     background-color: #4caf50;
+
     /* verde */
     color: #fff;
     border: none;
+    font-weight: 600;
+
     padding: 8px 14px;
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.2s;
 }
+
 
 .btn-ativar:hover {
     background-color: #45a049;
@@ -117,6 +143,8 @@
 .btn-desativar {
     background-color: #f44336;
     /* vermelho */
+    font-weight: 600;
+
     color: #fff;
     border: none;
     padding: 8px 14px;
@@ -130,30 +158,6 @@
 }
 
 
-.psicologo-card button {
-    margin-top: 0.75rem;
-    padding: 0.75rem 1.25rem;
-    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-    color: #ffffff;
-    border: none;
-    border-radius: 10px;
-    font-size: 0.975rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2);
-}
-
-.psicologo-card button:hover:not(:disabled) {
-    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.35);
-}
-
-.psicologo-card button:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25);
-}
 
 @media (max-width: 768px) {
     .psicologos-list {
@@ -318,8 +322,15 @@
     gap: 0.75rem;
 }
 
+.info-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .info-item strong {
     color: #374151;
+    gap: 10px;
 }
 
 .info-item a {
@@ -421,4 +432,69 @@
 
 .btn-confirm:hover {
     background: #45a049;
+}
+
+.info-item {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.free-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 6px;
+    padding: 12px;
+    border: 1px solid #dedede;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.input-teste {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.input-teste:focus {
+    outline: none;
+    border-color: #5b65f0;
+    box-shadow: 0 0 0 2px rgba(91, 101, 240, 0.2);
+}
+
+.modal-loading {
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+.aviso-descricao-content {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    border-left: 4px solid #f59e0b;
+    border-radius: 12px;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.aviso-descricao-content i {
+    font-size: 1.25rem;
+    color: #d97706;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.aviso-descricao-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #78350f;
+    line-height: 1.6;
+    font-weight: 500;
 }

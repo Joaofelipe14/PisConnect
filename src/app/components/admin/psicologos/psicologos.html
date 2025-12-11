@@ -1,7 +1,13 @@
 <div class="page-container">
   <h1>Psicólogos</h1>
 
-  <!-- Filtros -->
+  <div class="aviso-descricao-content">
+    Um psicólogo aparece como <strong>Ativo</strong> somente se:
+    <br>• O admin liberou o CRP
+    <br>• Ele possui uma assinatura ativa
+    <br>• A data de expiração é futura
+  </div>
+
   <div class="filtros">
     <label>
       <input type="radio" name="filtro" value="todos" (change)="onFiltroChange('todos')"
@@ -9,23 +15,19 @@
     </label>
     <label>
       <input type="radio" name="filtro" value="ativo" (change)="onFiltroChange('ativo')"
-        [checked]="filtroAtivo==='ativo'"> Ativos
+        [checked]="filtroAtivo==='ativo'"> Liberado admin
     </label>
     <label>
       <input type="radio" name="filtro" value="inativo" (change)="onFiltroChange('inativo')"
-        [checked]="filtroAtivo==='inativo'"> Inativos
+        [checked]="filtroAtivo==='inativo'"> Pendente liberação Admin
     </label>
-
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="empty-state">Carregando psicólogos...</div>
 
-  <!-- Lista de Psicólogos -->
   <div class="psicologos-list">
     <div class="psicologo-card" *ngFor="let p of psicologos" (click)="abrirModal(p)">
 
-      <!-- Foto ou inicial -->
       <ng-container *ngIf="p.foto_url; else inicialFoto">
         <img [src]="p.foto_url" alt="{{ p.nome }}" class="foto-perfil">
       </ng-container>
@@ -33,25 +35,40 @@
         <div class="foto-inicial">{{ getInicial(p.nome) }}</div>
       </ng-template>
 
-      <h3>{{ p.nome }}</h3>
-      <p>Status: <span [class.ativo]="p.liberado_admin" [class.inativo]="!p.liberado_admin">{{ p.liberado_admin ? 'Ativo' : 'Inativo' }}</span></p>
-      <button (click)="abrirConfirmToggle(p); $event.stopPropagation()"
-        [ngClass]="p.liberado_admin ? 'btn-desativar' : 'btn-ativar'">
-        {{ p.liberado_admin ? 'Desativar' : 'Ativar' }}
-      </button>
+      <h3>{{ p.nome }} - {{p.crp}}</h3>
 
+
+      <div class="card-row">
+        <p>Liberado Admin: {{ p.liberado_admin ? 'Sim' : 'Não' }}</p>
+
+        <button (click)="toggleLiberadoAdmin(p); $event.stopPropagation()"
+          [ngClass]="p.liberado_admin ? 'btn-desativar' : 'btn-ativar'">
+          {{ p.liberado_admin ? 'Bloquear' : 'Liberar' }}
+        </button>
+
+      </div>
+      <div class="card-row">
+        <p>Ativo: {{ isAtivo(p) ? 'Sim' : 'Não' }}</p>
+        <p class="assinatura" *ngIf="p.assinaturas?.length && p.assinaturas[0].data_expiracao">
+          {{ p.assinaturas[0].status }} — expira {{ p.assinaturas[0].data_expiracao | date:'dd/MM/yyyy' }}
+        </p>
+      </div>
+
+
+      <p class="assinatura" *ngIf="!p.assinaturas?.length">Sem assinatura</p>
+
+      <button class="button-ver-mais" (click)="abrirModal(p)">Ver detalhes</button>
     </div>
   </div>
 </div>
-<!-- Modal -->
+
 <div class="modal-backdrop" *ngIf="psicologoSelecionado">
   <div class="modal">
     <button class="close-btn" (click)="fecharModal()">×</button>
 
     <div class="modal-header">
-      <!-- Foto ou inicial -->
       <ng-container *ngIf="psicologoSelecionado.foto_url; else modalInicial">
-        <img [src]="psicologoSelecionado.foto_url" alt="{{ psicologoSelecionado.nome }}" class="foto-perfil-modal">
+        <img [src]="psicologoSelecionado.foto_url" class="foto-perfil-modal">
       </ng-container>
       <ng-template #modalInicial>
         <div class="foto-inicial-modal">{{ getInicial(psicologoSelecionado.nome) }}</div>
@@ -59,54 +76,88 @@
 
       <div class="modal-titulo">
         <h2>{{ psicologoSelecionado.nome }}</h2>
-        <span class="status" [class.ativo]="psicologoSelecionado.ativo" [class.inativo]="!psicologoSelecionado.ativo">
-          {{ psicologoSelecionado.ativo ? 'Ativo' : 'Inativo' }}
+        <span class="status" [class.ativo]="psicologoSelecionado.liberado_admin"
+          [class.inativo]="!psicologoSelecionado.liberado_admin">
+          {{ psicologoSelecionado.liberado_admin ? 'Ativo' : 'Inativo' }}
         </span>
       </div>
     </div>
 
     <div class="modal-body">
+      <div *ngIf="!isAtivo(psicologoSelecionado)">
+        <strong>Liberar período grátis:</strong>
+
+        <div class="free-box">
+          <label>Dias de teste:</label>
+          <input type="number" min="1" [(ngModel)]="diasTeste" class="input-teste" [disabled]="modalLoading">
+
+          <label>Motivo:</label>
+          <input type="text" [(ngModel)]="motivoTeste" class="input-teste" [disabled]="modalLoading">
+
+          <button class="btn-ativar" (click)="liberarPeriodoGratis(psicologoSelecionado)" [disabled]="modalLoading">
+            {{ modalLoading ? 'Processando...' : 'Liberar Teste' }}
+          </button>
+        </div>
+      </div>
+
+
+      <div class="info-item" *ngIf="psicologoSelecionado.assinaturas?.length">
+        <strong>Assinaturas:</strong>
+        <div *ngFor="let a of psicologoSelecionado.assinaturas" class="badge">
+          {{ a.status }}
+          <ng-container *ngIf="a.data_expiracao">
+            — expira {{ a.data_expiracao | date:'dd/MM/yyyy' }}
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="info-item" *ngIf="isAtivo(psicologoSelecionado)">
+        <strong>pagina pessoal:</strong>
+        <a [href]="'/psicologo/' + psicologoSelecionado?.id" target="_blank" rel="noopener noreferrer">
+        clique aqui
+        </a>
+      </div>
+
+
       <div class="info-item"><strong>CRP:</strong> {{ psicologoSelecionado.crp }}</div>
       <div class="info-item"><strong>Email:</strong> {{ psicologoSelecionado.email }}</div>
-      <div class="info-item" *ngIf="psicologoSelecionado.formacao"><strong>Formação:</strong> {{
-        psicologoSelecionado.formacao }}</div>
-      <div class="info-item" *ngIf="psicologoSelecionado.areas_atuacao?.length"><strong>Áreas de atuação:</strong> {{
-        psicologoSelecionado.areas_atuacao.join(', ') }}</div>
+
+      <div class="info-item" *ngIf="psicologoSelecionado.formacao">
+        <strong>Formação:</strong> {{ psicologoSelecionado.formacao }}
+      </div>
+
+      <div class="info-item" *ngIf="psicologoSelecionado.areas_atuacao?.length">
+        <strong>Áreas de atuação:</strong> {{ psicologoSelecionado.areas_atuacao.join(', ') }}
+      </div>
+
       <div class="info-item" *ngIf="psicologoSelecionado.abordagem_terapeutica?.length">
-        <strong>Abordagem terapêutica: </strong>
-        <span class="badge" *ngFor="let abordagem of psicologoSelecionado.abordagem_terapeutica">
-          {{ abordagem }}
-        </span>
+        <strong>Abordagem terapêutica:</strong>
+        <span class="badge" *ngFor="let a of psicologoSelecionado.abordagem_terapeutica">{{ a }}</span>
       </div>
 
       <div class="info-item" *ngIf="psicologoSelecionado.publico_alvo?.length">
-        <strong>Público alvo: </strong>
-        <span class="badge" *ngFor="let publico of psicologoSelecionado.publico_alvo">
-          {{ publico }}
-        </span>
+        <strong>Público alvo:</strong>
+        <span class="badge" *ngFor="let p of psicologoSelecionado.publico_alvo">{{ p }}</span>
       </div>
 
       <div class="info-item resumo" *ngIf="psicologoSelecionado.resumo">
-        <strong>Resumo:</strong> {{ truncate(psicologoSelecionado.resumo, 450) }}
+        <strong>Resumo:</strong>
+        {{ truncate(psicologoSelecionado.resumo, 450) }}
       </div>
 
-      <div class="info-item" *ngIf="psicologoSelecionado.valor_consulta"><strong>Valor da consulta:</strong> R$ {{
-        psicologoSelecionado.valor_consulta }}</div>
-      <div class="info-item" *ngIf="psicologoSelecionado.whatsapp"><strong>WhatsApp:</strong> {{
-        psicologoSelecionado.whatsapp }}</div>
-      <div class="info-item" *ngIf="psicologoSelecionado.redes_sociais?.length">
-        <strong>Redes sociais:</strong>
-        <span *ngFor="let rede of psicologoSelecionado.redes_sociais; let i = index">
-          <a [href]="rede" target="_blank">{{ rede }}</a><span
-            *ngIf="i < psicologoSelecionado.redes_sociais.length -1">, </span>
-        </span>
+      <div class="info-item" *ngIf="psicologoSelecionado.valor_consulta">
+        <strong>Valor da consulta:</strong> R$ {{ psicologoSelecionado.valor_consulta }}
       </div>
+
+      <div class="info-item" *ngIf="psicologoSelecionado.whatsapp">
+        <strong>WhatsApp:</strong> {{ psicologoSelecionado.whatsapp }}
+      </div>
+
     </div>
+
   </div>
 </div>
 
-
-<!-- Modal de Confirmação -->
 <div class="modal-backdrop" *ngIf="confirmTogglePsicologo">
   <div class="modal">
     <button class="close-btn" (click)="fecharConfirmToggle()">×</button>
@@ -114,11 +165,10 @@
     <div class="modal-header">
       <h2>Confirmar Alteração</h2>
     </div>
-
     <div class="modal-body">
       <p>Você deseja <strong>{{ confirmTogglePsicologo.novoStatus ? 'Ativar' : 'Desativar' }}</strong> o psicólogo
-        <strong>{{
-          confirmTogglePsicologo.psicologo.nome }}</strong>?</p>
+        <strong>{{ confirmTogglePsicologo.psicologo.nome }}</strong>?
+      </p>
 
       <label>
         <input type="checkbox" [(ngModel)]="confirmTogglePsicologo.notificar">

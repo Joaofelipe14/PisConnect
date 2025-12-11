@@ -22,16 +22,19 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: any
   ) {
+    // Verifica se estamos no navegador (para evitar erros no SSR ou durante o SSR)
     this.isBrowser = isPlatformBrowser(this.platformId);
 
+    // Escuta as mudanças de rota e rola para o topo
     this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd && this.isBrowser) {
-        window.scrollTo({ top: 0 });
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Rolagem suave
       }
     });
   }
 
   ngOnInit() {
+    // Verifica se há um usuário autenticado
     this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
       this.isAuthenticated = !!user;
@@ -43,9 +46,10 @@ export class NavbarComponent implements OnInit {
   }
 
   closeMenuOnMobile() {
+    // Fecha o menu se for dispositivo móvel e rola para o topo
     if (this.isBrowser && window.innerWidth <= 768) {
       this.menuOpen = false;
-      window.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Rolagem suave
     }
   }
 
@@ -53,7 +57,6 @@ export class NavbarComponent implements OnInit {
     if (window.confirm('Deseja sair do aplicativo?')) {
       this.authService.logout();
       this.router.navigate(['/login']);
-
     }
   }
 }

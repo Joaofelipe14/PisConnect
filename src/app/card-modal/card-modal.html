@@ -1,3 +1,5 @@
+<app-loading *ngIf="loading" [mensagem]="'Processando dados'"></app-loading>
+
 <div class="modal-container">
 
   <div class="modal-header">
@@ -16,8 +18,8 @@
         </div>
         <div class="plano-valor">
           <span class="valor-simbolo">R$</span>
-          <span class="valor-amount">{{ plano?.valor | number:'1.2-2' }}</span>
-          <span class="valor-periodo">/ {{ plano?.periodo }}</span>
+          <span class="valor-amount">{{ plano?.preco_normal | number:'1.2-2' }}</span>
+          <span class="valor-periodo">/ {{ plano?.duracao_dias }} dias </span>
         </div>
       </div>
     </div>

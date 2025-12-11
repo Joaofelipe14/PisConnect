@@ -8,6 +8,7 @@
     "duracao_dias": 30,
     "ativo": 1,
     "promocao": 1,
+    "dia_gratis": 0, 
     "criado_em": "2025-11-28 15:00:54.992244+00",
     "descricao": "Plano mensal para psicólogos se cadastrarem e aparecerem no sistema, permitindo que pacientes encontrem seus perfis rapidamente."
   },
@@ -20,6 +21,7 @@
     "duracao_dias": 90,
     "ativo": 1,
     "promocao": 0,
+    "dia_gratis": 0,
     "criado_em": "2025-11-28 15:00:54.992244+00",
     "descricao": "Plano trimestral que permite aos psicólogos manter seu cadastro ativo, garantindo visibilidade contínua para pacientes e maior alcance."
   },
@@ -32,6 +34,7 @@
     "duracao_dias": 365,
     "ativo": 1,
     "promocao": 0,
+    "dia_gratis": 0,
     "criado_em": "2025-11-28 15:00:54.992244+00",
     "descricao": "Plano anual que garante máxima exposição dos psicólogos cadastrados, facilitando que pacientes encontrem e agendem consultas durante todo o ano."
   }

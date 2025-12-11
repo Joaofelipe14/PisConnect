@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ordem } from '../services/ordem';
+import { Loading } from '../loading/loading';
 
 @Component({
   selector: 'app-card-modal',
@@ -17,7 +18,8 @@ import { ordem } from '../services/ordem';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    Loading
   ],
   templateUrl: './card-modal.html',
   styleUrls: ['./card-modal.css']
@@ -82,11 +84,10 @@ export class CardModalComponent {
     }
   }
   async submit() {
-    console.log('enviando');
     if (this.loading) return;
     if (this.form.invalid) return;
 
-  const values = this.form.value;
+    const values = this.form.value;
 
     const payload = {
       plano_id: this.plano.id,
@@ -109,10 +110,9 @@ export class CardModalComponent {
     };
     const secret = 'minha-chave-secreta-qualquer';
 
-    console.log(payload)
     const encrypted = await this.encryptData(payload, secret);
-
-
+    this.loading = true
+    this.cdr.markForCheck();
 
     this.ordem.gerarOrdemAssinatura(encrypted).subscribe({
       next: (res) => {
