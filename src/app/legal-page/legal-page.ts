@@ -4,100 +4,100 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 interface DocumentSection {
-  id: string;
-  title: string;
-  icon: string;
+   id: string;
+   title: string;
+   icon: string;
 }
 @Component({
-  selector: 'app-legal-page',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './legal-page.html',
-  styleUrls: ['./legal-page.css']
+   selector: 'app-legal-page',
+   standalone: true,
+   imports: [CommonModule, FormsModule],
+   templateUrl: './legal-page.html',
+   styleUrls: ['./legal-page.css']
 })
 export class LegalPageComponent {
 
-  activeSection: string = 'termos';
+   activeSection: string = 'termos';
 
-  sections: DocumentSection[] = [
-    { id: 'termos', title: 'Termos de Uso', icon: '📋' },
-    { id: 'privacidade', title: 'Privacidade', icon: '🔒' },
-    { id: 'lgpd', title: 'LGPD', icon: '⚖️' },
-    { id: 'cookies', title: 'Cookies', icon: '🍪' },
-    { id: 'profissionais', title: 'Profissionais', icon: '👨‍⚕️' }
-  ];
-  constructor(private route: ActivatedRoute) {
-    const showAssinatura = this.route.snapshot.queryParamMap.get('assinatura');
-    if (showAssinatura === '1') {
-      this.sections.splice(4, 0, { id: 'assinatura', title: 'Assinatura', icon: '💳' });
-      this.activeSection = 'assinatura';
-    }
-  }
-
-
-  dataAtualizacao: string = new Date().toLocaleDateString('pt-BR');
-
-  setActiveSection(sectionId: string): void {
-    this.activeSection = sectionId;
-    // Scroll suave até o topo
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+   sections: DocumentSection[] = [
+      { id: 'termos', title: 'Termos de Uso', icon: '📋' },
+      { id: 'privacidade', title: 'Privacidade', icon: '🔒' },
+      { id: 'lgpd', title: 'LGPD', icon: '⚖️' },
+      { id: 'cookies', title: 'Cookies', icon: '🍪' },
+      { id: 'profissionais', title: 'Profissionais', icon: '👨‍⚕️' }
+   ];
+   constructor(private route: ActivatedRoute) {
+      const showAssinatura = this.route.snapshot.queryParamMap.get('assinatura');
+      if (showAssinatura === '1') {
+         this.sections.splice(4, 0, { id: 'assinatura', title: 'Assinatura', icon: '💳' });
+         this.activeSection = 'assinatura';
+      }
+   }
 
 
-  // 1.1. PLANO BÁSICO
-  //    - Perfil profissional completo
-  //    - Listagem na plataforma
-  //    - Recebimento de contatos de pacientes
-  //    - 10 dias gratuitos
-  //    - Valor: R$  34,99 /mês 
+   dataAtualizacao: string = new Date().toLocaleDateString('pt-BR');
 
-  // 1.2. PLANO PROFISSIONAL
-  //    - Tudo do Básico +
-  //    - Destaque na listagem
-  //    - Estatísticas de visualizações
-  //    - Suporte prioritário
-  //    - 10 dias gratuitos
-  //    - Valor: R$ 89,90/mês ou R$ 79,99/ano
+   setActiveSection(sectionId: string): void {
+      this.activeSection = sectionId;
+      // Scroll suave até o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+   }
 
-  // 1.3. PLANO PREMIUM
-  //    - Tudo do Profissional +
-  //    - Selo de destaque
-  //    - Agendamento integrado
-  //    - Relatórios avançados
-  //    - 10 dias gratuitos
-  //    - Valor: R$ 149,90/mês ou R$ 1.499,00/ano
+   scrollToTop(): void {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+   }
 
-  getDocumentContent(sectionId: string): string {
-    switch (sectionId) {
-      case 'termos':
-        return this.getTermosUso();
-      case 'privacidade':
-        return this.getPoliticaPrivacidade();
-      case 'lgpd':
-        return this.getConformidadeLGPD();
-      case 'cookies':
-        return this.getPoliticaCookies();
-      case 'assinatura':
-        return this.getTermosAssinatura();
-      case 'profissionais':
-        return this.getTermosProfissionais();
-      default:
-        return '';
-    }
-  }
 
-  private getTermosAssinatura(): string {
-    return `TERMOS DE ASSINATURA E PAGAMENTO - SOCIPSICO
+   // 1.1. PLANO BÁSICO
+   //    - Perfil profissional completo
+   //    - Listagem na plataforma
+   //    - Recebimento de contatos de pacientes
+   //    - 10 dias gratuitos
+   //    - Valor: R$  34,99 /mês 
+
+   // 1.2. PLANO PROFISSIONAL
+   //    - Tudo do Básico +
+   //    - Destaque na listagem
+   //    - Estatísticas de visualizações
+   //    - Suporte prioritário
+   //    - 10 dias gratuitos
+   //    - Valor: R$ 89,90/mês ou R$ 79,99/ano
+
+   // 1.3. PLANO PREMIUM
+   //    - Tudo do Profissional +
+   //    - Selo de destaque
+   //    - Agendamento integrado
+   //    - Relatórios avançados
+   //    - 10 dias gratuitos
+   //    - Valor: R$ 149,90/mês ou R$ 1.499,00/ano
+
+   getDocumentContent(sectionId: string): string {
+      switch (sectionId) {
+         case 'termos':
+            return this.getTermosUso();
+         case 'privacidade':
+            return this.getPoliticaPrivacidade();
+         case 'lgpd':
+            return this.getConformidadeLGPD();
+         case 'cookies':
+            return this.getPoliticaCookies();
+         case 'assinatura':
+            return this.getTermosAssinatura();
+         case 'profissionais':
+            return this.getTermosProfissionais();
+         default:
+            return '';
+      }
+   }
+
+   private getTermosAssinatura(): string {
+      return `TERMOS DE ASSINATURA E PAGAMENTO - SOCIPSI
 
 Última atualização: ${this.dataAtualizacao}
 
 1. PLANOS DE ASSINATURA
 
-O SociPsico oferece três planos para profissionais:
+O SociPsi oferece três planos para profissionais:
 
 Mensal:
 R$ 34,99 por mês
@@ -124,7 +124,7 @@ R$ 299,99 o pacote
 
 3.1. ACEITO: Cartão de crédito (Visa, Mastercard, Elo, American Express)
 3.2. Processamento via gateway seguro PCI-DSS
-3.3. Dados do cartão NÃO são armazenados pelo SociPsico
+3.3. Dados do cartão NÃO são armazenados pelo SociPsi
 3.4. Cobrança recorrente mensal ou anual
 3.5. Fatura enviada por e-mail após cada cobrança
 
@@ -173,10 +173,10 @@ R$ 299,99 o pacote
 
 Dúvidas sobre pagamento: socipsi1@gmail.com
 `;
-  }
+   }
 
-  private getTermosProfissionais(): string {
-    return `TERMOS ESPECÍFICOS PARA PROFISSIONAIS - SOCIPSICO
+   private getTermosProfissionais(): string {
+      return `TERMOS ESPECÍFICOS PARA PROFISSIONAIS - SOCIPSI
 
 Última atualização: ${this.dataAtualizacao}
 
@@ -300,13 +300,13 @@ Dúvidas sobre pagamento: socipsi1@gmail.com
 8. PROPRIEDADE DO CONTEÚDO
 
 8.1. Textos, fotos e vídeos enviados permanecem de sua propriedade.
-8.2. Você concede ao SociPsico licença não exclusiva para exibir esse conteúdo.
+8.2. Você concede ao SociPsi licença não exclusiva para exibir esse conteúdo.
 8.3. Você garante ter direito de uso sobre todo conteúdo enviado.
 
 9. DENÚNCIAS E IRREGULARIDADES
 
 9.1. Pacientes podem reportar condutas inadequadas.
-9.2. SociPsico investigará todas as denúncias.
+9.2. SociPsi investigará todas as denúncias.
 9.3. Profissional tem direito de defesa.
 9.4. Casos graves serão comunicados ao CRP.
 
@@ -315,34 +315,34 @@ Dúvidas sobre pagamento: socipsi1@gmail.com
 Suporte técnico: socipsi1@gmail.com
 
 Ao se cadastrar como profissional, você declara ter lido e concordado com estes Termos Específicos.`;
-  }
+   }
 
-  // ============================================
-  // CONTEÚDO DOS DOCUMENTOS
-  // ============================================
+   // ============================================
+   // CONTEÚDO DOS DOCUMENTOS
+   // ============================================
 
-  private getTermosUso(): string {
-    return `TERMOS DE USO E CONDIÇÕES GERAIS DO SOCIPSICO
+   private getTermosUso(): string {
+      return `TERMOS DE USO E CONDIÇÕES GERAIS DO SOCIPSI
 
 Última atualização: ${this.dataAtualizacao}
 
 1. ACEITAÇÃO DOS TERMOS
 
-Ao acessar e utilizar a plataforma SociPsico ("Plataforma"), você ("Usuário", "Paciente" ou "Profissional") concorda integralmente com estes Termos de Uso. Caso não concorde com qualquer disposição, não utilize a Plataforma.
+Ao acessar e utilizar a plataforma SociPsi ("Plataforma"), você ("Usuário", "Paciente" ou "Profissional") concorda integralmente com estes Termos de Uso. Caso não concorde com qualquer disposição, não utilize a Plataforma.
 
 2. DEFINIÇÕES
 
-2.1. SociPsico: aplicativo e plataforma web de intermediação entre pacientes e psicólogos cadastrados.
+2.1. SociPsi: aplicativo e plataforma web de intermediação entre pacientes e psicólogos cadastrados.
 2.2. Paciente: pessoa física que busca serviços de psicologia através da Plataforma.
 2.3. Profissional/Psicólogo: profissional devidamente registrado no CRP que oferece serviços através da Plataforma.
 2.4. Administrador: equipe responsável pela gestão, moderação e verificação da Plataforma.
 
 3. DESCRIÇÃO DOS SERVIÇOS
 
-3.1. O SociPsico é uma plataforma de conexão entre pacientes e psicólogos, facilitando o agendamento de consultas e o contato inicial.
+3.1. O SociPsi é uma plataforma de conexão entre pacientes e psicólogos, facilitando o agendamento de consultas e o contato inicial.
 3.2. A Plataforma NÃO presta serviços de psicologia diretamente, atuando exclusivamente como intermediária.
 3.3. O relacionamento terapêutico ocorre diretamente entre o paciente e o profissional escolhido.
-3.4. O SociPsico não se responsabiliza pela qualidade, eficácia ou resultado dos atendimentos realizados pelos profissionais.
+3.4. O SociPsi não se responsabiliza pela qualidade, eficácia ou resultado dos atendimentos realizados pelos profissionais.
 
 4. CADASTRO E CONTA
 
@@ -385,10 +385,10 @@ Ao acessar e utilizar a plataforma SociPsico ("Plataforma"), você ("Usuário", 
    d) Não é necessário cadastrar cartão de crédito durante o período de teste.
 
 5.2. PLANOS DISPONÍVEIS:
-   a) Plano Básico: funcionalidades essenciais + 7 dias gratuitos
-   b) Plano Profissional: recursos avançados + 15 dias gratuitos
-   c) Plano Premium: acesso total + 30 dias gratuitos
-   (Valores e benefícios detalhados disponíveis na Plataforma)
+   a) Plano Mensal
+   b) Plano Trimestral
+   c) Plano Anual
+
 
 5.3. PAGAMENTO:
    a) Aceito exclusivamente via cartão de crédito.
@@ -433,7 +433,7 @@ Ao acessar e utilizar a plataforma SociPsico ("Plataforma"), você ("Usuário", 
 7.5. Profissionais: cumprir o Código de Ética Profissional do Psicólogo e resoluções do CFP.
 7.6. Respeitar a confidencialidade das informações de terceiros.
 
-8. RESPONSABILIDADES DO SOCIPSICO
+8. RESPONSABILIDADES DO SOCIPSI
 
 8.1. Manter a Plataforma funcionando adequadamente, com disponibilidade razoável.
 8.2. Proteger dados pessoais conforme LGPD e Política de Privacidade.
@@ -443,7 +443,7 @@ Ao acessar e utilizar a plataforma SociPsico ("Plataforma"), você ("Usuário", 
 
 9. LIMITAÇÕES DE RESPONSABILIDADE
 
-9.1. O SociPsico NÃO é responsável por:
+9.1. O SociPsi NÃO é responsável por:
    a) Qualidade, eficácia ou resultados dos atendimentos psicológicos.
    b) Condutas inadequadas dos profissionais ou pacientes.
    c) Danos diretos ou indiretos decorrentes do uso da Plataforma.
@@ -457,20 +457,20 @@ Ao acessar e utilizar a plataforma SociPsico ("Plataforma"), você ("Usuário", 
 
 10. PROPRIEDADE INTELECTUAL
 
-10.1. Todo conteúdo da Plataforma (design, textos, logos, códigos) é de propriedade do SociPsico ou licenciado para uso.
+10.1. Todo conteúdo da Plataforma (design, textos, logos, códigos) é de propriedade do SociPsi ou licenciado para uso.
 10.2. É proibida reprodução, distribuição ou modificação sem autorização expressa.
-10.3. Usuários concedem ao SociPsico licença não exclusiva para exibir conteúdos publicados na Plataforma.
+10.3. Usuários concedem ao SociPsi licença não exclusiva para exibir conteúdos publicados na Plataforma.
 
 11. MODIFICAÇÕES
 
-11.1. O SociPsico reserva-se o direito de modificar estes Termos a qualquer momento.
+11.1. O SociPsi reserva-se o direito de modificar estes Termos a qualquer momento.
 11.2. Usuários serão notificados por e-mail ou através da Plataforma.
 11.3. O uso continuado após modificações implica aceitação das novas condições.
 
 12. ENCERRAMENTO
 
 12.1. Usuários podem solicitar exclusão de conta a qualquer momento.
-12.2. O SociPsico pode suspender ou encerrar contas por violação dos Termos.
+12.2. O SociPsi pode suspender ou encerrar contas por violação dos Termos.
 12.3. Dados serão tratados conforme Política de Privacidade mesmo após encerramento.
 
 13. LEI APLICÁVEL E FORO
@@ -485,20 +485,20 @@ E-mail: socipsi1@gmail.com
 Plataforma: seção "Ajuda" ou "Contato"
 
 Ao utilizar a Plataforma, você declara ter lido, compreendido e concordado com todos os termos e condições aqui estabelecidos.`;
-  }
+   }
 
-  private getPoliticaPrivacidade(): string {
-    return `POLÍTICA DE PRIVACIDADE E PROTEÇÃO DE DADOS - SOCIPSICO
+   private getPoliticaPrivacidade(): string {
+      return `POLÍTICA DE PRIVACIDADE E PROTEÇÃO DE DADOS - SOCIPSI
 
 Última atualização: ${this.dataAtualizacao}
 
 1. INTRODUÇÃO
 
-Esta Política de Privacidade descreve como o SociPsico coleta, usa, armazena e protege os dados pessoais dos usuários, em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
+Esta Política de Privacidade descreve como o SociPsi coleta, usa, armazena e protege os dados pessoais dos usuários, em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
 
 2. RESPONSÁVEL PELO TRATAMENTO DE DADOS
 
-Controlador: SociPsico
+Controlador: SociPsi
 E-mail para questões de privacidade: socipsi1@gmail.com
 E-mail geral: socipsi1@gmail.com
 
@@ -517,7 +517,7 @@ E-mail geral: socipsi1@gmail.com
    e) Dados de acesso e navegação
 
 3.3. DADOS SENSÍVEIS:
-   O SociPsico NÃO coleta intencionalmente dados sensíveis, exceto quando o usuário optar por incluí-los voluntariamente em campos de texto livre.
+   O SociPsi NÃO coleta intencionalmente dados sensíveis, exceto quando o usuário optar por incluí-los voluntariamente em campos de texto livre.
 
 4. BASE LEGAL PARA TRATAMENTO DE DADOS
 
@@ -644,22 +644,22 @@ Suporte geral: socipsi1@gmail.com
 Resposta: até 15 dias corridos
 
 
-Ao utilizar o SociPsico, você declara ter lido, compreendido e concordado com esta Política de Privacidade.`;
-  }
+Ao utilizar o SociPsi, você declara ter lido, compreendido e concordado com esta Política de Privacidade.`;
+   }
 
-  private getConformidadeLGPD(): string {
-    return `DECLARAÇÃO DE CONFORMIDADE COM A LEI GERAL DE PROTEÇÃO DE DADOS
-SOCIPSICO
+   private getConformidadeLGPD(): string {
+      return `DECLARAÇÃO DE CONFORMIDADE COM A LEI GERAL DE PROTEÇÃO DE DADOS
+SOCIPSI
 
 Data: ${this.dataAtualizacao}
 
 1. COMPROMISSO COM A LGPD
 
-O SociPsico declara seu compromisso integral com a Lei nº 13.709/2018 (LGPD), reconhecendo a importância da privacidade e proteção de dados pessoais de todos os usuários da Plataforma.
+O SociPsi declara seu compromisso integral com a Lei nº 13.709/2018 (LGPD), reconhecendo a importância da privacidade e proteção de dados pessoais de todos os usuários da Plataforma.
 
 2. PRINCÍPIOS OBSERVADOS
 
-O tratamento de dados pessoais no SociPsico segue rigorosamente os princípios estabelecidos no Art. 6º da LGPD:
+O tratamento de dados pessoais no SociPsi segue rigorosamente os princípios estabelecidos no Art. 6º da LGPD:
 
 2.1. FINALIDADE: Dados coletados para propósitos legítimos, específicos e informados.
 2.2. ADEQUAÇÃO: Tratamento compatível com as finalidades informadas.
@@ -754,9 +754,9 @@ Canal: socipsi1@gmail.com
 
 10. ENCARREGADO DE PROTEÇÃO DE DADOS (DPO)
 
-Responsável: Encarregado de Dados - SociPsico
+Responsável: Encarregado de Dados - SociPsi
 E-mail: socipsi1@gmail.com
-Função: Interface entre SociPsico, titulares e ANPD
+Função: Interface entre SociPsi, titulares e ANPD
 
 11. COMUNICAÇÃO DE INCIDENTES
 
@@ -786,14 +786,14 @@ Canal de comunicação disponível para titulares
 
 15. DECLARAÇÃO FINAL
 
-O SociPsico compromete-se a manter conformidade contínua com a LGPD, protegendo os direitos fundamentais de liberdade e privacidade de todos os usuários.
+O SociPsi compromete-se a manter conformidade contínua com a LGPD, protegendo os direitos fundamentais de liberdade e privacidade de todos os usuários.
 
 Atualização: ${this.dataAtualizacao}
 Versão: 1.0`;
-  }
+   }
 
-  private getPoliticaCookies(): string {
-    return `POLÍTICA DE COOKIES - SOCIPSICO
+   private getPoliticaCookies(): string {
+      return `POLÍTICA DE COOKIES - SOCIPSI
 
 Última atualização: ${this.dataAtualizacao}
 
@@ -825,6 +825,6 @@ Ao continuar navegando, você consente com o uso de cookies conforme esta polít
 6. MAIS INFORMAÇÕES
 
 Dúvidas: socipsi1@gmail.com`
-  }
+   }
 
 }

@@ -17,7 +17,7 @@ export class WelcomeComponent {
   }
 
   goToPsicologo() {
-    this.router.navigate(['/cadastro-psicologo']);
+    this.router.navigate(['/login']);
   }
 }
 

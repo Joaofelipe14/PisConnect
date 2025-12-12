@@ -11,7 +11,7 @@
       <div class="plano-row">
         <div class="plano-badge">
           <i class="fas fa-tag"></i>
-          <span>{{ data.plano.nome }}</span>
+          <span>{{ data.plano.nome }} - {{getPrecoPlano(data.plano)}} / {{data.plano.parcelas}} mês </span>
         </div>
         <!-- <div class="plano-valor">
           <span class="valor-simbolo">R$</span>
@@ -32,15 +32,7 @@
         <i class="fas fa-info-circle"></i>
         <div class="info-text">
           <p class="info-label">Descrição do Plano</p>
-          <p class="info-value">{{ data.plano.descricao }}</p>
-        </div>
-      </div>
-
-      <div class="info-item">
-        <i class="fas fa-dollar-sign"></i>
-        <div class="info-text">
-          <p class="info-label">Valor</p>
-          <p class="info-value">R$ {{ (data.plano.promocao === 1 && data.plano.preco_promocional) ? data.plano.preco_promocional : data.plano.preco_normal | number:'1.2-2' }}</p>
+          <p class="info-value">{{ data.plano.descricao }} valor total do plano </p>
         </div>
       </div>
 
@@ -48,25 +40,26 @@
         <i class="fas fa-gift"></i>
         <div class="info-text">
           <p class="info-label">Período Grátis</p>
-          <p class="info-value">{{ data.plano.dia_gratis }} dias grátis - 1ª cobrança em {{ getPrimeiraCobranca(data.plano.dia_gratis) | date:'dd/MM/yyyy' }}</p>
+          <p class="info-value">{{ data.plano.dia_gratis }} dias grátis - 1ª cobrança em {{
+            getPrimeiraCobranca(data.plano.dia_gratis) | date:'dd/MM/yyyy' }}</p>
         </div>
       </div>
 
       <div class="alert-box">
         <i class="fas fa-exclamation-triangle"></i>
         <p *ngIf="data.plano.dia_gratis && data.plano.dia_gratis > 0">
-          Você terá {{ data.plano.dia_gratis }} dias grátis. A primeira cobrança será em {{ getPrimeiraCobranca(data.plano.dia_gratis) | date:'dd/MM/yyyy' }} e terá acesso ao plano pelos próximos {{ data.plano.duracao_dias }} dias.
+          Você terá {{ data.plano.dia_gratis }} dias grátis. A primeira cobrança será em {{
+          getPrimeiraCobranca(data.plano.dia_gratis) | date:'dd/MM/yyyy' }}.
         </p>
-        <p *ngIf="!data.plano.dia_gratis || data.plano.dia_gratis === 0">
-          Você será cobrado hoje e terá acesso ao plano pelos próximos {{ data.plano.duracao_dias }} dias.
-        </p>
+
       </div>
 
       <div class="info-box-public">
         <i class="fas fa-users"></i>
         <div class="info-text-public">
           <p class="info-label-public">Importante</p>
-          <p class="info-value-public">Após a confirmação do pagamento, seu nome aparecerá na listagem pública de psicólogos.</p>
+          <p class="info-value-public">Após a confirmação do pagamento, seu nome aparecerá na listagem pública de
+            psicólogos. E você tera sua pagina com link própio.</p>
         </div>
       </div>
 
@@ -74,7 +67,7 @@
         <label class="checkbox-label">
           <input type="checkbox" [(ngModel)]="aceitoTermos" class="checkbox-input" />
           <span class="checkbox-text">
-            Eu concordo com a 
+            Eu concordo com a
             <a [href]="termosUrl" target="_blank" rel="noopener noreferrer" class="termos-link">
               política de assinatura
             </a>
@@ -82,22 +75,24 @@
         </label>
       </div>
     </div>
+
+    <div class="form-actions">
+      <button class="btn-submit" (click)="onConfirm()">
+        <i class="fas fa-check"></i>
+        <span>Confirmar Assinatura</span>
+      </button>
+      <button class="btn-cancel" (click)="onCancel()">
+        <i class="fas fa-times"></i>
+        <span>Cancelar</span>
+      </button>
+    </div>
+
+    <div class="security-info">
+      <i class="fas fa-shield-alt"></i>
+      <span>Seus dados estão protegidos e criptografados</span>
+    </div>
   </div>
 
   <!-- Ações -->
-  <div class="form-actions">
-    <button class="btn-submit" (click)="onConfirm()">
-      <i class="fas fa-check"></i>
-      <span>Confirmar Assinatura</span>
-    </button>
-    <button class="btn-cancel" (click)="onCancel()">
-      <i class="fas fa-times"></i>
-      <span>Cancelar</span>
-    </button>
-  </div>
 
-  <div class="security-info">
-    <i class="fas fa-shield-alt"></i>
-    <span>Seus dados estão protegidos e criptografados</span>
-  </div>
 </div>

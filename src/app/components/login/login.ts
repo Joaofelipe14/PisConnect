@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   errorMessage = '';
@@ -21,12 +21,21 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private auth: AuthService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       senha: ['', [Validators.required, Validators.minLength(6)]]
     });
+  }
+
+  ngOnInit(): void {
+
+    if (this.auth.isAuthenticated()) {
+      this.router.navigate(['/meus-dados']);
+
+    }
   }
 
   onSubmit() {
@@ -51,7 +60,7 @@ export class LoginComponent {
         console.log('Login ERROR capturado:', err);
         console.log('err.message:', err.message);
         console.log('err.error:', err.error);
-        
+
         // Força execução dentro da zona do Angular
         this.ngZone.run(() => {
           // Trata diferentes tipos de erro
@@ -64,7 +73,7 @@ export class LoginComponent {
           } else {
             this.errorMessage = 'Email ou senha inválidos.';
           }
-          
+
           console.log('errorMessage definido como:', this.errorMessage);
           this.loading = false;
           this.cdr.markForCheck();

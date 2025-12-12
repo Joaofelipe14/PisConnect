@@ -12,7 +12,7 @@ import { CardModalComponent } from '../../card-modal/card-modal';
 import { ordem } from '../../services/ordem';
 import { ConfirmAssinaturaDialog } from '../../confirm-assinatura-dialog/confirm-assinatura-dialog';
 import { RouterModule } from '@angular/router';
-
+import { gerarSlug } from '../../utils/slug'
 @Component({
   selector: 'app-meus-dados',
   standalone: true,
@@ -611,8 +611,6 @@ export class MeusDadosComponent implements OnInit {
     const dialogRef = this.dialog.open(CardModalComponent, {
       width: '90%',
       maxWidth: '600px',
-      maxHeight: '95vh',
-      panelClass: 'card-modal-panel',
       data: plano // passando o plano selecionado
     });
 
@@ -654,43 +652,42 @@ export class MeusDadosComponent implements OnInit {
 
           this.assinaturas.forEach(item => {
             const cobrancas = item?.cobrancas || [];
-            
-            // Ordena as cobranças: primeira parcela no topo (por data de vencimento ou installmentNumber)
+
+            // 1 - Ordena do mais antigo para o mais novo
             const cobrancasOrdenadas = [...cobrancas].sort((a: any, b: any) => {
-              // Se tiver installmentNumber, ordena por ele
               if (a.installmentNumber !== undefined && b.installmentNumber !== undefined) {
                 return a.installmentNumber - b.installmentNumber;
               }
-              // Caso contrário, ordena por data de vencimento
               const dateA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
               const dateB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
               return dateA - dateB;
             });
-            
-            // Adiciona informação de parcela a cada cobrança
-            cobrancasOrdenadas.forEach((cobranca: any, index: number) => {
-              if (!cobranca.installmentNumber) {
-                cobranca.installmentNumber = index + 1;
-              }
-              cobranca.totalInstallments = cobrancasOrdenadas.length;
+
+            // 2 – Gera numeração correta
+            cobrancasOrdenadas.forEach((c, index) => {
+              if (!c.installmentNumber) c.installmentNumber = index + 1;
+              c.totalInstallments = cobrancasOrdenadas.length;
             });
-            
-            // Atualiza as cobranças ordenadas no item
+
+            // 3 – Inverte apenas a ordem visual
+            cobrancasOrdenadas.reverse();
+
             item.cobrancas = cobrancasOrdenadas;
-            
+
             const totais = {
               total: cobrancas.length,
-              pagas: cobrancas.filter((c: { status: string; }) => c?.status === 'RECEIVED').length,
-              pendentes: cobrancas.filter((c: { status: string; dueDate: string | number | Date; }) =>
-                c?.status === 'PENDING' && (!c?.dueDate || new Date(c.dueDate).getTime() >= todayTimestamp)
+              pagas: cobrancas.filter((c: any) => c.status === 'RECEIVED' || c.status === 'CONFIRMED').length,
+              pendentes: cobrancas.filter((c: any) =>
+                c.status === 'PENDING' && (!c.dueDate || new Date(c.dueDate).getTime() >= todayTimestamp)
               ).length,
-              vencidas: cobrancas.filter((c: { status: string; dueDate: string | number | Date; }) =>
-                c?.status === 'PENDING' && c?.dueDate && new Date(c.dueDate).getTime() < todayTimestamp
+              vencidas: cobrancas.filter((c: any) =>
+                c.status === 'PENDING' && c.dueDate && new Date(c.dueDate).getTime() < todayTimestamp
               ).length
             };
 
             this.assinaturasTotais.push(totais);
           });
+
         }
       }
       this.loadingPagamentos = false;
@@ -797,9 +794,29 @@ export class MeusDadosComponent implements OnInit {
 
   getPrecoPlano(plano: any): string {
     if (plano.promocao === 1 && plano.preco_promocional) {
-      return plano.preco_promocional;
+      return plano.parcela_preco_promocional;
     }
-    return plano.preco_normal;
+    return plano.parcela_preco_normal;
+  }
+
+
+  verDetalhes() {
+    const slug = gerarSlug(this.user.nome, this.user.crp);
+    return slug
+  }
+
+  getStatus(c: any) {
+    const today = this.today;
+    if (c?.status === 'RECEIVED' || c?.status == "CONFIRMED") return 'pago';
+    if (c?.status === 'OVERDUE') return 'vencido';
+    if (c?.status === 'PENDING' && c?.dueDate && c?.dueDate < today) return 'vencido';
+    return 'pendente';
+  }
+  getStatusLabel(c: any) {
+    const s = this.getStatus(c);
+    if (s === 'pago') return 'Pago';
+    if (s === 'vencido') return 'Vencido';
+    return 'Pendente';
   }
 
 }

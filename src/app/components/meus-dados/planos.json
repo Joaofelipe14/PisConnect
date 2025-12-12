@@ -5,10 +5,13 @@
     "nome": "Plano Mensal",
     "preco_normal": "34.99",
     "preco_promocional": "17.45",
+    "parcela_preco_normal": "34.99",
+    "parcela_preco_promocional": "17.45",
     "duracao_dias": 30,
+    "parcelas": 1,
     "ativo": 1,
     "promocao": 1,
-    "dia_gratis": 10, 
+    "dia_gratis": 10,
     "criado_em": "2025-11-28 15:00:54.992244+00",
     "descricao": "Plano mensal para psicólogos se cadastrarem e aparecerem no sistema, permitindo que pacientes encontrem seus perfis rapidamente."
   },
@@ -18,12 +21,15 @@
     "nome": "Plano Trimestral",
     "preco_normal": "79.99",
     "preco_promocional": "39.99",
+    "parcela_preco_normal": "26.66",
+    "parcela_preco_promocional": "13.33",
     "duracao_dias": 90,
     "ativo": 1,
+    "parcelas": 3,
     "promocao": 1,
     "dia_gratis": 10,
     "criado_em": "2025-11-28 15:00:54.992244+00",
-    "descricao": "Plano trimestral que permite aos psicólogos manter seu cadastro ativo, garantindo visibilidade contínua para pacientes e maior alcance. 3 parcelas de R$ 26,90."
+    "descricao": "Plano trimestral que permite aos psicólogos manter seu cadastro ativo, garantindo visibilidade contínua para pacientes e maior alcance."
   },
   {
     "idx": 2,
@@ -31,11 +37,14 @@
     "nome": "Plano Anual",
     "preco_normal": "299.99",
     "preco_promocional": "149.99",
+    "parcela_preco_normal": "25.00",
+    "parcela_preco_promocional": "12.50",
     "duracao_dias": 365,
     "ativo": 1,
+    "parcelas":12,
     "promocao": 1,
     "dia_gratis": 10,
     "criado_em": "2025-11-28 15:00:54.992244+00",
-    "descricao": "Plano anual que garante máxima exposição dos psicólogos cadastrados, facilitando que pacientes encontrem e agendem consultas durante todo o ano. 12 parcelas de R$ 24,99."
+    "descricao": "Plano anual que garante máxima exposição dos psicólogos cadastrados, facilitando que pacientes encontrem e agendem consultas durante todo o ano."
   }
 ]
